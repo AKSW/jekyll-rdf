@@ -3,4 +3,6 @@ rvm:
 - 2.2.4
 
 install: gem install jekyll
+install: gem install rdf
+install: gem install linkeddata
 script: jekyll build
