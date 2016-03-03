@@ -5,4 +5,4 @@ rvm:
 install: gem install jekyll
 install: gem install rdf
 install: gem install linkeddata
-script: bundle exec jekyll build
+script: jekyll build
