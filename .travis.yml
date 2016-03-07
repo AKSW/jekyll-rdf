@@ -7,4 +7,6 @@ matrix:
   allow-failures:
     - rvm: ruby-head
 script: 
+- bundle install
+- cd test-site
 - bundle exec jekyll build
