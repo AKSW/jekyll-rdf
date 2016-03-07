@@ -6,8 +6,10 @@ rvm:
 matrix:
   allow-failures:
     - rvm: ruby-head
-install: bundle install --jobs=3 --retry=3
+install:
+- bundle install --jobs=3 --retry=3
+- export LOAD_PATH=$PWD:$LOAD_PATH
+
 script: 
 - cd test-site
-- bundle install --jobs=3 --retry=3
 - bundle exec jekyll build
