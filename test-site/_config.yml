@@ -19,5 +19,8 @@ github_username:  jekyll
 
 # Build settings
 markdown: kramdown
+
+gems:
+- jekyll-rdf
 jekyll_rdf:
   path: "rdf-data/simpsons.ttl"
