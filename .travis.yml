@@ -9,4 +9,5 @@ matrix:
 install: bundle install --jobs=3 --retry=3
 script: 
 - cd test-site
+- bundle install --jobs=3 --retry=3
 - bundle exec jekyll build
