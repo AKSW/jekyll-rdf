@@ -23,6 +23,10 @@ class TestJekyllRdf < Test::Unit::TestCase
     should "have rdf data" do
       assert_not_nil(site.data['rdf'])
     end
+    
+    should "contain correct age of Homer Simpson" do
+      assert site.data['rdf'].include?(['http://www.ifi.uio.no/INF3580/simpsons#Homer','http://xmlns.com/foaf/0.1/age','36'])
+    end
 
   end
 
