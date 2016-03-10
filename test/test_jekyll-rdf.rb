@@ -14,7 +14,7 @@ class TestJekyllRdf < Test::Unit::TestCase
       'path' => "#{SOURCE_DIR}/rdf-data/simpsons.ttl"
     }
   }
-
+  
   context "Generating a site with RDF data" do
     config = Jekyll.configuration(TEST_OPTIONS)
     site = Jekyll::Site.new(config)
@@ -27,3 +27,4 @@ class TestJekyllRdf < Test::Unit::TestCase
   end
 
 end
+#test
