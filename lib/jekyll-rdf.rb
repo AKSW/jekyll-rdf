@@ -11,9 +11,8 @@ module JekyllRdf
       return unless config
 
       queryable = RDF::Repository.load(config['path'], format: :ttl)
-      site.data['rdf'] = []
-      queryable.statements.each do |statement|
-        site.data['rdf'] << [
+      site.data['rdf'] = queryable.statements.map do |statement|
+        [
           statement.subject.to_s,
           statement.predicate.to_s,
           statement.object.to_s
