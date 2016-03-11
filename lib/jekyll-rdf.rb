@@ -7,8 +7,7 @@ module JekyllRdf
     priority :highest
 
     def generate(site)
-      config = site.config['jekyll_rdf']
-      return unless config
+      config = site.config.fetch('jekyll_rdf')
 
       queryable = RDF::Repository.load(config['path'], format: :ttl)
       site.data['rdf'] = queryable.statements.map do |statement|
