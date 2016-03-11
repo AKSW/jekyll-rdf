@@ -15,3 +15,9 @@ Rake::TestTask.new(:test) do |test|
   test.pattern = 'test/test_*.rb'
   test.verbose = true
 end
+
+require 'rdoc/task' 
+RDoc::Task.new do |rdoc| 
+  rdoc.rdoc_files.include("lib/*.rb")
+end
+
