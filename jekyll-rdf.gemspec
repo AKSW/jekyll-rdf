@@ -17,4 +17,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'test-unit',           '~> 3.0'
   s.add_runtime_dependency 'shoulda-context',     '~> 1.1'
   s.add_development_dependency 'rspec',           '~> 3.0'
+  s.add_development_dependency 'pry-nav'
 end
