@@ -1,8 +1,11 @@
 require 'jekyll'
 require 'test-unit'
 require 'shoulda-context'
+require 'rspec/expectations'
+require 'pry'
 
 class TestJekyllRdf < Test::Unit::TestCase
+  include RSpec::Matchers
 
   SOURCE_DIR = File.join(File.dirname(__FILE__), "source")
   DEST_DIR   = File.join(SOURCE_DIR, "_site")
@@ -28,6 +31,11 @@ class TestJekyllRdf < Test::Unit::TestCase
       assert site.data['rdf'].include?(['http://www.ifi.uio.no/INF3580/simpsons#Homer','http://xmlns.com/foaf/0.1/age','36'])
     end
 
+    should "create a file which mentions 'Lisa Simpson'" do
+      s = File.read("#{DEST_DIR}/index.html")
+      expect(s).to include 'Lisa Simpson'
+    end
+     
   end
 
 end
