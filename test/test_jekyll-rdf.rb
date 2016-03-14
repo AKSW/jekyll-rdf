@@ -2,6 +2,7 @@ require 'jekyll'
 require 'test-unit'
 require 'shoulda-context'
 require 'rspec/expectations'
+require 'pry'
 
 class TestJekyllRdf < Test::Unit::TestCase
   include RSpec::Matchers
