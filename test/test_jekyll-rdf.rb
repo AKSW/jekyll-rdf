@@ -1,8 +1,10 @@
 require 'jekyll'
 require 'test-unit'
 require 'shoulda-context'
+require 'rspec/expectations'
 
 class TestJekyllRdf < Test::Unit::TestCase
+  include RSpec::Matchers
 
   SOURCE_DIR = File.join(File.dirname(__FILE__), "source")
   DEST_DIR   = File.join(SOURCE_DIR, "_site")
