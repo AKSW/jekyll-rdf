@@ -6,6 +6,10 @@ require 'sparql'
 #
 # 
 module JekyllRdf
+  ##
+  #
+  # JekyllRdf::Generator enriches site.data with rdf triples
+  #
   class Generator < Jekyll::Generator
     safe true
     priority :highest
