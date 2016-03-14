@@ -14,6 +14,9 @@ module JekyllRdf
     safe true
     priority :highest
 
+    ##
+    # #generate performs the enrichment of site.data with rdf triples
+    #
     def generate(site)
       config = site.config.fetch('jekyll_rdf')
 
