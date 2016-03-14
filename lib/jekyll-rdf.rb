@@ -1,6 +1,10 @@
 require 'linkeddata'
 require 'sparql'
 
+##
+# JekyllRdf converts RDF data into static websites
+#
+# 
 module JekyllRdf
   class Generator < Jekyll::Generator
     safe true
