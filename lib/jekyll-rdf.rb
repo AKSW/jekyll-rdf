@@ -1,19 +1,30 @@
 require 'linkeddata'
 require 'sparql'
 
+##
+# JekyllRdf converts RDF data into static websites
+#
+# 
 module JekyllRdf
+  ##
+  #
+  # JekyllRdf::Generator enriches site.data with rdf triples
+  #
   class Generator < Jekyll::Generator
     safe true
     priority :highest
 
+    ##
+    # #generate performs the enrichment of site.data with rdf triples
+    #
+    # * +site+ - The site whose data is to be enriched
+    #
     def generate(site)
-      config = site.config['jekyll_rdf']
-      return unless config
+      config = site.config.fetch('jekyll_rdf')
 
       queryable = RDF::Repository.load(config['path'], format: :ttl)
-      site.data['rdf'] = []
-      queryable.statements.each do |statement|
-        site.data['rdf'] << [
+      site.data['rdf'] = queryable.statements.map do |statement|
+        [
           statement.subject.to_s,
           statement.predicate.to_s,
           statement.object.to_s
