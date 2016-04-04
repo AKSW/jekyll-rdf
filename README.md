@@ -47,7 +47,7 @@ Now, you can access a collection of all RDF statements in your ERB templates:
 bundle exec rake test
 ```
 ## Test page
-Everytime the tests are executed, the Jekyll page inside of `test/source` gets processed. Start a slim web server to watch the results in web browser, e.g. Pythons `SimpleHTTPServer`:
+Everytime the tests are executed, the Jekyll page inside of `test/source` gets processed. Start a slim web server to watch the results in web browser, e.g. Pythons `SimpleHTTPServer` (Python 2, for Python 3 it's `http.server`):
 ```
 cd test/source/_site
 python -m SimpleHTTPServer 8000
