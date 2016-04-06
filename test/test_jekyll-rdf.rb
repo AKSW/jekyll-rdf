@@ -22,20 +22,27 @@ class TestJekyllRdf < Test::Unit::TestCase
     config = Jekyll.configuration(TEST_OPTIONS)
     site = Jekyll::Site.new(config)
     site.process
-
-    should "have rdf data" do
-      assert_not_nil(site.data['rdf'])
-    end
     
-    should "contain correct age of Homer Simpson" do
-      assert site.data['rdf'].include?(['http://www.ifi.uio.no/INF3580/simpsons#Homer','http://xmlns.com/foaf/0.1/age','36'])
+    context "site data" do
+      should "create a file which mentions 'Lisa Simpson'" do
+        s = File.read("#{DEST_DIR}/rdfsites/http:/www.ifi.uio.no/INF3580/simpsons#Lisa.html")
+        expect(s).to include 'Lisa Simpson'
+      end
     end
-
-    should "create a file which mentions 'Lisa Simpson'" do
-      s = File.read("#{DEST_DIR}/index.html")
-      expect(s).to include 'Lisa Simpson'
+  
+    context "Generate a page from RDF data" do
+      setup do
+        homer_page = site.pages.select{|p| p.name == "http://www.ifi.uio.no/INF3580/simpsons#Homer.html"}
+      end
+          
+      should "have rdf data" do
+        assert_not_nil(homer_page.rdf)
+      end
+    
+      should "contain correct age of Homer Simpson" do
+        assert homer_page.data['rdf'].include?(['http://www.ifi.uio.no/INF3580/simpsons#Homer','http://xmlns.com/foaf/0.1/age','36'])
+      end
     end
-     
   end
 
 end
