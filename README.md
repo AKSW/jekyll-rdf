@@ -27,7 +27,7 @@ Specify path to your Turtle-File in `_config.yml`:
 jekyll_rdf:
   path: "simpsons.ttl"
 ```
-Now, create the file "rdf-index.html" in _layouts - directory to edit the default layout for rdf-pages. See example below:
+Now, create the file "rdf_index.html" in _layouts - directory to edit the default layout for rdf-pages. See example below:
 
 ```html
 ---
