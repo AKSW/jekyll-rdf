@@ -17,25 +17,26 @@ class TestJekyllRdf < Test::Unit::TestCase
       'path' => "#{SOURCE_DIR}/rdf-data/simpsons.ttl"
     }
   }
+  config = Jekyll.configuration(TEST_OPTIONS)
+  site = Jekyll::Site.new(config)
+  site.process
+  pagearray = site.pages.select{|p| p.name == "http://www.ifi.uio.no/INF3580/simpsons#Homer.html"} # creates an array
+  homer_page = pagearray[0] # select first entry of selection
   
-  context "Generating a site with RDF data" do
-    config = Jekyll.configuration(TEST_OPTIONS)
-    site = Jekyll::Site.new(config)
-    site.process
-
-    should "have rdf data" do
-      assert_not_nil(site.data['rdf'])
-    end
-    
-    should "contain correct age of Homer Simpson" do
-      assert site.data['rdf'].include?(['http://www.ifi.uio.no/INF3580/simpsons#Homer','http://xmlns.com/foaf/0.1/age','36'])
-    end
-
+  context "Generating a site with RDF data" do    
     should "create a file which mentions 'Lisa Simpson'" do
-      s = File.read("#{DEST_DIR}/index.html")
+      s = File.read("#{DEST_DIR}/rdfsites/http:/www.ifi.uio.no/INF3580/simpsons#Lisa.html") # read static file
       expect(s).to include 'Lisa Simpson'
     end
-     
+  end
+
+  context "Generate a page from RDF data" do
+    should "have rdf data" do
+      assert_not_nil(homer_page.data['rdf'])
+    end
+    should "contain correct age of Homer Simpson" do
+        assert homer_page.data['rdf'].include?(['http://www.ifi.uio.no/INF3580/simpsons#Homer','http://xmlns.com/foaf/0.1/age','36'])
+    end
   end
 
 end

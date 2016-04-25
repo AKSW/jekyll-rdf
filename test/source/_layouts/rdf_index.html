@@ -1,0 +1,22 @@
+---
+layout: default
+---
+
+<div class="home">
+
+  <h1 class="page-heading">{{ page.title }}</h1>
+
+  <table border="1">
+	  <tr><td>Subject</td><td>Predicate</td><td>Object</td></tr>
+    {% for statement in page.rdf %}
+      <tr>
+        <td>{{ statement[0] }}</td> <!-- Subject -->
+        <td>{{ statement[1] }}</td> <!-- Predicate -->
+        <td>{{ statement[2] }}</td> <!-- Object -->
+      </tr>
+    {% endfor %}
+  </table>
+
+  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
+
+</div>

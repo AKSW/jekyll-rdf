@@ -27,18 +27,31 @@ Specify path to your Turtle-File in `_config.yml`:
 jekyll_rdf:
   path: "simpsons.ttl"
 ```
-Now, you can access a collection of all RDF statements in your ERB templates:
+Now, create the file "rdf_index.html" in _layouts - directory to edit the default layout for rdf-pages. See example below:
 
 ```html
-<table>
-  {% for statement in site.data.rdf %}
-    <tr>
-      <td>{{ statement[0] }}</td> <!-- Subject -->
-      <td>{{ statement[1] }}</td> <!-- Predicate -->
-      <td>{{ statement[2] }}</td> <!-- Object -->
-    </tr>
-  {% endfor %}
-</table>
+---
+layout: default
+---
+
+<div class="home">
+
+  <h1 class="page-heading">{{ page.title }}</h1>
+
+  <table border="1">
+	  <tr><td>Subject</td><td>Predicate</td><td>Object</td></tr>
+    {% for statement in page.rdf %}
+      <tr>
+        <td>{{ statement[0] }}</td> <!-- Subject -->
+        <td>{{ statement[1] }}</td> <!-- Predicate -->
+        <td>{{ statement[2] }}</td> <!-- Object -->
+      </tr>
+    {% endfor %}
+  </table>
+
+  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
+
+</div>
 ```
 
 # Development
