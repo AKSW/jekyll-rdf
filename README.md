@@ -13,6 +13,7 @@ gem install ./jekyll-rdf-0.0.0.gem
 ```
 
 # Usage
+## Integrate with Jekyll
 First, you need a jekyll page. In order to create one, just do:
 ```
 jekyll new my_page
@@ -27,7 +28,10 @@ Specify path to your Turtle-File in `_config.yml`:
 jekyll_rdf:
   path: "simpsons.ttl"
 ```
-Now, create the file "rdf_index.html" in _layouts - directory to edit the default layout for rdf-pages. See example below:
+
+## Make use of RDF data
+
+Now, create the file "rdf_index.html" in _layouts - directory to edit the default layout for rdf-pages. For each resource a page will be rendered. See example below:
 
 ```html
 ---
@@ -53,6 +57,17 @@ layout: default
 
 </div>
 ```
+
+## Restrict resource selection
+Additionaly, you can restrict the overall resource selection by adding a SPARQL query as `restriction` parameter to `_config.yml`:
+```yaml
+  restriction: "SELECT ?s WHERE { ?s <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"
+```
+There are 3 pre-defined keywords for restrictions implemented:
+* `subjects` will load all subject URIs
+* `predicates` will load all predicate URIs
+* `objects` will load all object URIs
+  
 
 # Development
 ## Run tests
