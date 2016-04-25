@@ -14,7 +14,8 @@ class TestJekyllRdf < Test::Unit::TestCase
     'source'         => SOURCE_DIR,
     'destination'    => DEST_DIR,
     'jekyll_rdf'     => {
-      'path' => "#{SOURCE_DIR}/rdf-data/simpsons.ttl"
+      'path' => "#{SOURCE_DIR}/rdf-data/simpsons.ttl",
+      'restriction' => "SELECT ?s WHERE { ?s ?p ?o }"
     }
   }
   config = Jekyll.configuration(TEST_OPTIONS)
@@ -22,8 +23,8 @@ class TestJekyllRdf < Test::Unit::TestCase
   site.process
   pagearray = site.pages.select{|p| p.name == "http://www.ifi.uio.no/INF3580/simpsons#Homer.html"} # creates an array
   homer_page = pagearray[0] # select first entry of selection
-  
-  context "Generating a site with RDF data" do    
+
+  context "Generating a site with RDF data" do
     should "create a file which mentions 'Lisa Simpson'" do
       s = File.read("#{DEST_DIR}/rdfsites/http:/www.ifi.uio.no/INF3580/simpsons#Lisa.html") # read static file
       expect(s).to include 'Lisa Simpson'
