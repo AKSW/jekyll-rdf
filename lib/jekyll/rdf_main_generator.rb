@@ -49,7 +49,6 @@ module Jekyll
         result = sparql.query(restriction).map{|sol| sol.each_value.first}
         return result.select { |s| s.class == RDF::URI }.uniq
       end
-      []
     end
 
   end
