@@ -19,13 +19,22 @@ module Jekyll
       graph = RDF::Graph.load(config['path'])
       sparql = SPARQL::Client.new(graph)
 
+      # restrict RDF graph with restriction
       resources = extract_resources(config['restriction'], graph, sparql)
 
+      # create RDF pages for each URI
       resources.each do |resource|
         site.pages << RdfPageData.new(site, site.source, resource, graph)
       end
     end
 
+    ##
+    # #extract_resources restricts the RDF graph with given restriction arguments
+    #
+    # * +restriction+ - The option you want to restrict the RDF graph with - only subjects, objects, predicates or custom SPARQL query
+    # * +graph+ - The RDF graph to restrict
+    # * +sparql+ - The SPARQL client to run queries
+    #
     def extract_resources(restriction, graph, sparql)
       # Reject literals and null values
       object_resources = graph.objects.select { |o| o.class == RDF::URI }.uniq
