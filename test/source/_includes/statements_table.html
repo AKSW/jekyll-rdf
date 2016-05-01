@@ -1,0 +1,30 @@
+<table border="1" width="100%">
+  <thead>
+    <tr>
+      <th>Subject</th>
+      <th>Predicate</th>
+      <th>Object</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for statement in include.collection %}
+      <tr>
+        <td>
+          <a class="page-link" href="{{ statement.subject.page_url | prepend: site.baseurl }}">
+            {{ statement.subject }}
+          </a>
+        </td>
+        <td>
+          <a class="page-link" href="{{ statement.predicate.page_url | prepend: site.baseurl }}">
+            {{ statement.predicate }}
+          </a>
+        </td>
+        <td>
+          <a class="page-link" href="{{ statement.object.page_url | prepend: site.baseurl }}">
+            {{ statement.object }}
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
