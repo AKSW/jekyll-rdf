@@ -12,26 +12,21 @@ module Jekyll
     # * +resource+ - The RDF resource for which the page is rendered
     # * +graph+ - The whole RDF graph
     #
-    def initialize(site, base, resource, graph)
+    def initialize(site, base, resource)
       @site = site
       @base = base
       @dir = "rdfsites" # in this directory all RDF sites are stored
-      @name = resource.to_s + ".html"
+      @name = resource.filename
       self.process(@name)
 
       # use given template rdf_index.html
       self.read_yaml(File.join(base, '_layouts'), 'rdf_index.html')
-      self.data['title'] = resource.to_s
+      self.data['title'] = resource.name
+      self.data['rdf'] = resource
 
-      # restrict graph to a graph with only our given URI as subject
-      graphedit = graph.query(:subject => resource)
-      self.data['rdf'] = graphedit.statements.map do |statement|
-      [
-        statement.subject.to_s,
-        statement.predicate.to_s,
-        statement.object.to_s
-      ]
-      end
+      resource.page = self
+      resource.site = site
+      site.data['resources'] << resource
     end
 
   end

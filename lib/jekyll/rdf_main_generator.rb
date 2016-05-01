@@ -22,9 +22,12 @@ module Jekyll
       # restrict RDF graph with restriction
       resources = extract_resources(config['restriction'], graph, sparql)
 
+      site.data['resources'] = []
+
       # create RDF pages for each URI
-      resources.each do |resource|
-        site.pages << RdfPageData.new(site, site.source, resource, graph)
+      resources.each do |uri|
+        resource = Jekyll::Drops::RdfResource.new(uri, graph)
+        site.pages << RdfPageData.new(site, site.source, resource)
       end
     end
 
