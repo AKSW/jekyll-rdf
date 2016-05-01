@@ -9,8 +9,8 @@ class TestRdfMainGenerator < Test::Unit::TestCase
     graph = RDF::Graph.load(config['jekyll_rdf']['path'])
     sparql = SPARQL::Client.new(graph)
 
-    should "get 33 resources" do
-      assert_equal 33, generator.extract_resources(nil, graph, sparql).count
+    should "get 23 unique resources" do
+      assert_equal 23, generator.extract_resources(nil, graph, sparql).count
     end
 
     should "get 11 subjects" do
