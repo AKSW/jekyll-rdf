@@ -43,7 +43,7 @@ module Jekyll
 
       # Config parameter not present
       unless restriction
-        return object_resources.concat(subject_resources).concat(predicate_resources)
+        return object_resources.concat(subject_resources).concat(predicate_resources).uniq
       end
 
       case restriction
