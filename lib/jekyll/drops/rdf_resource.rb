@@ -29,6 +29,13 @@ module Jekyll
         name
       end
 
+      def type
+        @type ||= begin
+          t = statements_as(:subject).find{ |s| s.predicate.term.to_s=="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" }
+          t ? t.object : "default"
+        end
+      end
+
       def name
         @name ||= begin
           n = statements_as(:subject).find{ |s| s.predicate.term.to_s=="http://xmlns.com/foaf/0.1/name" }
