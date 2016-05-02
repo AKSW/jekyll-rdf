@@ -48,15 +48,24 @@ module Jekyll
       end
 
       def generate_file_name
-        splitted = URI::split(term.to_s)
-        cleaned = "#{splitted[2].gsub('.','/')}#{splitted[5]}"
-        if splitted[8]
-          cleaned += "##{splitted[8]}"
+        uri = URI::split(term.to_s)
+        file_name = ""
+        (0..8).each do |i|
+          if uri[i]
+            case i
+            when 2
+              file_name += "#{uri[i].gsub('.','/')}/"
+            when 8
+              file_name += "##{uri[i]}"
+            else
+              file_name += "#{uri[i]}/"
+            end
+          end
         end
-        unless cleaned[-1] == '/'
-          cleaned += '/'
+        unless file_name[-1] == '/'
+          file_name += '/'
         end
-        cleaned += 'index.html'
+        file_name += 'index.html'
       end
 
     end
