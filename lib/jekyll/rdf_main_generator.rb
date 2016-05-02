@@ -24,10 +24,12 @@ module Jekyll
 
       site.data['resources'] = []
 
+      mapper = Jekyll::RdfTemplateMapper.new(config['template_mappings'], config['default_template'])
+
       # create RDF pages for each URI
       resources.each do |uri|
         resource = Jekyll::Drops::RdfResource.new(uri, graph)
-        site.pages << RdfPageData.new(site, site.source, resource)
+        site.pages << RdfPageData.new(site, site.source, resource, mapper)
       end
     end
 

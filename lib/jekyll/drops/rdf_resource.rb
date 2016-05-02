@@ -29,10 +29,27 @@ module Jekyll
         name
       end
 
-      def type
-        @type ||= begin
+      def types
+        @types ||= begin
+          types = [ term.to_s ]
           t = statements_as(:subject).find{ |s| s.predicate.term.to_s=="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" }
-          t ? t.object : "default"
+          if t
+            types << t.object.term.to_s
+            t = t.object
+            while super_class_of t
+              s = super_class_of t
+              types << s.term.to_s
+              t = s
+            end
+          end
+          types
+        end
+      end
+
+      def super_class_of r
+        s = r.statements_as(:subject).find{ |s| s.predicate.term.to_s ==       "http://www.w3.org/2000/01/rdf-schema#subClassOf"}
+        if s
+          s.object
         end
       end
 
@@ -47,13 +64,13 @@ module Jekyll
         page ? page.url.chomp('index.html') : term.to_s
       end
 
-      private
       def statements_as type
         graph.query(type.to_sym => term).map do |statement|
           RdfStatement.new(statement, graph, site)
         end
       end
 
+      private
       def generate_file_name
         uri = URI::split(term.to_s)
         file_name = ""
@@ -63,6 +80,7 @@ module Jekyll
             when 2
               file_name += "#{uri[i].gsub('.','/')}/"
             when 8
+              file_name = file_name[0..-2]
               file_name += "##{uri[i]}"
             else
               file_name += "#{uri[i]}/"
@@ -73,6 +91,7 @@ module Jekyll
           file_name += '/'
         end
         file_name += 'index.html'
+        file_name.gsub('//','/')
       end
 
     end

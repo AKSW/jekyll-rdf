@@ -12,15 +12,16 @@ module Jekyll
     # * +resource+ - The RDF resource for which the page is rendered
     # * +graph+ - The whole RDF graph
     #
-    def initialize(site, base, resource)
+    def initialize(site, base, resource, mapper)
       @site = site
       @base = base
       @dir = "rdfsites" # in this directory all RDF sites are stored
       @name = resource.filename
       self.process(@name)
 
-      # use given template rdf_index.html
-      self.read_yaml(File.join(base, '_layouts'), 'rdf_index.html')
+      template = mapper.map(resource)
+      self.read_yaml(File.join(base, '_layouts'), template)
+
       self.data['title'] = resource.name
       self.data['rdf'] = resource
 
