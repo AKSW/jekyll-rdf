@@ -31,7 +31,7 @@ jekyll_rdf:
 
 ## Make use of RDF data
 
-Now, create the file "rdf_index.html" in _layouts - directory to edit the default layout for rdf-pages. For each resource a page will be rendered. See example below:
+Now, create one or more files (e.g "rdf_index.html" or "person.html") in _layouts - directory to edit the layout for rdf-pages. For each resource a page will be rendered. See example below:
 
 ```html
 ---
@@ -40,22 +40,33 @@ layout: default
 
 <div class="home">
 
-  <h1 class="page-heading">{{ page.title }}</h1>
+  <h1 class="page-heading"><b>{{ page.rdf.name }}</b></h1>
 
-  <table border="1">
-	  <tr><td>Subject</td><td>Predicate</td><td>Object</td></tr>
-    {% for statement in page.rdf %}
-      <tr>
-        <td>{{ statement[0] }}</td> <!-- Subject -->
-        <td>{{ statement[1] }}</td> <!-- Predicate -->
-        <td>{{ statement[2] }}</td> <!-- Object -->
-      </tr>
-    {% endfor %}
-  </table>
-
-  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
+  <p>
+    <h3>Statements in which {{ page.rdf.name }} occurs as subject:</h3>
+    {% include statements_table.html collection=page.rdf.statements_as_subject %}
+  </p>
+  <p>
+    <h3>Statements in which {{ page.rdf.name }} occurs as predicate:</h3>
+    {% include statements_table.html collection=page.rdf.statements_as_predicate %}
+  </p>
+  <p>
+    <h3>Statements in which {{ page.rdf.name }} occurs as object:</h3>
+    {% include statements_table.html collection=page.rdf.statements_as_object %}
+  </p>
 
 </div>
+```
+
+## Set default template and map templates to resources
+
+Ii is possible to map to a specific ressource, type or superclass
+```yaml
+  'default_template' => 'rdf_index.html',
+  'template_mappings' => {
+    'http://xmlns.com/foaf/0.1/Person' => 'person.html',
+    'http://www.ifi.uio.no/INF3580/simpsons#Abraham' => 'abraham.html'
+  }
 ```
 
 ## Restrict resource selection
@@ -67,7 +78,6 @@ There are 3 pre-defined keywords for restrictions implemented:
 * `subjects` will load all subject URIs
 * `predicates` will load all predicate URIs
 * `objects` will load all object URIs
-  
 
 # Development
 ## Run tests

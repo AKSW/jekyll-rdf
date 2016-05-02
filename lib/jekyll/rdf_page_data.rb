@@ -10,7 +10,7 @@ module Jekyll
     # * +site+ - The Jekyll site we want to enrich with RDF data
     # * +base+ - The base of the site
     # * +resource+ - The RDF resource for which the page is rendered
-    # * +graph+ - The whole RDF graph
+    # * +mapper+ - The layout-mapping
     #
     def initialize(site, base, resource, mapper)
       @site = site

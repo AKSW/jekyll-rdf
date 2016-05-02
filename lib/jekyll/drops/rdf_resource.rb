@@ -29,6 +29,9 @@ module Jekyll
         name
       end
 
+      ##
+      # types finds the type and superclasses of the resource
+      #
       def types
         @types ||= begin
           types = [ term.to_s ]
@@ -47,7 +50,7 @@ module Jekyll
       end
 
       def super_class_of r
-        s = r.statements_as(:subject).find{ |s| s.predicate.term.to_s ==       "http://www.w3.org/2000/01/rdf-schema#subClassOf"}
+        s = r.statements_as(:subject).find{ |s| s.predicate.term.to_s=="http://www.w3.org/2000/01/rdf-schema#subClassOf" }
         if s
           s.object
         end
