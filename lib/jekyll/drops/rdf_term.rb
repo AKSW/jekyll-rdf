@@ -10,7 +10,7 @@ module Jekyll
 
       def self.build_term_drop(term, graph, site)
         case term
-        when RDF::URI
+        when RDF::URI, RDF::Node
           if site
             resource = site.data['resources'].find{ |r| r.term == term }
           end

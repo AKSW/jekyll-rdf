@@ -75,26 +75,30 @@ module Jekyll
 
       private
       def generate_file_name
-        uri = URI::split(term.to_s)
-        file_name = ""
-        (0..8).each do |i|
-          if uri[i]
-            case i
-            when 2
-              file_name += "#{uri[i].gsub('.','/')}/"
-            when 8
-              file_name = file_name[0..-2]
-              file_name += "##{uri[i]}"
-            else
-              file_name += "#{uri[i]}/"
+        begin
+          uri = URI::split(term.to_s)
+          file_name = ""
+          (0..8).each do |i|
+            if uri[i]
+              case i
+              when 2
+                file_name += "#{uri[i].gsub('.','/')}/"
+              when 8
+                file_name = file_name[0..-2]
+                file_name += "##{uri[i]}"
+              else
+                file_name += "#{uri[i]}/"
+              end
             end
           end
+          unless file_name[-1] == '/'
+            file_name += '/'
+          end
+          file_name += 'index.html'
+          file_name.gsub('//','/')
+        rescue URI::InvalidURIError
+          file_name = "blanknode/#{term.to_s}/index.html"
         end
-        unless file_name[-1] == '/'
-          file_name += '/'
-        end
-        file_name += 'index.html'
-        file_name.gsub('//','/')
       end
 
     end
