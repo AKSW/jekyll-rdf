@@ -16,6 +16,7 @@ class TestHelper
     'destination'    => DEST_DIR,
     'jekyll_rdf'     => {
       'path' => "#{SOURCE_DIR}/rdf-data/simpsons.ttl",
+      'include_blank' => true,
       'restriction' => "SELECT ?s WHERE { ?s ?p ?o }",
       'default_template' => 'rdf_index.html',
       'template_mappings' => {
