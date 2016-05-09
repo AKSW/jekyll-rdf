@@ -6,6 +6,19 @@ layout: default
 
   <h1 class="page-heading"><b>Person: {{ page.rdf.name }}</b></h1>
 
+  <table>
+    <tbody>
+      <tr>
+        <td>Age</td>
+        <td>{% property http://xmlns.com/foaf/0.1/age%}</td>
+      <tr>
+      <tr>
+        <td>Sisters</td>
+        <td>{% propertyList http://www.ifi.uio.no/INF3580/family#hasSister%}</td>
+      </tr>
+    </tbody
+  </table>
+
   <p>
     <h3>Statements in which {{ page.rdf.name }} occurs as subject:</h3>
     {% include statements_table.html collection=page.rdf.statements_as_subject %}
