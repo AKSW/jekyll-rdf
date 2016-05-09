@@ -3,23 +3,22 @@ module Jekyll
 
     def initialize(tag_name, params, tokens)
       super
-      @params = params
+      @params = params.split(",")
     end
 
     def render(context)
       resource = context['page']['rdf']
-      param = @params.split(",")
       return unless resource
 
-      p = resource.statements_as_subject.select{ |s| s.predicate.term.to_s == param[0] }
+      p = resource.statements_as_subject.select{ |s| s.predicate.term.to_s == @params[0] }
       return if p.empty?
       
-      if param[1] == "" || param[1] == nil
+      if @params[1] == "" || @params[1] == nil
         return p.map{|p| p.object.name}.to_s
       else
         returnstr = ""
         p.map{|p| p.object.name}.each do |n|
-          returnstr = returnstr + param[1] + n.to_s + param[2]
+          returnstr = returnstr + @params[1] + n.to_s + @params[2]
         end
         return returnstr
       end
