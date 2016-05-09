@@ -58,6 +58,25 @@ layout: default
 </div>
 ```
 
+To access objects which are connected to the current subject via a predicate you can use our custom liquid tags. For only one object please use property, 
+for a list of properties you can use propertyList and specify begin- and end-tags separated by " , ". Example:
+
+```html
+
+<table>
+  <tbody>
+    <tr>
+      <td>Age</td>
+      <td>{% property http://xmlns.com/foaf/0.1/age %}</td>
+    <tr>
+    <tr>
+      <td>Sisters</td>
+      <td><ul>{% propertyList http://www.ifi.uio.no/INF3580/family#hasSister, <li>, </li> %}</ul></td>
+    </tr>
+  </tbody
+</table>
+```
+
 ## Set default template and map templates to resources
 
 Ii is possible to map to a specific ressource, type or superclass
