@@ -16,7 +16,13 @@ class TestHelper
     'destination'    => DEST_DIR,
     'jekyll_rdf'     => {
       'path' => "#{SOURCE_DIR}/rdf-data/simpsons.ttl",
-      'restriction' => "SELECT ?s WHERE { ?s ?p ?o }"
+      'include_blank' => true,
+      'restriction' => 'SELECT ?s WHERE { ?s ?p ?o }',
+      'default_template' => 'rdf_index.html',
+      'template_mappings' => {
+        'http://xmlns.com/foaf/0.1/Person' => 'person.html',
+        'http://www.ifi.uio.no/INF3580/simpsons#Abraham' => 'abraham.html'
+      }
     }
   }
 

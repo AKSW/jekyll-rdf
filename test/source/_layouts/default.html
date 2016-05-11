@@ -11,6 +11,18 @@
       <div class="wrapper">
         {{ content }}
       </div>
+      <div class="wrapper">
+        <h3>List of resources:</h3>
+        <ul>
+          {% for my_page in site.pages %}
+            {% if my_page.rdf.name %}
+              <li>
+                <a class="page-link" href="{{ my_page.url | prepend: site.baseurl }}">{{ my_page.rdf.name }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
     </div>
 
     {% include footer.html %}

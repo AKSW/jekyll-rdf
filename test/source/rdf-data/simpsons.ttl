@@ -1,12 +1,17 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix fam: <http://www.ifi.uio.no/INF3580/family#> .
 @prefix sim: <http://www.ifi.uio.no/INF3580/simpsons#> .
 
+@prefix dtp16: <http://pcai042.informatik.uni-leipzig.de/~dtp16/#> .
+
+dtp16:SpecialPerson rdfs:subClassOf foaf:Person .
+
 #Homer
-sim:Homer rdf:type foaf:Person .
+sim:Homer rdf:type dtp16:SpecialPerson .
 sim:Homer foaf:name "Homer Simpson" .
 sim:Homer foaf:age "36"^^xsd:int .
 
@@ -47,7 +52,7 @@ sim:TheSimpsons rdf:type fam:Family ;
                 fam:hasFamilyMember sim:Homer ,
                                     sim:Marge ,
                                     sim:Bart ,
-                                    sim:Lisa , 
+                                    sim:Lisa ,
                                     sim:Maggie .
 
 #Family relationships
