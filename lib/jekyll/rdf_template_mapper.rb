@@ -4,8 +4,14 @@ module Jekyll
   # JekyllRdf::RdfTemplateMapper maps configured templates to resources
   #
   class RdfTemplateMapper
-
-    attr_accessor :config, :default
+    
+    ##
+    # 
+    attr_accessor :config
+    
+    ##
+    #
+    attr_accessor :default
 
     def initialize(config, default)
       @config = config
