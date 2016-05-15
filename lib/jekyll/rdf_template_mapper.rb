@@ -6,7 +6,7 @@ module Jekyll
   class RdfTemplateMapper
     
     ##
-    # A hash mapping a type resource to a template name
+    # A Hash mapping a type resource to a template name
     attr_accessor :resources_to_templates
     
     ##
@@ -16,7 +16,7 @@ module Jekyll
     ##
     # Create a new JekyllRdf::RdfTemplateMapper
     #
-    # * +resources_to_templates+ - A hash mapping a type resource to a template name  
+    # * +resources_to_templates+ - A Hash mapping a type resource to a template name  
     # * +default_template+ - Default template name
     def initialize(resources_to_templates, default_template)
       @resources_to_templates = resources_to_templates
