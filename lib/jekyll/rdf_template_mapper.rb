@@ -11,11 +11,11 @@ module Jekyll
     
     ##
     #
-    attr_accessor :default
+    attr_accessor :default_template
 
-    def initialize(resources_to_templates, default)
+    def initialize(resources_to_templates, default_template)
       @resources_to_templates = resources_to_templates
-      @default = default
+      @default_template = default_template
     end
 
     def map resource
@@ -23,7 +23,7 @@ module Jekyll
         tmpl = resources_to_templates[type]
         return tmpl unless tmpl.nil?
       end
-      return default
+      return default_template
     end
 
   end
