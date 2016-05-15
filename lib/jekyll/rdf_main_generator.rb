@@ -41,8 +41,6 @@ module Jekyll
     # * +sparql+ - The SPARQL client to run queries
     #
     def extract_resources(restriction, include_blank, graph, sparql)
-      # Reject literals
-      # Select URIs and blank nodes in case of include_blank
 
       case restriction
       when nil  # Config parameter not present
@@ -59,7 +57,11 @@ module Jekyll
       else
         # Custom query
         sparql.query(restriction).map{|sol| sol.each_value.first}
-      end.reject{ |s| s.class <= RDF::Literal }.select { |s| include_blank || s.class == RDF::URI }.uniq
+      end.reject do |s|  # Reject literals
+        s.class <= RDF::Literal 
+      end.select do |s|  # Select URIs and blank nodes in case of include_blank
+        include_blank || s.class == RDF::URI 
+      end.uniq
     end
 
   end
