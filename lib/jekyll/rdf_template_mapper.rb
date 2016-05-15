@@ -23,7 +23,7 @@ module Jekyll
       @default_template = default_template
     end
 
-    def map resource
+    def map(resource)
       resource.types.each do |type|
         tmpl = resources_to_templates[type]
         return tmpl unless tmpl.nil?
