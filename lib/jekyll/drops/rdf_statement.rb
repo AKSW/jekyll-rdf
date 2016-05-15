@@ -5,7 +5,9 @@ module Jekyll
     # Represents a RDF statement to the Liquid template engine
     #
     class RdfStatement < Liquid::Drop
-      attr_reader :subject, :predicate, :object
+      attr_reader :subject
+      attr_reader :predicate
+      attr_reader :object
 
       def initialize(statement, graph, site)
         @subject ||= Jekyll::Drops::RdfTerm.build_term_drop(statement.subject, graph, site)
