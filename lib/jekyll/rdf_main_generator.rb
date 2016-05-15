@@ -49,17 +49,17 @@ module Jekyll
 
       case restriction
       when nil  # Config parameter not present
-        return object_resources.concat(subject_resources).concat(predicate_resources).uniq      
+        object_resources.concat(subject_resources).concat(predicate_resources).uniq      
       when "objects"
-        return object_resources
+        object_resources
       when "subjects"
-        return subject_resources
+        subject_resources
       when "predicates"
-        return predicate_resources
+        predicate_resources
       else
         # Custom query
         result = sparql.query(restriction).map{|sol| sol.each_value.first}
-        return result.reject{ |s| s.class <= RDF::Literal }.select { |s| include_blank || s.class == RDF::URI }.uniq
+        result.reject{ |s| s.class <= RDF::Literal }.select { |s| include_blank || s.class == RDF::URI }.uniq
       end
     end
 
