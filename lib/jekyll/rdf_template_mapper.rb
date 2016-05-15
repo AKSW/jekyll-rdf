@@ -7,20 +7,20 @@ module Jekyll
     
     ##
     # 
-    attr_accessor :config
+    attr_accessor :resources_to_templates
     
     ##
     #
     attr_accessor :default
 
-    def initialize(config, default)
-      @config = config
+    def initialize(resources_to_templates, default)
+      @resources_to_templates = resources_to_templates
       @default = default
     end
 
     def map resource
       resource.types.each do |type|
-        tmpl = config[type]
+        tmpl = resources_to_templates[type]
         return tmpl unless tmpl.nil?
       end
       return default
