@@ -6,7 +6,7 @@ module Jekyll
   class RdfTemplateMapper
     
     ##
-    # 
+    # A hash mapping a type resource to a template name
     attr_accessor :resources_to_templates
     
     ##
