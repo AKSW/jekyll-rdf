@@ -10,7 +10,7 @@ module Jekyll
     attr_accessor :resources_to_templates
     
     ##
-    #
+    # Default template name
     attr_accessor :default_template
 
     def initialize(resources_to_templates, default_template)
