@@ -1,7 +1,7 @@
 module Jekyll
 
   ##
-  # JekyllRdf::RdfTemplateMapper maps configured templates to resources
+  # JekyllRdf::RdfTemplateMapper maps resources to templates
   #
   class RdfTemplateMapper
     
