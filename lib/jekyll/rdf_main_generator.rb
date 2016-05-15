@@ -51,11 +51,11 @@ module Jekyll
       when nil  # Config parameter not present
         object_resources.concat(subject_resources).concat(predicate_resources).uniq      
       when "objects"
-        object_resources
+        graph.objects.reject{ |o| o.class <= RDF::Literal }.select { |o| include_blank || o.class == RDF::URI }.uniq
       when "subjects"
-        subject_resources
+        graph.subjects.reject{ |s| s.class <= RDF::Literal }.select { |s| include_blank || s.class == RDF::URI }.uniq
       when "predicates"
-        predicate_resources
+        graph.predicates.reject{ |p| p.class <= RDF::Literal }.select { |p| include_blank || p.class == RDF::URI }.uniq
       else
         # Custom query
         result = sparql.query(restriction).map{|sol| sol.each_value.first}
