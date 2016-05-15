@@ -49,18 +49,17 @@ module Jekyll
         object_resources    = extract_resources("objects",    include_blank, graph, sparql)
         subject_resources   = extract_resources("subjects",   include_blank, graph, sparql)
         predicate_resources = extract_resources("predicates", include_blank, graph, sparql)
-        object_resources.concat(subject_resources).concat(predicate_resources).uniq      
+        return object_resources.concat(subject_resources).concat(predicate_resources).uniq      
       when "objects"
-        graph.objects.reject{ |o| o.class <= RDF::Literal }.select { |o| include_blank || o.class == RDF::URI }.uniq
+        graph.objects
       when "subjects"
-        graph.subjects.reject{ |s| s.class <= RDF::Literal }.select { |s| include_blank || s.class == RDF::URI }.uniq
+        graph.subjects
       when "predicates"
-        graph.predicates.reject{ |p| p.class <= RDF::Literal }.select { |p| include_blank || p.class == RDF::URI }.uniq
+        graph.predicates
       else
         # Custom query
-        result = sparql.query(restriction).map{|sol| sol.each_value.first}
-        result.reject{ |s| s.class <= RDF::Literal }.select { |s| include_blank || s.class == RDF::URI }.uniq
-      end
+        sparql.query(restriction).map{|sol| sol.each_value.first}
+      end.reject{ |s| s.class <= RDF::Literal }.select { |s| include_blank || s.class == RDF::URI }.uniq
     end
 
   end
