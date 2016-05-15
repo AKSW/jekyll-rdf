@@ -2,7 +2,7 @@ module Jekyll
 
   ##
   #
-  # JekyllRdf::Generator enriches site.data with rdf triples
+  # JekyllRdf::Generator enriches site.data with RDF triples
   #
   class RdfMainGenerator < Jekyll::Generator
     safe true
