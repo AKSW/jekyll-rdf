@@ -47,12 +47,9 @@ module Jekyll
       subject_resources = graph.subjects.reject{ |s| s.class <= RDF::Literal }.select { |s| include_blank || s.class == RDF::URI }.uniq
       predicate_resources = graph.predicates.reject{ |p| p.class <= RDF::Literal }.select { |p| include_blank || p.class == RDF::URI }.uniq
 
-      # Config parameter not present
-      unless restriction
-        return object_resources.concat(subject_resources).concat(predicate_resources).uniq
-      end
-
       case restriction
+      when nil  # Config parameter not present
+        return object_resources.concat(subject_resources).concat(predicate_resources).uniq      
       when "objects"
         return object_resources
       when "subjects"
