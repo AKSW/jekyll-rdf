@@ -1,7 +1,7 @@
 module Jekyll
 
   ##
-  # JekyllRdf::RdfTemplateMapper maps resources to templates
+  # Jekyll::RdfTemplateMapper maps resources to templates
   #
   class RdfTemplateMapper
     
@@ -14,7 +14,7 @@ module Jekyll
     attr_accessor :default_template
 
     ##
-    # Create a new JekyllRdf::RdfTemplateMapper
+    # Create a new Jekyll::RdfTemplateMapper
     #
     # * +resources_to_templates+ - A Hash mapping a type resource to a template name  
     # * +default_template+ - Default template name
