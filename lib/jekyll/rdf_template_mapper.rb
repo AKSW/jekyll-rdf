@@ -23,6 +23,10 @@ module Jekyll
       @default_template = default_template
     end
 
+    ##
+    # Maps a resource to a template name. 
+    #
+    # Returns the template name of one of the +resource+'s types, if available. Returns the default template name otherwise.
     def map(resource)
       resource.types.each do |type|
         tmpl = resources_to_templates[type]
