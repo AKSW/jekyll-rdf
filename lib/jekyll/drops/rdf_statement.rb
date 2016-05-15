@@ -1,5 +1,9 @@
 module Jekyll
   module Drops
+    
+    ##
+    # Represents a RDF statement to the Liquid template engine
+    #
     class RdfStatement < Liquid::Drop
       attr_reader :subject, :predicate, :object
 
