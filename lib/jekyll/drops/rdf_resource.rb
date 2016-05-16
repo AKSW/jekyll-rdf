@@ -86,7 +86,10 @@ module Jekyll
           n ? n.object.name : term.to_s
         end
       end
-
+      
+      ##
+      # Return the URL of the page representing this RdfResource
+      #
       def page_url
         page ? page.url.chomp('index.html') : term.to_s
       end
