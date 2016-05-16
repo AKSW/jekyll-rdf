@@ -5,7 +5,16 @@ module Jekyll
     # Represents an RDF term to the Liquid template engine 
     #
     class RdfTerm < Liquid::Drop
-      attr_reader :term, :graph
+      
+      ##
+      # The represented RDF term
+      #
+      attr_reader :term
+
+      ##
+      # The RDF::Graph which contains the represented +term+
+      #
+      attr_reader :graph
 
       def initialize(term, graph)
         @term ||= term
