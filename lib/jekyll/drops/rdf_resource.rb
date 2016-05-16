@@ -92,7 +92,7 @@ module Jekyll
       end
       
       ##
-      # Returns a list of RDF statements where the represented RDF resource plays a role
+      # Return a list of RDF statements where the represented RDF resource plays a role
       # * +role+ - which role the represented RDF resource should play:
       #   :subject ::
       #     Return a list of Jekyll::Drops::RdfStatements whose subject is the RDF resource represented by the receiver
