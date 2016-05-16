@@ -6,6 +6,9 @@ module Jekyll
     #
     class RdfLiteral < RdfTerm
 
+      ##
+      # Return a user-facing string representing this RdfLiteral
+      #
       def name
         term.to_s
       end
