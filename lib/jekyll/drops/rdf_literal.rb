@@ -7,7 +7,7 @@ module Jekyll
     class RdfLiteral < RdfTerm
 
       def to_s
-        term.to_s
+        name
       end
 
       def name
