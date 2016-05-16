@@ -12,18 +12,30 @@ module Jekyll
       #
       attr_accessor :page
 
+      ##
+      # Return a list of Jekyll::Drops::RdfStatements whose subject, predicate or object is the RDF resource represented by the receiver 
+      #
       def statements
         @statements ||= statements_as_subject + statements_as_predicate + statements_as_object
       end
 
+      ##
+      # Return a list of Jekyll::Drops::RdfStatements whose subject is the RDF resource represented by the receiver
+      #
       def statements_as_subject
         @statements_as_subject ||= statements_as :subject
       end
 
+      ##
+      # Return a list of Jekyll::Drops::RdfStatements whose predicate is the RDF resource represented by the receiver
+      #
       def statements_as_predicate
         @statements_as_predicate ||= statements_as :predicate
       end
 
+      ##
+      # Return a list of Jekyll::Drops::RdfStatements whose object is the RDF resource represented by the receiver
+      #
       def statements_as_object
         @statements_as_object ||= statements_as :object
       end
@@ -72,9 +84,19 @@ module Jekyll
       def page_url
         page ? page.url.chomp('index.html') : term.to_s
       end
-
-      def statements_as type
-        graph.query(type.to_sym => term).map do |statement|
+      
+      ##
+      # Returns a list of RDF statements where the represented RDF resource plays a role
+      # * +role+ - which role the represented RDF resource should play:
+      #   :subject ::
+      #     Return a list of Jekyll::Drops::RdfStatements whose subject is the RDF resource represented by the receiver
+      #   :predicate ::
+      #     Return a list of Jekyll::Drops::RdfStatements whose predicate is the RDF resource represented by the receiver
+      #   :object ::
+      #     Return a list of Jekyll::Drops::RdfStatements whose object is the RDF resource represented by the receiver
+      #
+      def statements_as(role)
+        graph.query(role.to_sym => term).map do |statement|
           RdfStatement.new(statement, graph, site)
         end
       end
