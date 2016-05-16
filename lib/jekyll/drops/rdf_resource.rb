@@ -1,8 +1,15 @@
 module Jekyll
   module Drops
     class RdfResource < RdfTerm
-
+      
+      ##
+      # The Jekyll::Site of this Jekyll::Drops::RdfResource
+      #
       attr_accessor :site
+      
+      ##
+      # The Jekyll::RdfPageData of this Jekyll::Drops::RdfResource
+      #
       attr_accessor :page
 
       def statements
