@@ -67,6 +67,9 @@ module Jekyll
         end
       end
 
+      ##
+      # Return the first super class resource of the receiver or nil, if no super class resource can be found
+      #
       def super_class
         s = statements_as(:subject).find{ |s| s.predicate.term.to_s=="http://www.w3.org/2000/01/rdf-schema#subClassOf" }
         if s
