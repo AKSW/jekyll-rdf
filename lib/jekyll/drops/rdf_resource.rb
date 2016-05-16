@@ -40,6 +40,9 @@ module Jekyll
         @statements_as_object ||= statements_as :object
       end
 
+      ##
+      # Return a filename corresponding to the RDF resource represented by the receiver. The mapping between RDF resources and filenames should be bijective.
+      #
       def filename
         @filename ||= generate_file_name
       end
@@ -102,6 +105,9 @@ module Jekyll
       end
 
       private
+      ##
+      # Generate a filename corresponding to the RDF resource represented by the receiver. The mapping between RDF resources and filenames should be bijective.
+      #
       def generate_file_name
         begin
           uri = URI::split(term.to_s)
