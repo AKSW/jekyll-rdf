@@ -57,8 +57,8 @@ module Jekyll
           if t
             types << t.object.term.to_s
             t = t.object
-            while super_class_of t
-              s = super_class_of t
+            while t.super_class
+              s = t.super_class
               types << s.term.to_s
               t = s
             end
@@ -67,8 +67,8 @@ module Jekyll
         end
       end
 
-      def super_class_of r
-        s = r.statements_as(:subject).find{ |s| s.predicate.term.to_s=="http://www.w3.org/2000/01/rdf-schema#subClassOf" }
+      def super_class
+        s = statements_as(:subject).find{ |s| s.predicate.term.to_s=="http://www.w3.org/2000/01/rdf-schema#subClassOf" }
         if s
           s.object
         end
