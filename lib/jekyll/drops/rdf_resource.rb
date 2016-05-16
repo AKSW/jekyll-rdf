@@ -25,10 +25,6 @@ module Jekyll
         @filename ||= generate_file_name
       end
 
-      def to_s
-        name
-      end
-
       ##
       # types finds the type and superclasses of the resource
       #

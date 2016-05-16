@@ -27,6 +27,10 @@ module Jekyll
         @graph ||= graph
       end
 
+      def to_s
+        name
+      end
+
       ##
       # Convert an RDF term into a new Jekyll::Drops::RdfTerm
       #

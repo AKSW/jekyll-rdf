@@ -6,10 +6,6 @@ module Jekyll
     #
     class RdfLiteral < RdfTerm
 
-      def to_s
-        name
-      end
-
       def name
         term.to_s
       end
