@@ -27,6 +27,13 @@ module Jekyll
         @graph ||= graph
       end
 
+      ##
+      # Convert an RDF term into a new Jekyll::Drops::RdfTerm
+      #
+      # * +term+ - The term to be represented
+      # * +graph+ - The RDF::Graph which contains the represented +term+
+      # * +site+ - The Jekyll::Site to be enriched
+      #
       def self.build_term_drop(term, graph, site)
         case term
         when RDF::URI, RDF::Node
