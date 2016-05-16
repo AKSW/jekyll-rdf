@@ -2,7 +2,6 @@ module Jekyll
   module Drops
     class RdfResource < RdfTerm
 
-      attr_reader :statements, :statements_as_subject, :filename
       attr_accessor :site, :page
 
       def statements
