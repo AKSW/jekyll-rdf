@@ -2,16 +2,16 @@ module Jekyll
 
   ##
   #
-  # JekyllRdf::Generator enriches site.data with RDF triples
+  # Jekyll::RdfMainGenerator enriches a Jekyll::Site with RDF triples
   #
   class RdfMainGenerator < Jekyll::Generator
     safe true
     priority :highest
 
     ##
-    # #generate performs the enrichment of site.data with rdf triples
+    # #generate performs the enrichment of a Jekyll::Site with rdf triples
     #
-    # * +site+ - The site whose data is to be enriched
+    # * +site+ - The Jekyll::Site whose #data is to be enriched
     #
     def generate(site)
       config = site.config.fetch('jekyll_rdf')
