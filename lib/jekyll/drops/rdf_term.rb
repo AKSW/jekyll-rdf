@@ -17,7 +17,7 @@ module Jekyll
       attr_reader :graph
 
       def initialize(term, graph)
-        @term ||= term
+        @term  ||= term
         @graph ||= graph
       end
 
