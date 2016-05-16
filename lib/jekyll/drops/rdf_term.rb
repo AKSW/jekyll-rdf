@@ -26,7 +26,10 @@ module Jekyll
         @term  ||= term
         @graph ||= graph
       end
-
+      
+      ##
+      # Convert this RdfTerm into a human-readable string
+      #
       def to_s
         name
       end
