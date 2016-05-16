@@ -1,7 +1,7 @@
 module Jekyll
   module Drops
     class RdfTerm < Liquid::Drop
-      attr_reader :term, :graph, :name
+      attr_reader :term, :graph
 
       def initialize(term, graph)
         @term ||= term
