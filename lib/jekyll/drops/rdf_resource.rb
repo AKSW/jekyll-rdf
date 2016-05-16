@@ -2,7 +2,8 @@ module Jekyll
   module Drops
     class RdfResource < RdfTerm
 
-      attr_accessor :site, :page
+      attr_accessor :site
+      attr_accessor :page
 
       def statements
         @statements ||= statements_as_subject + statements_as_predicate + statements_as_object
