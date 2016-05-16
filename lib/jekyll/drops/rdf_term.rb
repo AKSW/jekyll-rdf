@@ -1,5 +1,9 @@
 module Jekyll
   module Drops
+  
+    ##
+    # Represents an RDF term to the Liquid template engine 
+    #
     class RdfTerm < Liquid::Drop
       attr_reader :term, :graph
 
