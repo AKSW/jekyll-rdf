@@ -20,7 +20,7 @@ module Jekyll
       # Create a new Jekyll::Drops::RdfTerm
       # 
       # * +term+ - The term to be represented
-      # * +graph+ - The graph which contains the represented +term+
+      # * +graph+ - The RDF::Graph which contains the represented +term+
       #
       def initialize(term, graph)
         @term  ||= term
