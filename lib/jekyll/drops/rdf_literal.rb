@@ -1,13 +1,14 @@
 module Jekyll
   module Drops
+    
+    ##
+    # Represents an RDF literal to the Liquid template engine 
+    #
     class RdfLiteral < RdfTerm
 
-      attr_reader :name
-
-      def to_s
-        term.to_s
-      end
-
+      ##
+      # Return a user-facing string representing this RdfLiteral
+      #
       def name
         term.to_s
       end

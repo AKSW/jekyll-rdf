@@ -1,24 +1,38 @@
 module Jekyll
 
   ##
-  # JekyllRdf::RdfTemplateMapper maps configured templates to ressources
+  # Jekyll::RdfTemplateMapper maps resources to templates
   #
-
   class RdfTemplateMapper
+    
+    ##
+    # A Hash mapping a type resource to a template name
+    attr_accessor :resources_to_templates
+    
+    ##
+    # Default template name
+    attr_accessor :default_template
 
-    attr_accessor :config, :default
-
-    def initialize(config, default)
-      @config = config
-      @default = default
+    ##
+    # Create a new Jekyll::RdfTemplateMapper
+    #
+    # * +resources_to_templates+ - A Hash mapping a type resource to a template name  
+    # * +default_template+ - Default template name
+    def initialize(resources_to_templates, default_template)
+      @resources_to_templates = resources_to_templates
+      @default_template = default_template
     end
 
-    def map resource
+    ##
+    # Maps a resource to a template name. 
+    #
+    # Returns the template name of one of the +resource+'s types, if available. Returns the default template name otherwise.
+    def map(resource)
       resource.types.each do |type|
-        tmpl = config[type]
+        tmpl = resources_to_templates[type]
         return tmpl unless tmpl.nil?
       end
-      return default
+      return default_template
     end
 
   end
