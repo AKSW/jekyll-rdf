@@ -3,7 +3,7 @@ module Jekyll
 
     def sparql_query(input, query)
       return input unless input.is_a?(Jekyll::Drops::RdfResource)
-      query.sub!('?resourceUri', "<#{input.term.to_s}>")
+      query.gsub!('?resourceUri', "<#{input.term.to_s}>")
       begin
         result = input.site.data['sparql'].query(query).map do |solution|
           hsh = solution.to_hash
