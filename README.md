@@ -58,7 +58,7 @@ layout: default
 </div>
 ```
 
-To access objects which are connected to the current subject via a predicate you can use our custom liquid tags. For only one object please use property, 
+To access objects which are connected to the current subject via a predicate you can use our custom liquid tags. For only one object please use property,
 for a list of properties you can use propertyList and specify begin- and end-tags separated by " , ". Example:
 
 ```html
@@ -75,6 +75,22 @@ for a list of properties you can use propertyList and specify begin- and end-tag
     </tr>
   </tbody
 </table>
+```
+
+We implemented a liquid filter to run custom SPARQL queries. Each occurence of `?resourceUri` gets replaced with the current URI.
+*Hint:* You have to separate query and resultset variables because of Liquids concepts. Example:
+
+```html
+{% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}
+{% assign resultset = page.rdf | sparql_query: query %}
+<table>
+{% for result in resultset %}
+  <tr>
+    <td>{{ result.sub }}</td>
+    <td>{{ result.pre }}</td>
+  </tr>
+{% endfor %}
+</table
 ```
 
 ## Set default template and map templates to resources
@@ -109,4 +125,3 @@ Everytime the tests are executed, the Jekyll page inside of `test/source` gets p
 cd test/source/_site
 python -m SimpleHTTPServer 8000
 ```
-
