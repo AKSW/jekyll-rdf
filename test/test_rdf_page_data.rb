@@ -16,8 +16,8 @@ class TestRdfPageData < Test::Unit::TestCase
       assert_equal page.data['title'], "Homer Simpson"
     end
 
-    should "have 9 rdf statements" do
-      assert_equal 9, page.data['rdf'].statements.count
+    should "have 11 rdf statements" do
+      assert_equal 11, page.data['rdf'].statements.count
     end
 
   end
