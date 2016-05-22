@@ -43,8 +43,8 @@ module Jekyll
       ##
       # Return a filename corresponding to the RDF resource represented by the receiver. The mapping between RDF resources and filenames should be bijective.
       #
-      def filename
-        @filename ||= generate_file_name
+      def filename(domain_name)
+        @filename ||= generate_file_name(domain_name)
       end
 
       ##
@@ -112,12 +112,17 @@ module Jekyll
 
       private
       ##
-      # Generate a filename corresponding to the RDF resource represented by the receiver. The mapping between RDF resources and filenames should be bijective.
+      # Generate a filename corresponding to the RDF resource represented by the receiver. The mapping between RDF resources and filenames should be bijective. If the url of the rdf is the same as of the hosting site it will be omitted.
+      # * +domain_name+
       #
-      def generate_file_name
+      def generate_file_name(domain_name)
         begin
           uri = URI::split(term.to_s)
           file_name = ""
+          if (uri[2] == domain_name)
+            uri[0] = nil
+            uri[2] = nil
+          end
           (0..8).each do |i|
             if uri[i]
               case i

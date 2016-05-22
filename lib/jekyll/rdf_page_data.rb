@@ -16,7 +16,7 @@ module Jekyll
       @site = site
       @base = base
       @dir = "rdfsites" # in this directory all RDF sites are stored
-      @name = resource.filename
+      @name = resource.filename(site.data['domain_name'])
       self.process(@name)
 
       template = mapper.map(resource)
