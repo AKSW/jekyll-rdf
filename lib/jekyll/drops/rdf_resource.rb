@@ -118,8 +118,9 @@ module Jekyll
       def generate_file_name(domain_name)
         begin
           uri = URI::split(term.to_s)
-          file_name = ""
+          file_name = "rdfsites/" # in this directory all external RDF sites are stored
           if (uri[2] == domain_name)
+            file_name = ""
             uri[0] = nil
             uri[2] = nil
           end
@@ -142,7 +143,7 @@ module Jekyll
           file_name += 'index.html'
           file_name.gsub('//','/')
         rescue URI::InvalidURIError
-          file_name = "blanknode/#{term.to_s}/index.html"
+          file_name = "rdfsites/blanknode/#{term.to_s}/index.html"
         end
       end
 
