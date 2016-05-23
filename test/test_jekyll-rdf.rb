@@ -11,7 +11,7 @@ class TestJekyllRdf < Test::Unit::TestCase
 
   context "Generating a site with RDF data" do
     should "create a file which mentions 'Lisa Simpson'" do
-      s = File.read("#{TestHelper::DEST_DIR}/rdfsites/INF3580/simpsons#Lisa/index.html") # read static file
+      s = File.read("#{TestHelper::DEST_DIR}/INF3580/simpsons#Lisa/index.html") # read static file
       expect(s).to include 'Lisa Simpson'
     end
   end
