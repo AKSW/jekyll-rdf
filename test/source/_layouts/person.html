@@ -9,24 +9,22 @@ layout: default
   <table>
     <tbody>
       <tr>
+		{% assign result = page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/age' %}
         <td>Age</td>
-        <td>{% property http://xmlns.com/foaf/0.1/age%}</td>
+        <td>{{ result }} </td>
       <tr>
       <tr>
         <td>Sisters</td>
         <td>
-          <ul>{% propertyList http://www.ifi.uio.no/INF3580/family#hasSister,<li>,</li>%}</ul>
-        </td>
-      </tr>
-      <tr>
-        <td>Sisters (as array)</td>
-        <td>
-          <ul>{% propertyList http://www.ifi.uio.no/INF3580/family#hasSister%}</ul>
+			{% assign resultset = page.rdf | rdf_property_list: 'http://www.ifi.uio.no/INF3580/family#hasSister' %}
+			{% for result in resultset %}
+              <ul>{{ result }}</ul>
+            {% endfor %}
         </td>
       </tr>
       <tr>
         <td>Translated job</td>
-        <td>{% property http://xmlns.com/foaf/0.1/job%}</td>
+        <td>{% assign resultset = page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/job' %}</td>
       </tr>
     </tbody
   </table>
