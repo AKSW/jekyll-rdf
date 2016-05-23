@@ -14,7 +14,7 @@ class TestHelper
   TEST_OPTIONS = {
     'source'         => SOURCE_DIR,
     'destination'    => DEST_DIR,
-    'url'            => 'www.ifi.uio.no',
+    'url'            => 'http://www.ifi.uio.no',
     'jekyll_rdf'     => {
       'path' => "#{SOURCE_DIR}/rdf-data/simpsons.ttl",
       'include_blank' => true,
