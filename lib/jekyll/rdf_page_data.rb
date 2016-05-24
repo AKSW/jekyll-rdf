@@ -16,7 +16,7 @@ module Jekyll
       @site = site
       @base = base
       @dir = ""
-      @name = resource.filename(site.data['domain_name'])
+      @name = resource.filename(URI::split(site.config['url'])[2], site.config['baseurl'])
       self.process(@name)
 
       template = mapper.map(resource)

@@ -23,7 +23,6 @@ module Jekyll
       resources = extract_resources(config['restriction'], config['include_blank'], graph, sparql)
 
       site.data['resources'] = []
-      site.data['domain_name'] = URI::split(site.config['url'])[2]
 
       mapper = Jekyll::RdfTemplateMapper.new(config['template_mappings'], config['default_template'])
 
