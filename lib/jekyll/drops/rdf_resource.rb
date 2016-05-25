@@ -1,5 +1,9 @@
-module Jekyll
-  module Drops
+module Jekyll #:nodoc:
+  module Drops #:nodoc:
+    
+    ##
+    # Represents an RDF resource to the Liquid template engine 
+    #
     class RdfResource < RdfTerm
       
       ##

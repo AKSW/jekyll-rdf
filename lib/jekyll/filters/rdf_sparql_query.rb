@@ -1,6 +1,17 @@
 module Jekyll
+    
+  ##
+  # Internal module to hold the medthod #sparql_query
+  #
   module RdfSparqlQuery
 
+    ##
+    # Executes a SPARQL query. The supplied query is augmented by replacing each occurence of '?resourceUri' by the URI of the context RDF resource.
+    # Returns an Array of bindings. Each binding is a Hash mapping variables to their values.
+    #
+    # * +input+ - the context RDF resource
+    # * +query+ - the SPARQL query
+    #
     def sparql_query(input, query)
       return input unless input.is_a?(Jekyll::Drops::RdfResource)
       query.gsub!('?resourceUri', "<#{input.term.to_s}>")
