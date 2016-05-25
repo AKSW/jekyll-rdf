@@ -113,9 +113,9 @@ Ii is possible to map to a specific ressource, type or superclass
 ```
 
 ## Restrict resource selection
-Additionaly, you can restrict the overall resource selection by adding a SPARQL query as `restriction` parameter to `_config.yml`:
+Additionaly, you can restrict the overall resource selection by adding a SPARQL query as `restriction` parameter to `_config.yml`. Please use ?resourceUri as the placeholder for the resulting literal:
 ```yaml
-  restriction: "SELECT ?s WHERE { ?s <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"
+  restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"
 ```
 There are 3 pre-defined keywords for restrictions implemented:
 * `subjects` will load all subject URIs
