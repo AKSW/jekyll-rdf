@@ -15,8 +15,8 @@ module Jekyll
     def initialize(site, base, resource, mapper)
       @site = site
       @base = base
-      @dir = "rdfsites" # in this directory all RDF sites are stored
-      @name = resource.filename
+      @dir = ""
+      @name = resource.filename(URI::split(site.config['url'])[2], site.config['baseurl'])
       self.process(@name)
 
       template = mapper.map(resource)

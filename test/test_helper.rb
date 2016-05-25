@@ -10,15 +10,18 @@ class TestHelper
 
   SOURCE_DIR = File.join(File.dirname(__FILE__), "source")
   DEST_DIR   = File.join(SOURCE_DIR, "_site")
+  BASE_URL   = "/INF3580"
 
   TEST_OPTIONS = {
     'source'         => SOURCE_DIR,
-    'destination'    => DEST_DIR,
+    'destination'    => File.join(DEST_DIR, BASE_URL),
+    'baseurl'        => BASE_URL,
+    'url'            => 'http://www.ifi.uio.no',
     'jekyll_rdf'     => {
       'path' => "#{SOURCE_DIR}/rdf-data/simpsons.ttl",
       'language' => 'de',
       'include_blank' => true,
-      'restriction' => 'SELECT ?s WHERE { ?s ?p ?o }',
+      'restriction' => 'SELECT ?resourceUri WHERE { ?resourceUri ?p ?o }',
       'default_template' => 'rdf_index.html',
       'template_mappings' => {
         'http://xmlns.com/foaf/0.1/Person' => 'person.html',
