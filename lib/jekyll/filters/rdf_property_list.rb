@@ -5,6 +5,12 @@ module Jekyll
   #
   module RdfPropertyList
 
+    ##
+    # Computes all objects for which statements exist containing the given subject and predicate and returns an Array of them
+    #
+    # * +input+ - is the subject of the statements to be matched
+    # * +property+ - is the predicate of the statements to be matched
+    #
     def rdf_property_list(input, property)
       return input unless input.is_a?(Jekyll::Drops::RdfResource)
       begin
