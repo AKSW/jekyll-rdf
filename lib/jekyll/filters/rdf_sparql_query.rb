@@ -1,4 +1,8 @@
 module Jekyll
+    
+  ##
+  # Internal module to hold the medthod #sparql_query
+  #
   module RdfSparqlQuery
 
     def sparql_query(input, query)
