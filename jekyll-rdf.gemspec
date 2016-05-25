@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'jekyll-rdf'
-  s.version     = '0.2.0'
+  s.version     = '1.0.0'
   s.date        = '2016-02-29'
   s.summary     = 'Hypertext Publication System for Templates Resource Rendering'
   s.description = 'Generate static sites with Jekyll based on RDF data'
@@ -17,5 +17,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'test-unit',           '~> 3.0'
   s.add_runtime_dependency 'shoulda-context',     '~> 1.1'
   s.add_development_dependency 'rspec',           '~> 3.0'
-  s.add_development_dependency 'pry-byebug',      '~> 3.4'          
+  s.add_development_dependency 'pry-byebug',      '~> 3.4'
 end
