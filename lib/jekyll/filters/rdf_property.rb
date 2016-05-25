@@ -1,6 +1,13 @@
 module Jekyll
   module RdfProperty
-
+  	  
+    ##
+    # Computes all objects for which statements exist containing the given subject and predicate and returns any of them
+    #
+    # * +input+ - is the subject of the statements to be matched
+    # * +predicate+ - is the predicate of the statements to be matched
+    # * +lang+ - (optional) preferred language of a the returned object. The precise implementation of choosing which object to returned (both in case a language is supplied and in case is not supplied) is undefined
+    #
     def rdf_property(input, predicate, lang = nil)
       return input unless input.is_a?(Jekyll::Drops::RdfResource)
       begin
