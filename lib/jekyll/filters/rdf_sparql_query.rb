@@ -11,6 +11,7 @@ module Jekyll
           hsh.collect{|k,v| [k.to_s, v]}.to_h
         end
         return result
+      end
     end
 
   end
