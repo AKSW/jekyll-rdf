@@ -9,17 +9,17 @@ layout: default
   <table>
     <tbody>
       <tr>
-		{% assign result = page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/age' %}
+        {% assign result = page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/age' %}
         <td>Age</td>
         <td>{{ result }} </td>
       <tr>
       <tr>
         <td>Sisters</td>
         <td>
-			{% assign resultset = page.rdf | rdf_property_list: 'http://www.ifi.uio.no/INF3580/family#hasSister' %}
-			{% for result in resultset %}
-              <ul>{{ result }}</ul>
-            {% endfor %}
+          {% assign resultset = page.rdf | rdf_property_list: 'http://www.ifi.uio.no/INF3580/family#hasSister' %}
+          {% for result in resultset %}
+            <ul>{{ result }}</ul>
+          {% endfor %}
         </td>
       </tr>
       <tr>
