@@ -12,7 +12,6 @@ module Jekyll
         end
         return result
       rescue
-        []
       end
     end
 
