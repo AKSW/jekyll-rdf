@@ -1,4 +1,8 @@
 module Jekyll
+  
+  ##
+  # Internal module to hold the medthod #rdf_property
+  #
   module RdfProperty
   	  
     ##
