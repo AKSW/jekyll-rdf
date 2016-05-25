@@ -9,9 +9,8 @@ layout: default
   <table>
     <tbody>
       <tr>
-        {% assign result = page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/age' %}
         <td>Age</td>
-        <td>{{ result }} </td>
+        <td>{{ page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/age' }} </td>
       </tr>
       <tr>
         <td>Sisters</td>
@@ -24,7 +23,7 @@ layout: default
       </tr>
       <tr>
         <td>Translated job</td>
-        <td>{% assign resultJob = page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/job','en' %}{{ resultJob }}</td>
+        <td>{{ page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/job','en' }}</td>
       </tr>
     </tbody>
   </table>
