@@ -22,6 +22,7 @@ module Jekyll
       # restrict RDF graph with restriction
       resources = extract_resources(config['restriction'], config['include_blank'], graph, sparql)
 
+      site.data['sparql'] = sparql
       site.data['resources'] = []
 
       mapper = Jekyll::RdfTemplateMapper.new(config['template_mappings'], config['default_template'])
@@ -35,14 +36,14 @@ module Jekyll
 
     ##
     # #extract_resources returns resources from an RDF graph.
-    # 
+    #
     # Literals are omitted.
     # Blank nodes are only returned if +include_blank+ is true.
     # Duplicate nodes are removed.
     #
     # * +selection+ - choose any of the following:
     #   nil ::
-    #     no restrictions, return subjects, predicates, objects 
+    #     no restrictions, return subjects, predicates, objects
     #   "subjects" ::
     #     return only subjects
     #   "predicates" ::
@@ -62,7 +63,7 @@ module Jekyll
         object_resources    = extract_resources("objects",    include_blank, graph, sparql)
         subject_resources   = extract_resources("subjects",   include_blank, graph, sparql)
         predicate_resources = extract_resources("predicates", include_blank, graph, sparql)
-        return object_resources.concat(subject_resources).concat(predicate_resources).uniq      
+        return object_resources.concat(subject_resources).concat(predicate_resources).uniq
       when "objects"
         graph.objects
       when "subjects"
@@ -73,9 +74,9 @@ module Jekyll
         # Custom query
         sparql.query(selection).map{|sol| sol.each_value.first}
       end.reject do |s|  # Reject literals
-        s.class <= RDF::Literal 
+        s.class <= RDF::Literal
       end.select do |s|  # Select URIs and blank nodes in case of include_blank
-        include_blank || s.class == RDF::URI 
+        include_blank || s.class == RDF::URI
       end.uniq
     end
 

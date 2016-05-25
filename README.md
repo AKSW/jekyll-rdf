@@ -58,23 +58,45 @@ layout: default
 </div>
 ```
 
-To access objects which are connected to the current subject via a predicate you can use our custom liquid tags. For only one object please use property, 
-for a list of properties you can use propertyList and specify begin- and end-tags separated by " , ". Example:
+To access objects which are connected to the current subject via a predicate you can use our custom liquid filters. For only one object please use property,
+for a list of properties you can use property_list. Example:
 
 ```html
 
 <table>
   <tbody>
     <tr>
+      {% assign result = page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/age' %}
       <td>Age</td>
-      <td>{% property http://xmlns.com/foaf/0.1/age %}</td>
+      <td>{{ result }} </td>
     <tr>
     <tr>
-      <td>Sisters</td>
-      <td><ul>{% propertyList http://www.ifi.uio.no/INF3580/family#hasSister, <li>, </li> %}</ul></td>
+       <td>Sisters</td>
+       <td>
+       {% assign resultset = page.rdf | rdf_property_list: 'http://www.ifi.uio.no/INF3580/family#hasSister' %}
+       {% for result in resultset %}
+          <ul>{{ result }}</ul>
+       {% endfor %}
+       </td>
     </tr>
   </tbody
 </table>
+```
+
+We implemented a liquid filter to run custom SPARQL queries. Each occurence of `?resourceUri` gets replaced with the current URI.
+*Hint:* You have to separate query and resultset variables because of Liquids concepts. Example:
+
+```html
+{% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}
+{% assign resultset = page.rdf | sparql_query: query %}
+<table>
+{% for result in resultset %}
+  <tr>
+    <td>{{ result.sub }}</td>
+    <td>{{ result.pre }}</td>
+  </tr>
+{% endfor %}
+</table
 ```
 
 ## Set default template and map templates to resources
@@ -109,4 +131,3 @@ Everytime the tests are executed, the Jekyll page inside of `test/source` gets p
 cd test/source/_site
 python -m SimpleHTTPServer 8000
 ```
-

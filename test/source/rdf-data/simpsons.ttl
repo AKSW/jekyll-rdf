@@ -14,6 +14,8 @@ dtp16:SpecialPerson rdfs:subClassOf foaf:Person .
 sim:Homer rdf:type dtp16:SpecialPerson .
 sim:Homer foaf:name "Homer Simpson" .
 sim:Homer foaf:age "36"^^xsd:int .
+sim:Homer foaf:job "unknown"@en .
+sim:Homer foaf:job "unbekannt"@de . 
 
 #Marge
 sim:Marge rdf:type foaf:Person ;
