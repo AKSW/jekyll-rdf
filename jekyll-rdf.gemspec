@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'jekyll-rdf'
-  s.version     = '1.0.0'
-  s.date        = '2016-02-29'
+  s.version     = '1.0.1'
+  s.date        = '2016-05-25'
   s.summary     = 'Hypertext Publication System for Templates Resource Rendering'
   s.description = 'Generate static sites with Jekyll based on RDF data'
   s.authors     = ['Elias Saalmann', 'Christian Frommert', 'Simon Jakobi', 'Arne Jonas Präger', 'Maxi Bornmann', 'Georg Hackel', 'Eric Füg']
