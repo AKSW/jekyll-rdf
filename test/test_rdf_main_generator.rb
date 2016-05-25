@@ -28,7 +28,7 @@ class TestRdfMainGenerator < Test::Unit::TestCase
       end
 
       should "get 3 children of homer simpson" do
-        assert_equal 3, generator.extract_resources("SELECT ?s WHERE { ?s <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }", false, graph, sparql).count
+        assert_equal 3, generator.extract_resources("SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }", false, graph, sparql).count
       end
 
     end
@@ -52,7 +52,7 @@ class TestRdfMainGenerator < Test::Unit::TestCase
       end
 
       should "get 3 children of homer simpson" do
-        assert_equal 3, generator.extract_resources("SELECT ?s WHERE { ?s <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }", true, graph, sparql).count
+        assert_equal 3, generator.extract_resources("SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }", true, graph, sparql).count
       end
 
     end

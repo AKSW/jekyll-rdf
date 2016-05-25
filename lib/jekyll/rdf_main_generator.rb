@@ -71,7 +71,7 @@ module Jekyll
         graph.predicates
       else
         # Custom query
-        sparql.query(selection).map{|sol| sol.each_value.first}
+        sparql.query(selection).map{ |sol| sol[:resourceUri] }
       end.reject do |s|  # Reject literals
         s.class <= RDF::Literal 
       end.select do |s|  # Select URIs and blank nodes in case of include_blank
