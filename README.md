@@ -74,9 +74,11 @@ for a list of properties you can use property_list. Example:
        <td>Sisters</td>
        <td>
        {% assign resultset = page.rdf | rdf_property_list: 'http://www.ifi.uio.no/INF3580/family#hasSister' %}
+       <ul>
        {% for result in resultset %}
-          <ul>{{ result }}</ul>
+          <li>{{ result }}</li>
        {% endfor %}
+       </ul>
        </td>
     </tr>
   </tbody
