@@ -24,7 +24,7 @@ layout: default
       </tr>
       <tr>
         <td>Translated job</td>
-        <td>{% assign resultset = page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/job' %}</td>
+        <td>{% assign resultJob = page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/job,en' %}{{ resultJob }}</td>
       </tr>
     </tbody
   </table>
