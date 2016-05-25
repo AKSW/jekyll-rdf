@@ -10,10 +10,12 @@ class TestHelper
 
   SOURCE_DIR = File.join(File.dirname(__FILE__), "source")
   DEST_DIR   = File.join(SOURCE_DIR, "_site")
+  BASE_URL   = "/INF3580"
 
   TEST_OPTIONS = {
     'source'         => SOURCE_DIR,
-    'destination'    => DEST_DIR,
+    'destination'    => File.join(DEST_DIR, BASE_URL),
+    'baseurl'        => BASE_URL,
     'url'            => 'http://www.ifi.uio.no',
     'jekyll_rdf'     => {
       'path' => "#{SOURCE_DIR}/rdf-data/simpsons.ttl",
