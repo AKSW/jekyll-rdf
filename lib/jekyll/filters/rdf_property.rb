@@ -8,7 +8,7 @@ module Jekyll
         results = input.page.data['rdf'].statements_as_subject.select{ |s| s.predicate.term.to_s == params[0] }
         lang = params[1] || input.site.config['language']
         if results.count > 1 && results.first.object.term.is_a?(RDF::Term) && lang != nil
-          results = results.find{ |s| s.object.term.language == lang.to_sym }
+          p = results.find{ |s| s.object.term.language == lang.to_sym }
         end
         p = results.first unless p
         return unless p
