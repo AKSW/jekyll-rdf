@@ -4,12 +4,8 @@
 A [Jekyll plugin](https://jekyllrb.com/docs/plugins/) for including RDF data in your static site.
 
 # Installation
-Since jekyll-rdf is still under development, this gem must be built by yourself:
 ```
-git clone git@github.com:DTP16/jekyll-rdf.git
-cd jekyll-rdf
-gem build jekyll-rdf.gemspec
-gem install ./jekyll-rdf-0.0.0.gem
+gem install jekyll-rdf
 ```
 
 # Usage
