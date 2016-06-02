@@ -33,7 +33,16 @@ layout: default
       <tr>
         <td>Jobs german</td>
         <td>
-          {% assign resultset = page.rdf | rdf_property_list: 'http://xmlns.com/foaf/0.1/job','en' %}
+          {% assign resultset = page.rdf | rdf_property_list: 'http://xmlns.com/foaf/0.1/job','de' %}
+          {% for result in resultset %}
+            <ul>{{ result }}</ul>
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <td>Jobs with configured language</td>
+        <td>
+          {% assign resultset = page.rdf | rdf_property_list: 'http://xmlns.com/foaf/0.1/job','cfg' %}
           {% for result in resultset %}
             <ul>{{ result }}</ul>
           {% endfor %}
@@ -42,7 +51,7 @@ layout: default
       <tr>
         <td>all jobs</td>
         <td>
-          {% assign resultset = page.rdf | rdf_property_list: 'http://xmlns.com/foaf/0.1/job','any' %}
+          {% assign resultset = page.rdf | rdf_property_list: 'http://xmlns.com/foaf/0.1/job' %}
           {% for result in resultset %}
             <ul>{{ result }}</ul>
           {% endfor %}
