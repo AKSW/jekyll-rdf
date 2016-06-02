@@ -25,6 +25,10 @@ layout: default
         <td>Translated job</td>
         <td>{{ page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/job','en' }}</td>
       </tr>
+      <tr>
+        <td>Translated Interest</td>
+        <td>{{ page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/interest','de' }}</td>
+      </tr>
     </tbody>
   </table>
 
