@@ -27,7 +27,9 @@ sim:Marge rdf:type foaf:Person ;
 #Bart
 sim:Bart rdf:type foaf:Person ;
          foaf:name "Bart Simpson" ;
-         foaf:age "10"^^xsd:int .
+         foaf:age "10"^^xsd:int ;
+         foaf:interest "skateboarding"@en ;
+         foaf:interest "Skateboard fahren"@de .
 
 #Lisa
 sim:Lisa rdf:type foaf:Person ;
