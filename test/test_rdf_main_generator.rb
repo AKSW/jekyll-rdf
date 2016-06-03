@@ -11,8 +11,8 @@ class TestRdfMainGenerator < Test::Unit::TestCase
 
     context "without blank nodes" do
 
-      should "get 26 unique resources" do
-        assert_equal 26, generator.extract_resources(nil, false, graph, sparql).count
+      should "get 27 unique resources" do
+        assert_equal 27, generator.extract_resources(nil, false, graph, sparql).count
       end
 
       should "get 12 subjects" do
@@ -23,8 +23,8 @@ class TestRdfMainGenerator < Test::Unit::TestCase
         assert_equal 13, generator.extract_resources("objects", false, graph, sparql).count
       end
 
-      should "get 12 predicates" do
-        assert_equal 12, generator.extract_resources("predicates", false, graph, sparql).count
+      should "get 13 predicates" do
+        assert_equal 13, generator.extract_resources("predicates", false, graph, sparql).count
       end
 
       should "get 3 children of homer simpson" do
@@ -35,8 +35,8 @@ class TestRdfMainGenerator < Test::Unit::TestCase
 
     context "with blank nodes" do
 
-      should "get 31 unique resources" do
-        assert_equal 31, generator.extract_resources(nil, true, graph, sparql).count
+      should "get 32 unique resources" do
+        assert_equal 32, generator.extract_resources(nil, true, graph, sparql).count
       end
 
       should "get 17 subjects" do
@@ -47,8 +47,8 @@ class TestRdfMainGenerator < Test::Unit::TestCase
         assert_equal 18, generator.extract_resources("objects", true, graph, sparql).count
       end
 
-      should "get 12 predicates" do
-        assert_equal 12, generator.extract_resources("predicates", true, graph, sparql).count
+      should "get 13 predicates" do
+        assert_equal 13, generator.extract_resources("predicates", true, graph, sparql).count
       end
 
       should "get 3 children of homer simpson" do

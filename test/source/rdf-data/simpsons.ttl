@@ -15,7 +15,9 @@ sim:Homer rdf:type dtp16:SpecialPerson .
 sim:Homer foaf:name "Homer Simpson" .
 sim:Homer foaf:age "36"^^xsd:int .
 sim:Homer foaf:job "unknown"@en .
-sim:Homer foaf:job "unbekannt"@de . 
+sim:Homer foaf:job "unbekannt"@de .
+sim:Homer foaf:job "unbekannter Job 2"@de .
+sim:Homer foaf:job "unknown Job 2"@en .
 
 #Marge
 sim:Marge rdf:type foaf:Person ;
@@ -25,7 +27,9 @@ sim:Marge rdf:type foaf:Person ;
 #Bart
 sim:Bart rdf:type foaf:Person ;
          foaf:name "Bart Simpson" ;
-         foaf:age "10"^^xsd:int .
+         foaf:age "10"^^xsd:int ;
+         foaf:interest "skateboarding"@en ;
+         foaf:interest "Skateboard fahren"@de .
 
 #Lisa
 sim:Lisa rdf:type foaf:Person ;

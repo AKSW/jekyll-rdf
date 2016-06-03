@@ -10,7 +10,7 @@ class TestHelper
 
   SOURCE_DIR = File.join(File.dirname(__FILE__), "source")
   DEST_DIR   = File.join(SOURCE_DIR, "_site")
-  BASE_URL   = "/INF3580"
+  BASE_URL   = ""
 
   TEST_OPTIONS = {
     'source'         => SOURCE_DIR,
@@ -25,7 +25,8 @@ class TestHelper
       'default_template' => 'rdf_index.html',
       'template_mappings' => {
         'http://xmlns.com/foaf/0.1/Person' => 'person.html',
-        'http://www.ifi.uio.no/INF3580/simpsons#Abraham' => 'abraham.html'
+        'http://www.ifi.uio.no/INF3580/simpsons#Abraham' => 'abraham.html',
+        'http://www.ifi.uio.no/INF3580/simpsons#Homer' => 'homer.html'
       }
     }
   }
