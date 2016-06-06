@@ -9,9 +9,12 @@
 @prefix dtp16: <http://pcai042.informatik.uni-leipzig.de/~dtp16/#> .
 
 dtp16:SpecialPerson rdfs:subClassOf foaf:Person .
+dtp16:SpecialPerson rdfs:subClassOf dtp16:AnotherSpecialPerson .
+dtp16:AnotherSpecialPerson rdfs:subClassOf foaf:Person .
 
 #Homer
 sim:Homer rdf:type dtp16:SpecialPerson .
+sim:Homer rdf:type dtp16:AnotherSpecialPerson .
 sim:Homer foaf:name "Homer Simpson" .
 sim:Homer foaf:age "36"^^xsd:int .
 sim:Homer foaf:job "unknown"@en .
