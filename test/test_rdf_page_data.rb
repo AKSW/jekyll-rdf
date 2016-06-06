@@ -17,15 +17,15 @@ class TestRdfPageData < Test::Unit::TestCase
     end
 
     should "have correct job" do
-      assert_equal page.data['rdf'].statements[3].object.name, "unknown"
+      assert_equal page.data['rdf'].statements[4].object.name, "unknown"
     end
 
     should "have correct translated job" do
-      assert_equal page.data['rdf'].statements[4].object.name, "unbekannt"
+      assert_equal page.data['rdf'].statements[5].object.name, "unbekannt"
     end
 
-    should "have 13 rdf statements" do
-      assert_equal 13, page.data['rdf'].statements.count
+    should "have 14 rdf statements" do
+      assert_equal 14, page.data['rdf'].statements.count
     end
 
   end
