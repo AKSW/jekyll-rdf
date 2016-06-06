@@ -1,23 +1,23 @@
 module Jekyll #:nodoc:
   module Drops #:nodoc:
-    
+
     ##
-    # Represents an RDF resource to the Liquid template engine 
+    # Represents an RDF resource to the Liquid template engine
     #
     class RdfResource < RdfTerm
-      
+
       ##
       # The Jekyll::Site of this Jekyll::Drops::RdfResource
       #
       attr_accessor :site
-      
+
       ##
       # The Jekyll::RdfPageData of this Jekyll::Drops::RdfResource
       #
       attr_accessor :page
 
       ##
-      # Return a list of Jekyll::Drops::RdfStatements whose subject, predicate or object is the RDF resource represented by the receiver 
+      # Return a list of Jekyll::Drops::RdfStatements whose subject, predicate or object is the RDF resource represented by the receiver
       #
       def statements
         @statements ||= statements_as_subject + statements_as_predicate + statements_as_object
@@ -57,14 +57,18 @@ module Jekyll #:nodoc:
       def types
         @types ||= begin
           types = [ term.to_s ]
-          t = statements_as(:subject).find{ |s| s.predicate.term.to_s=="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" }
-          if t
+          selection = statements_as(:subject).select{ |s| s.predicate.term.to_s=="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" }
+          unless selection.empty?
+            t = selection.first
+            if selection.count > 1
+              Jekyll.logger.warn "Resource #{name} has multiple RDFS types. Will use #{t.object.term.to_s} for template mapping.  "
+            end
             types << t.object.term.to_s
             t = t.object
-            while t.super_class
-              s = t.super_class
+            s = t.super_class
+            while s
               types << s.term.to_s
-              t = s
+              s = s.super_class
             end
           end
           types
@@ -75,9 +79,13 @@ module Jekyll #:nodoc:
       # Return the first super class resource of the receiver or nil, if no super class resource can be found
       #
       def super_class
-        s = statements_as(:subject).find{ |s| s.predicate.term.to_s=="http://www.w3.org/2000/01/rdf-schema#subClassOf" }
-        if s
-          s.object
+        selection = statements_as(:subject).select{ |s| s.predicate.term.to_s=="http://www.w3.org/2000/01/rdf-schema#subClassOf" }
+        unless selection.empty?
+          super_class = selection.first
+          if selection.count > 1
+            Jekyll.logger.warn "Type #{name} has multiple RDFS super classes. Will use #{super_class.object.term.to_s} for template mapping.  "
+          end
+          super_class.object
         end
       end
 
@@ -90,14 +98,14 @@ module Jekyll #:nodoc:
           n ? n.object.name : term.to_s
         end
       end
-      
+
       ##
       # Return the URL of the page representing this RdfResource
       #
       def page_url
         page ? page.url.chomp('index.html') : term.to_s
       end
-      
+
       ##
       # Return a list of RDF statements where the represented RDF resource plays a role
       # * +role+ - which role the represented RDF resource should play:
