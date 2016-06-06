@@ -7,6 +7,7 @@ The easiest and fastest way to install our project is the installation as a gem.
 ```
 gem install jekyll-rdf
 ```
+Please see [Rubygems.org](https://rubygems.org/gems/jekyll-rdf) for more documentation.
 ##Installation with the git-repository
 To install the project with the git-repository you will need `git` on your system. The first step is just cloning the repository:
 ```
