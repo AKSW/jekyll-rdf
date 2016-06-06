@@ -129,3 +129,6 @@ Everytime the tests are executed, the Jekyll page inside of `test/source` gets p
 cd test/source/_site
 python -m SimpleHTTPServer 8000
 ```
+
+# License
+jekyll-rdf is licensed under the [MIT license](https://github.com/DTP16/jekyll-rdf/tree/master/LICENSE).
