@@ -163,8 +163,8 @@ jekyll_rdf:
 ## Liquid Filters
 |Name|Default|Optional|Description|Example|
 |---	|---	|---	|---	|---	|
-|rdf_property|predicate-URI as String|language-tag as String|Selects one object which is connected to the current subject through a given predicate|{{ page.rdf \| rdf_property: 'http://xmlns.com/foaf/0.1/job','en' }}|
-|rdf_property_list|predicate-URI as String|language-tag as String|Returns an array with objects which are connected to the current subject through a given predicate|{% assign resultset = page.rdf \| rdf_property_list: 'http://xmlns.com/foaf/0.1/currentproject','en' %}{% for result in resultset %}<li>{{ result }}</li>{% endfor %}|
+|rdf_property|predicate-URI as String|language-tag as String|Selects one object which is connected to the current subject through a given predicate|```{{ page.rdf \| rdf_property: 'http://xmlns.com/foaf/0.1/job','en' }}```|
+|rdf_property_list|predicate-URI as String|language-tag as String|Returns an array with objects which are connected to the current subject through a given predicate|```{% assign resultset = page.rdf \| rdf_property_list: 'http://xmlns.com/foaf/0.1/currentproject','en' %}{% for result in resultset %}<li>{{ result }}</li>{% endfor %}```|
 |sparql_query|SPARQL-Query as String|-|Runs a SPARQL-Query with the current subject as ?resourceURI|{% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}{% assign resultset = page.rdf \| sparql_query: query %}<table>{% for result in resultset %}<tr><td>{{ result.sub }}</td><td>{{ result.pre }}</td></tr>{% endfor %}</table>|
 ## Plugin Configuration (\_config.yml)
 |Name|Parameter|Default|Description|Example|
