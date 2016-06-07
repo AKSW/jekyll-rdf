@@ -161,7 +161,7 @@ jekyll_rdf:
 ```
 # Parameters and configuration options at a glance
 ## Liquid Filters
-|Name|Default|Optional|Description|Example|
+|Name|Parameter|Optional Parameter|Description|Example|
 |---	|---	|---	|---	|---	|
 |rdf_property|predicate-URI as String|language-tag as String|Selects one object which is connected to the current subject through a given predicate|```{{ page.rdf \| rdf_property: 'http://xmlns.com/foaf/0.1/job','en' }}```|
 |rdf_property_list|predicate-URI as String|language-tag as String|Returns an array with objects which are connected to the current subject through a given predicate|```{% assign resultset = page.rdf \| rdf_property_list: 'http://xmlns.com/foaf/0.1/currentproject','en' %}{% for result in resultset %}<li>{{ result }}</li>{% endfor %}```|
