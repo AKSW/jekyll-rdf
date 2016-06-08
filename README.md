@@ -66,17 +66,29 @@ We included some template examples at
 * test/source/_layouts/person.html
 ### Liquid Filters
 To access objects which are connected to the current subject via a predicate you can use our custom liquid filters. For only one object please use property, for a list of properties you can use property_list.
+<<<<<<< HEAD
 ### Single objects
+=======
+#### Single objects
+>>>>>>> develop
 To access one object which is connected to the current subject through a given predicate please filter page.rdf data with rdf_property paramteter. Example:
 ```html
 Age: {{ page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/age' }}
 ```
+<<<<<<< HEAD
 ### Optional language selection
+=======
+#### Optional language selection
+>>>>>>> develop
 To select a specific language please extend the filter with a second parameter:
 ```html
 Age: {{ page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/job','en' }}
 ```
+<<<<<<< HEAD
 ### Multiple Objects
+=======
+#### Multiple Objects
+>>>>>>> develop
 To get more than one object which is connected to the current subject through a given predicate please use the filter rdf_property_list:
 ```html
 Sisters: <br />
@@ -87,7 +99,11 @@ Sisters: <br />
 {% endfor %}
 </ul>
 ```
+<<<<<<< HEAD
 ### Optional Language Selection
+=======
+#### Optional Language Selection
+>>>>>>> develop
 To select a specific language please extend the filter with a second parameter:
 ```html
 Book titles: <br />
@@ -98,7 +114,11 @@ Book titles: <br />
 {% endfor %}
 </ul>
 ```
+<<<<<<< HEAD
 ### Custom SPARQL Query
+=======
+#### Custom SPARQL Query
+>>>>>>> develop
 We implemented a liquid filter to run custom SPARQL queries. Each occurence of `?resourceUri` gets replaced with the current URI.
 *Hint:* You have to separate query and resultset variables because of Liquids concepts. Example:
 ```html
@@ -162,6 +182,7 @@ jekyll_rdf:
 ```
 # Parameters and configuration options at a glance
 ## Liquid Filters
+<<<<<<< HEAD
 |Name|Parameter|Optional Parameter|Description|Example|
 |---	|---	|---	|---	|---	|
 |rdf_property|predicate-URI as String|language-tag as String|Selects one object which is connected to the current subject through a given predicate|```{{ page.rdf \| rdf_property: 'http://xmlns.com/foaf/0.1/job','en' }}```|
@@ -176,6 +197,22 @@ jekyll_rdf:
 |restriction|SPARQL-Query as String or subjects / objects / predicates|no default|Restricts the resource-selection with a given SPARQL-Query or the three keywords subjects (only subject URIs), objects, predicates|```restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"```|
 |default_template|Filename of the default RDF-template in _layouts directory|no default|Specifies the template-file you want Jekyll to use to render all RDF resources|```default_template: "rdf_index.html"```|
 |template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files|```template_mappings: "http://xmlns.com/foaf/0.1/Person": "person.html", "http://www.ifi.uio.no/INF3580/simpsons#Abraham": "abraham.html"```|
+=======
+|Name|Default|Optional|Description|Example|
+|---	|---	|---	|---	|---	|
+|rdf_property|predicate-URI as String|language-tag as String|Selects one object which is connected to the current subject through a given predicate|{{ page.rdf \| rdf_property: 'http://xmlns.com/foaf/0.1/job','en' }}|
+|rdf_property_list|predicate-URI as String|language-tag as String|Returns an array with objects which are connected to the current subject through a given predicate|{% assign resultset = page.rdf \| rdf_property_list: 'http://xmlns.com/foaf/0.1/currentproject','en' %}{% for result in resultset %}<li>{{ result }}</li>{% endfor %}|
+|sparql_query|SPARQL-Query as String|-|Runs a SPARQL-Query with the current subject as ?resourceURI|{% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}{% assign resultset = page.rdf \| sparql_query: query %}<table>{% for result in resultset %}<tr><td>{{ result.sub }}</td><td>{{ result.pre }}</td></tr>{% endfor %}</table>|
+## Plugin Configuration (\_config.yml)
+|Name|Parameter|Default|Description|Example|
+|---	|---	|---	|---	|---	|
+|path|Relative path to the RDF-File|no default|Specifies the path to the RDF file you want to render the website for|path: "rdf-data/simpsons.ttl"|
+|language|Language-Tag as String|no default|Specifies the preferred language when you select objects using our Liquid filters|language: "en"|
+|include_blank|Boolean-Expression|false|Specifies whether blank nodes should also be rendered or not|include_blank: true|
+|restriction|SPARQL-Query as String or subjects / objects / predicates|no default|Restricts the resource-selection with a given SPARQL-Query or the three keywords subjects (only subject URIs), objects, predicates|restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"|
+|default_template|Filename of the default RDF-template in _layouts directory|no default|Specifies the template-file you want Jekyll to use to render all RDF resources|default_template: "rdf_index.html"|
+|template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files|template_mappings: "http://xmlns.com/foaf/0.1/Person": "person.html", "http://www.ifi.uio.no/INF3580/simpsons#Abraham": "abraham.html"|
+>>>>>>> develop
 # Development
 ## Run tests
 ```
