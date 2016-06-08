@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'jekyll-rdf'
-  s.version     = '1.0.1'
+  s.version     = '1.1.0'
   s.date        = '2016-05-25'
   s.summary     = 'Hypertext Publication System for Templates Resource Rendering'
   s.description = 'Generate static sites with Jekyll based on RDF data'
