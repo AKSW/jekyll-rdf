@@ -54,7 +54,7 @@ module Jekyll
     # Returns the template name of one of the +resource+'s types, if available. Returns the default template name otherwise.
     def map(resource)
       resource.types.each do |type|
-        tmpl = resources_to_templates[type]
+        tmpl = resources_to_templates ? resources_to_templates[type] : nil
         return tmpl unless tmpl.nil?
       end
       return default_template
