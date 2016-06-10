@@ -37,9 +37,18 @@ Specify path to your RDF-File in `_config.yml`:
 jekyll_rdf:
   path: "simpsons.ttl"
 ```
+
+Running `jekyll build` will render the RDF resources to `_site/rdfsites/…` for including resource pages into the root of the site you have to specify the `url:` and `baseurl:` parameters of the jekyll configuration accordingly.
+
+In the example of the simpsons model it could be:
+```yaml
+baseurl: "/INF3580"
+url: "http://www.ifi.uio.no" 
+```
+
 ## Make use of RDF data
 ### Templates
-Now, create one or more files (e.g "rdf_index.html" or "person.html") in _layouts - directory to edit the temaplate for rdf-pages. For each resource a page will be rendered. See example below:
+Now, create one or more files (e.g `rdf_index.html` or `person.html`) in the `_layouts`-directory to edit the temaplate for rdf-pages. For each resource a page will be rendered. See example below:
 ```html
 ---
 layout: default
@@ -65,19 +74,19 @@ We included some template examples at
 * test/source/_layouts/rdf_index.html
 * test/source/_layouts/person.html
 ### Liquid Filters
-To access objects which are connected to the current subject via a predicate you can use our custom liquid filters. For only one object please use property, for a list of properties you can use property_list.
+To access objects which are connected to the current subject via a predicate you can use our custom liquid filters. For only one object please use the `rdf_property`-filter, for a list of properties you can use the `rdf_property_list`-filter.
 ### Single objects
-To access one object which is connected to the current subject through a given predicate please filter page.rdf data with rdf_property paramteter. Example:
+To access one object which is connected to the current subject through a given predicate please filter `page.rdf` data with the `rdf_property`-filter. Example:
 ```html
 Age: {{ page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/age' }}
 ```
 ### Optional language selection
-To select a specific language please extend the filter with a second parameter:
+To select a specific language please add a a second parameter to the filter:
 ```html
 Age: {{ page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/job','en' }}
 ```
 ### Multiple Objects
-To get more than one object which is connected to the current subject through a given predicate please use the filter rdf_property_list:
+To get more than one object which is connected to the current subject through a given predicate please use the filter `rdf_property_list`:
 ```html
 Sisters: <br />
 {% assign resultset = page.rdf | rdf_property_list: 'http://www.ifi.uio.no/INF3580/family#hasSister' %}
@@ -88,7 +97,7 @@ Sisters: <br />
 </ul>
 ```
 ### Optional Language Selection
-To select a specific language please extend the filter with a second parameter:
+To select a specific language please add a second parameter th the filter:
 ```html
 Book titles: <br />
 {% assign resultset = page.rdf | rdf_property_list: 'http://xmlns.com/foaf/0.1/currentProject','de' %}
@@ -99,8 +108,8 @@ Book titles: <br />
 </ul>
 ```
 ### Custom SPARQL Query
-We implemented a liquid filter to run custom SPARQL queries. Each occurence of `?resourceUri` gets replaced with the current URI.
-*Hint:* You have to separate query and resultset variables because of Liquids concepts. Example:
+We implemented a liquid filter `sparql_query` to run custom SPARQL queries. Each occurence of `?resourceUri` gets replaced with the current URI.
+*Caution:* You have to separate query and resultset variables because of Liquids concepts. Example:
 ```html
 {% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}
 {% assign resultset = page.rdf | sparql_query: query %}
@@ -123,7 +132,7 @@ It is possible to map to a specific ressource, type or superclass
     'http://www.ifi.uio.no/INF3580/simpsons#Abraham' => 'abraham.html'
   }
 ```
-If more than one mapping is specified for only one resource a warning will be put in your command window, so watch out!
+If more than one mapping is specified for only one resource a warning will be output to your command window, so watch out!
 
 ### Restrict resource selection
 Additionally, you can restrict the overall resource selection by adding a SPARQL query as `restriction` parameter to `_config.yml`. Please use ?resourceUri as the placeholder for the resulting literal:
@@ -188,11 +197,11 @@ cd test/source/_site
 python -m SimpleHTTPServer 8000
 ```
 ## Build API Doc
-To generate the API Doc please navigate to jekyll-rdf/lib directory and run
+To generate the API Doc please navigate to `jekyll-rdf/lib` directory and run
 ```
 gem install yard
 yardoc *
 ```
-The generated documentation is placed into jekyll-rdf/lib/doc directory.
+The generated documentation is placed into `jekyll-rdf/lib/doc` directory.
 # License
 jekyll-rdf is licensed under the [MIT license](https://github.com/DTP16/jekyll-rdf/tree/master/LICENSE).
