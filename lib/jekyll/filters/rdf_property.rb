@@ -48,7 +48,7 @@ module Jekyll
               s.object.term.language == lang.to_sym
             else
               true
-            end 
+            end
           }
         end
         p = results.first unless p

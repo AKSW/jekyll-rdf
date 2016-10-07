@@ -45,7 +45,13 @@ module Jekyll
           if lang == 'cfg'
             lang = input.site.config['jekyll_rdf']['language']
           end
-          result = result.select{ |s| s.object.term.language == lang.to_sym } # select all statements with matching language
+          result = result.select{ |s|
+            if(s.object.term.is_a?(RDF::Literal))
+              s.object.term.language == lang.to_sym
+            else
+              true
+            end
+          } # select all statements with matching language
         end
         return unless result
         result.map{|p| p.object.name}
