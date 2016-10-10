@@ -55,12 +55,12 @@ module Jekyll
       @classes_to_templates = classes_to_templates
       @classResources = classResources
       classResources.each{|key, value|
-        value.findDirectSubClasses.each{|s| 
+        value.findDirectSubClasses.each{|s|
           value.addSubClass(classResources[s.subject.term.to_s])
         }
       }
       if(classes_to_templates.is_a?(Hash))
-        classes_to_templates.each{|key, value| 
+        classes_to_templates.each{|key, value|
           classResources[key].propagateTemplate(value,0)
           classResources[key].traverseHierarchyValue(0);
         }
@@ -85,7 +85,7 @@ module Jekyll
             hier = classRes.subClassHierarchyValue
           end unless classRes.nil?
         end
-      end  
+      end
       return tmpl unless tmpl.nil?
       return default_template
     end

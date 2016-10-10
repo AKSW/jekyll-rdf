@@ -1,6 +1,6 @@
 ##
 # MIT License
-# 
+#
 # Copyright (c) 2016 Elias Saalmann, Christian Frommert, Simon Jakobi,
 # Arne Jonas Präger, Maxi Bornmann, Georg Hackel, Eric Füg
 #
@@ -44,7 +44,7 @@ module Jekyll #:nodoc:
         @lock = -1
         @subClassHierarchyValue=0
       end
-      
+
       def findDirectSubClasses
         selection = statements_as(:object).select{ |s| s.predicate.term.to_s=="http://www.w3.org/2000/01/rdf-schema#subClassOf" }
         return selection
@@ -53,7 +53,7 @@ module Jekyll #:nodoc:
       def addSubClass(resource)
         @subClasses << resource
       end
-      
+
       def propagateTemplate(template, lock)
         if(@lock>lock||@lock==-1)
           @lock=lock

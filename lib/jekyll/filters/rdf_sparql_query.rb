@@ -55,7 +55,7 @@ module Jekyll
           end
           hsh.update(hsh){ |k,v| Jekyll::Drops::RdfTerm.build_term_drop(v, input.graph, input.site) }
           hsh.collect{|k,v| [k.to_s, v]}.to_h
-        end	
+        end
         return result
       end
     end

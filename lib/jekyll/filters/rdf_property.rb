@@ -43,7 +43,7 @@ module Jekyll
         results = input.page.data['rdf'].statements_as_subject.select{ |s| s.predicate.term.to_s == predicate }
         lang ||= input.site.config['jekyll_rdf']['language']
         if results.count > 1 && lang != nil
-          p = results.find{ |s| 
+          p = results.find{ |s|
             if(s.object.term.is_a?(RDF::Literal))
               s.object.term.language == lang.to_sym
             else
