@@ -99,6 +99,18 @@ module Jekyll #:nodoc:
           types
         end
       end
+      
+      def directClasses
+        @directClasses ||= begin
+          classes=[]
+          selection = statements_as(:subject).select{ |s| s.predicate.term.to_s=="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" }
+          unless selection.empty?
+            selection.each{|s| classes << s.object.term.to_s}
+          end
+          classes.uniq!
+          classes
+        end
+      end
 
       ##
       # Return the first super class resource of the receiver or nil, if no super class resource can be found
@@ -112,6 +124,17 @@ module Jekyll #:nodoc:
           end
           super_class.object
         end
+      end
+
+
+      def is_a_resource_class?
+        selection = statements_as(:object).select{ |s| 
+          s.predicate.term.to_s=="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"||s.predicate.term.to_s=="http://www.w3.org/2000/01/rdf-schema#subClassOf" 
+        }
+        unless selection.empty?
+          return true
+        end
+        return false
       end
 
       ##
@@ -179,7 +202,8 @@ module Jekyll #:nodoc:
             file_name += '/'
           end
           file_name += 'index.html'
-          file_name.gsub('//','/')
+          file_name =file_name.gsub('//','/')
+          file_name.gsub(':','/') 
         rescue URI::InvalidURIError
           file_name = "rdfsites/blanknode/#{term.to_s}/index.html"
         end

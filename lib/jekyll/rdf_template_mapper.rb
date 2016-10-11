@@ -31,7 +31,7 @@ module Jekyll
   class RdfTemplateMapper
 
     ##
-    # A Hash mapping a type resource to a template name
+    # A Hash mapping a resource to a template name
     attr_accessor :resources_to_templates
 
     ##
@@ -39,13 +39,32 @@ module Jekyll
     attr_accessor :default_template
 
     ##
+    # A Hash mapping a type resource to a template name
+    attr_accessor :classes_to_templates
+
+    attr_accessor :classResources
+
+    ##
     # Create a new Jekyll::RdfTemplateMapper
     #
     # * +resources_to_templates+ - A Hash mapping a type resource to a template name
     # * +default_template+ - Default template name
-    def initialize(resources_to_templates, default_template)
+    def initialize(resources_to_templates, classes_to_templates, default_template, classResources)
       @resources_to_templates = resources_to_templates
       @default_template = default_template
+      @classes_to_templates = classes_to_templates
+      @classResources = classResources
+      classResources.each{|key, value|
+        value.findDirectSubClasses.each{|s|
+          value.addSubClass(classResources[s.subject.term.to_s])
+        }
+      }
+      if(classes_to_templates.is_a?(Hash))
+        classes_to_templates.each{|key, value|
+          classResources[key].propagateTemplate(value,0)
+          classResources[key].traverseHierarchyValue(0);
+        }
+      end
     end
 
     ##
@@ -53,13 +72,23 @@ module Jekyll
     #
     # Returns the template name of one of the +resource+'s types, if available. Returns the default template name otherwise.
     def map(resource)
-      resource.types.each do |type|
-        tmpl = resources_to_templates ? resources_to_templates[type] : nil
-        return tmpl unless tmpl.nil?
+      tmpl = resources_to_templates ? resources_to_templates[resource.term.to_s] : nil
+      lock = -1
+      hier = -1
+      if(tmpl.nil?)
+        resource.directClasses.each do |classUri|
+          classRes = classResources[classUri]
+          if((classRes.subClassHierarchyValue > hier)&&(classRes.lock <= lock || lock == -1) && !classRes.template.nil?)
+            Jekyll.logger.info("classMapped: #{classUri} : #{resource.term.to_s} : #{classResources[classUri].template}")
+            lock = classRes.lock
+            tmpl = classRes.template
+            hier = classRes.subClassHierarchyValue
+          end unless classRes.nil?
+        end
       end
+      return tmpl unless tmpl.nil?
       return default_template
     end
-
   end
 
 end

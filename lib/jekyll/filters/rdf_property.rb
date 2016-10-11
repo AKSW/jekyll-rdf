@@ -42,8 +42,14 @@ module Jekyll
       begin
         results = input.page.data['rdf'].statements_as_subject.select{ |s| s.predicate.term.to_s == predicate }
         lang ||= input.site.config['jekyll_rdf']['language']
-        if results.count > 1 && results.first.object.term.is_a?(RDF::Term) && lang != nil
-          p = results.find{ |s| s.object.term.language == lang.to_sym }
+        if results.count > 1 && lang != nil
+          p = results.find{ |s|
+            if(s.object.term.is_a?(RDF::Literal))
+              s.object.term.language == lang.to_sym
+            else
+              true
+            end
+          }
         end
         p = results.first unless p
         return unless p
