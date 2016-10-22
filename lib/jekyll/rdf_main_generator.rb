@@ -58,9 +58,8 @@ module Jekyll
         resource = Jekyll::Drops::RdfResource.new(uri, graph)
         if resource.is_a_resource_class?
           classResources[uri.to_s]=Jekyll::Drops::RdfResourceClass.new(uri, graph)
-        else
-          pageResources << resource
-        end
+	end
+        pageResources << resource
       end
       mapper = Jekyll::RdfTemplateMapper.new(config['template_mappings'],config['template_classes'], config['default_template'], classResources)
       # create RDF pages for each URI
