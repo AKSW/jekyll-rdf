@@ -61,7 +61,7 @@ module Jekyll
 	end
         pageResources << resource
       end
-      mapper = Jekyll::RdfTemplateMapper.new(config['template_mappings'],config['template_classes'], config['default_template'], classResources)
+      mapper = Jekyll::RdfTemplateMapper.new(config['instance_template_mappings'],config['class_template_mappings'], config['default_template'], classResources)
       # create RDF pages for each URI
       pageResources.each{|resource| site.pages << RdfPageData.new(site, site.source, resource, mapper)}
 
