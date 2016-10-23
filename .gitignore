@@ -1,5 +1,6 @@
 *.gem
 *.rbc
+*.swp
 .sass-cache/
 /.config
 /coverage/
@@ -17,11 +18,11 @@
 build/
 
 ## Documentation cache and generated files:
-/.yardoc/
-/_yardoc/
-/doc/
-/rdoc/
-/html/
+*/.yardoc/
+*/_yardoc/
+*/doc/
+*/rdoc/
+*/html/
 
 ## Environment normalization:
 /.bundle/
