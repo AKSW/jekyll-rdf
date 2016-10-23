@@ -35,14 +35,20 @@ module Jekyll #:nodoc:
       @subClassHierarchyValue = 0
       attr_accessor :lock
       attr_accessor :template
+      attr_accessor :secondaryTemplates
       attr_accessor :subClasses
       attr_accessor :subClassHierarchyValue
 
       def initialize(term, graph)
         super(term, graph)
-        @subClasses= []
+        @subClasses = []
         @lock = -1
-        @subClassHierarchyValue=0
+        @subClassHierarchyValue = 0
+        @secondaryTemplates = []
+      end
+
+      def multipleTemplates?
+        !@secondaryTemplates.empty?
       end
 
       def findDirectSubClasses
@@ -58,12 +64,16 @@ module Jekyll #:nodoc:
         if(@lock>lock||@lock==-1)
           @lock=lock
           @template=template
+          @secondaryTemplates.clear()
+          subClasses.each{|sub| sub.propagateTemplate(template ,lock+1)}
+        elsif(@lock==lock)
+          @secondaryTemplates.push(template)
           subClasses.each{|sub| sub.propagateTemplate(template ,lock+1)}
         end
       end
 
       def traverseHierarchyValue(predecessorHierarchyValue)
-        if(@subClassHierarchyValue + 1>=predecessorHierarchyValue)  #avoid loops
+        if(@subClassHierarchyValue + 1 >= predecessorHierarchyValue)  #avoid loops
           @subClassHierarchyValue += 1
           subClasses.each{|sub| sub.traverseHierarchyValue(@subClassHierarchyValue)}
         end

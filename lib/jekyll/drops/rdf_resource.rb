@@ -1,6 +1,6 @@
 ##
 # MIT License
-# 
+#
 # Copyright (c) 2016 Elias Saalmann, Christian Frommert, Simon Jakobi,
 # Arne Jonas Präger, Maxi Bornmann, Georg Hackel, Eric Füg
 #
@@ -99,7 +99,7 @@ module Jekyll #:nodoc:
           types
         end
       end
-      
+
       def directClasses
         @directClasses ||= begin
           classes=[]
@@ -128,8 +128,8 @@ module Jekyll #:nodoc:
 
 
       def is_a_resource_class?
-        selection = statements_as(:object).select{ |s| 
-          s.predicate.term.to_s=="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"||s.predicate.term.to_s=="http://www.w3.org/2000/01/rdf-schema#subClassOf" 
+        selection = statements_as(:object).select{ |s|
+          s.predicate.term.to_s=="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"||s.predicate.term.to_s=="http://www.w3.org/2000/01/rdf-schema#subClassOf"
         }
         unless selection.empty?
           return true
@@ -188,7 +188,7 @@ module Jekyll #:nodoc:
           (0..8).each do |i|
             if uri[i]
               case i
-              when 5 
+              when 5
                 file_name += "#{uri[i][1..-1]}"
               when 8
                 file_name = file_name[0..-2]
@@ -201,7 +201,7 @@ module Jekyll #:nodoc:
           unless file_name[-1] == '/'
             file_name += '/'
           end
-          
+
           file_name =file_name.gsub('_','_u')
           file_name =file_name.gsub('.','_d')
           file_name += 'index.html'

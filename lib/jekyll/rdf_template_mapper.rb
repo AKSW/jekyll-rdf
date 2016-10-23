@@ -75,15 +75,31 @@ module Jekyll
       tmpl = resources_to_templates ? resources_to_templates[resource.term.to_s] : nil
       lock = -1
       hier = -1
+      warnMultTempl = false
+      duplicateLevelTempl = []
       if(tmpl.nil?)
         resource.directClasses.each do |classUri|
           classRes = classResources[classUri]
-          if((classRes.subClassHierarchyValue > hier)&&(classRes.lock <= lock || lock == -1) && !classRes.template.nil?)
-            Jekyll.logger.info("classMapped: #{classUri} : #{resource.term.to_s} : #{classResources[classUri].template}")
-            lock = classRes.lock
-            tmpl = classRes.template
-            hier = classRes.subClassHierarchyValue
+          if((classRes.lock <= lock || lock == -1) && !classRes.template.nil?)
+            if(classRes.subClassHierarchyValue > hier)
+              Jekyll.logger.info("classMapped: #{classUri} : #{resource.term.to_s} : #{classResources[classUri].template}")
+              lock = classRes.lock
+              tmpl = classRes.template
+              hier = classRes.subClassHierarchyValue
+              warnMultTempl = false
+              duplicateLevelTempl.clear.push(tmpl)
+              if(classRes.multipleTemplates?)
+                warnMultTempl = true
+                duplicateLevelTempl.concat(classRes.secondaryTemplates)
+              end
+            elsif(classRes.subClassHierarchyValue == hier)
+              warnMultTempl = true
+              duplicateLevelTempl.push(classRes.template)
+            end
           end unless classRes.nil?
+        end
+        if(warnMultTempl)
+          Jekyll.logger.warn("Warning: multiple possible templates for #{resource.term.to_s}: #{duplicateLevelTempl.unique.join(', ')}")
         end
       end
       return tmpl unless tmpl.nil?
