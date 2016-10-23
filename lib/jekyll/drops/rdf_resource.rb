@@ -207,7 +207,6 @@ module Jekyll #:nodoc:
           file_name += 'index.html'
           file_name =file_name.gsub('//','/_/') # needs a better regex to include /// ////...
           file_name =file_name.gsub(':','_D')
-          Jekyll.logger.warn("file_name: #{file_name}")
           file_name
         rescue URI::InvalidURIError
           file_name = "rdfsites/blanknode/#{term.to_s}/index.html"
