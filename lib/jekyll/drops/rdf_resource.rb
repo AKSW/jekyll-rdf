@@ -203,7 +203,6 @@ module Jekyll #:nodoc:
           end
 
           file_name =file_name.gsub('_','_u')
-          file_name =file_name.gsub('.','_d')
           file_name += 'index.html'
           file_name =file_name.gsub('//','/_/') # needs a better regex to include /// ////...
           file_name =file_name.gsub(':','_D')
