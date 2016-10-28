@@ -47,7 +47,7 @@ module Jekyll
             if(s.object.term.is_a?(RDF::Literal))
               s.object.term.language == lang.to_sym
             else
-              true
+              false
             end
           }
         end
