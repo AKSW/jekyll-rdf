@@ -35,7 +35,7 @@ module Jekyll #:nodoc:
       @subClassHierarchyValue = 0
       attr_accessor :lock
       attr_accessor :template
-      attr_accessor :secondaryTemplates
+      attr_accessor :alternativeTemplates
       attr_accessor :subClasses
       attr_accessor :subClassHierarchyValue
 
@@ -44,11 +44,11 @@ module Jekyll #:nodoc:
         @subClasses = []
         @lock = -1
         @subClassHierarchyValue = 0
-        @secondaryTemplates = []
+        @alternativeTemplates = []
       end
 
       def multipleTemplates?
-        !@secondaryTemplates.empty?
+        !@alternativeTemplates.empty?
       end
 
       def findDirectSubClasses
@@ -64,10 +64,10 @@ module Jekyll #:nodoc:
         if(@lock>lock||@lock==-1)
           @lock=lock
           @template=template
-          @secondaryTemplates.clear()
+          @alternativeTemplates.clear()
           subClasses.each{|sub| sub.propagateTemplate(template ,lock+1)}
         elsif(@lock==lock)
-          @secondaryTemplates.push(template)
+          @alternativeTemplates.push(template)
           subClasses.each{|sub| sub.propagateTemplate(template ,lock+1)}
         end
       end

@@ -90,7 +90,7 @@ module Jekyll
               duplicateLevelTempl.clear.push(tmpl)
               if(classRes.multipleTemplates?)
                 warnMultTempl = true
-                duplicateLevelTempl.concat(classRes.secondaryTemplates)
+                duplicateLevelTempl.concat(classRes.alternativeTemplates)
               end
             elsif(classRes.subClassHierarchyValue == hier)
               warnMultTempl = true
