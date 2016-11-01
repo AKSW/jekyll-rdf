@@ -127,8 +127,10 @@ We implemented a liquid filter `sparql_query` to run custom SPARQL queries. Each
 It is possible to map to a specific ressource, type or superclass
 ```yaml
   'default_template' => 'rdf_index.html',
-  'template_mappings' => {
-    'http://xmlns.com/foaf/0.1/Person' => 'person.html',
+  'class_template_mappings' => {
+    'http://xmlns.com/foaf/0.1/Person' => 'person.html'
+  },
+  'instance_template_mappings' => {
     'http://www.ifi.uio.no/INF3580/simpsons#Abraham' => 'abraham.html'
   }
 ```
@@ -165,8 +167,9 @@ jekyll_rdf:
   include_blank: true
   restriction: "SELECT ?s WHERE { ?s ?p ?o}"
   default_template: "rdf_index.html"
-  template_mappings:
+  class_template_mappings:
     "http://xmlns.com/foaf/0.1/Person": "person.html"
+  instance_template_mappings:
     "http://www.ifi.uio.no/INF3580/simpsons#Abraham": "abraham.html"  
 ```
 # Parameters and configuration options at a glance
@@ -184,7 +187,8 @@ jekyll_rdf:
 |include_blank|Boolean-Expression|false|Specifies whether blank nodes should also be rendered or not|```include_blank: true```|
 |restriction|SPARQL-Query as String or subjects / objects / predicates|no default|Restricts the resource-selection with a given SPARQL-Query or the three keywords subjects (only subject URIs), objects, predicates|```restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"```|
 |default_template|Filename of the default RDF-template in _layouts directory|no default|Specifies the template-file you want Jekyll to use to render all RDF resources|```default_template: "rdf_index.html"```|
-|template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files|```template_mappings: "http://xmlns.com/foaf/0.1/Person": "person.html", "http://www.ifi.uio.no/INF3580/simpsons#Abraham": "abraham.html"```|
+|instance_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files for rendering an individual instance|```instance_template_mappings: "http://www.ifi.uio.no/INF3580/simpsons#Abraham": "abraham.html"```|
+|class_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files for rendering all instances of that class|```class_template_mappings: "http://xmlns.com/foaf/0.1/Person": "person.html"```|
 # Development
 ## Run tests
 ```
