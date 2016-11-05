@@ -46,10 +46,16 @@ module Jekyll
 
       template = mapper.map(resource)
       self.read_yaml(File.join(base, '_layouts'), template)
-
       self.data['title'] = resource.name
       self.data['rdf'] = resource
-
+      if !self.data["rdf_prefix_path"].nil?
+        begin
+          prefixFile=File.new(File.join(base, 'rdf-data', self.data["rdf_prefix_path"].strip))
+          self.data["rdf_prefixes"]=prefixFile.readlines.join(" ")
+        rescue Errno::ENOENT => ex
+          Jekyll.logger.warn("context: #{resource.name}  template: #{template}  file not found: #{File.join(base, 'rdf-data', self.data["rdf_prefix_path"])}") 
+        end
+      end 
       resource.page = self
       resource.site = site
       site.data['resources'] << resource
