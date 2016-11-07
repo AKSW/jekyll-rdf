@@ -65,7 +65,7 @@ module Jekyll
       rescue SPARQL::MalformedQuery => mq
         Jekyll.logger.error("malformed query found: \n #{query} \n Error Message: #{mq.message}")
       rescue Exception => e
-        Jekyll.logger.error("unknown Exception of class: #{e.class} in sparql_query \n Query: #{query} \nMessage: #{e.message}") 
+        Jekyll.logger.error("unknown Exception of class: #{e.class} in sparql_query \n Query: #{query} \nMessage: #{e.message}")
       end
       return []
     end

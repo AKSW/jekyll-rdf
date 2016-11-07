@@ -55,11 +55,11 @@ module Jekyll
           self.data["rdf_prefix_map"] = Hash[ *(prefixFile.collect { |v|
             arr = v.split(":",2)
             [arr[0][7..-1].strip, arr[1].strip[1..-2]]
-          }.flatten)] 
+          }.flatten)]
         rescue Errno::ENOENT => ex
-          Jekyll.logger.error("context: #{resource.name}  template: #{template}  file not found: #{File.join(base, 'rdf-data', self.data["rdf_prefix_path"])}") 
+          Jekyll.logger.error("context: #{resource.name}  template: #{template}  file not found: #{File.join(base, 'rdf-data', self.data["rdf_prefix_path"])}")
         end
-      end 
+      end
       resource.page = self
       resource.site = site
       site.data['resources'] << resource
