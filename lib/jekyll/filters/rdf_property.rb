@@ -86,14 +86,14 @@ module Jekyll
         result.map{|p| p.object.name}
       end
     end
-    
+
     private
     def rdf_resolve_prefix(input, predicate)
       if(!input.page.data["rdf_prefixes"].nil?)
-        arr=predicate.split(":",2)  #bad regex, would also devide 'http://example....' into 'http' and '//example....',even though it is already a complete URI; if 'PREFIX http: <http://...> is defined, 'http' in 'http://example....' could be mistaken for a prefix 
-        if(!input.page.data["rdf_prefix_map"][arr[0]].nil?) 
+        arr=predicate.split(":",2)  #bad regex, would also devide 'http://example....' into 'http' and '//example....',even though it is already a complete URI; if 'PREFIX http: <http://...> is defined, 'http' in 'http://example....' could be mistaken for a prefix
+        if(!input.page.data["rdf_prefix_map"][arr[0]].nil?)
           return arr[1].prepend(input.page.data["rdf_prefix_map"][arr[0]])
-        end 
+        end
       end
       return predicate
     end
