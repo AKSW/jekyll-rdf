@@ -180,7 +180,7 @@ module Jekyll #:nodoc:
           uri = URI::split(term.to_s)
           file_name = "rdfsites/" # in this directory all external RDF sites are stored
           if (uri[2] == domain_name)
-            file_name = ""
+            file_name = ""        #shouldn't this be also in rdfsites/ ?
             uri[0] = nil
             uri[2] = nil
             uri[5] = uri[5].sub(baseurl,'')
@@ -191,7 +191,7 @@ module Jekyll #:nodoc:
               when 5
                 file_name += "#{uri[i][1..-1]}"
               when 8
-                file_name = file_name[0..-2]
+                file_name = file_name[0..-1]  #why was that -1 replaced by a -2
                 file_name += "##{uri[i]}"
               else
                 file_name += "#{uri[i]}/"
@@ -201,15 +201,14 @@ module Jekyll #:nodoc:
           unless file_name[-1] == '/'
             file_name += '/'
           end
-
-          file_name =file_name.gsub('_','_u')
-          file_name += 'index.html'
-          file_name =file_name.gsub('//','/_/') # needs a better regex to include /// ////...
-          file_name =file_name.gsub(':','_D')
-          file_name
         rescue URI::InvalidURIError
           file_name = "rdfsites/blanknode/#{term.to_s}/index.html"
         end
+		file_name =file_name.gsub('_','_u')
+        file_name += 'index.html'
+        file_name =file_name.gsub('//','/_/') # needs a better regex to include /// ////...
+        file_name =file_name.gsub(':','_D')
+		file_name
       end
 
     end

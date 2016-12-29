@@ -22,3 +22,14 @@ markdown: kramdown
 
 gems:
 - jekyll-rdf
+
+jekyll_rdf:
+  path: "rdf-data/simpsons.ttl"
+  language: "en"
+  include_blank: true
+  restriction: "SELECT ?resourceUri WHERE { ?resourceUri ?p ?o}"
+  default_template: "rdf_index.html"
+  class_template_mappings:
+    "http://xmlns.com/foaf/0.1/Person": "person.html"
+  instance_template_mappings:
+    "http://www.ifi.uio.no/INF3580/simpsons#Abraham": "abraham.html"

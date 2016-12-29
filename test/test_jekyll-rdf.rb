@@ -6,7 +6,9 @@ class TestJekyllRdf < Test::Unit::TestCase
   config = Jekyll.configuration(TestHelper::TEST_OPTIONS)
   site = Jekyll::Site.new(config)
   site.process
-  pagearray = site.pages.select{|p| p.name == "/INF3580/simpsons#Homer/index.html".gsub(TestHelper::BASE_URL, '')} # creates an array
+  pagearray = site.pages.select{|p|
+    p.name == "INF3580/simpsons#Homer/index.html".gsub(TestHelper::BASE_URL, '')
+  } # creates an array
   homer_page = pagearray[0] # select first entry of selection
 
   context "Generating a site with RDF data" do

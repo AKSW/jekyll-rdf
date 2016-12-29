@@ -4,5 +4,5 @@ gem 'rdf'
 gem 'linkeddata'
 
 group :jekyll_plugins do
-  gem 'jekyll-rdf', :path => '../'
+  gem 'jekyll-rdf', :path => '../../../'
 end
