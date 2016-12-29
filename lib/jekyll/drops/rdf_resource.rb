@@ -126,7 +126,9 @@ module Jekyll #:nodoc:
         end
       end
 
-
+      ##
+      # Returns true if self is a resource class
+      #
       def is_a_resource_class?
         selection = statements_as(:object).select{ |s|
           s.predicate.term.to_s=="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"||s.predicate.term.to_s=="http://www.w3.org/2000/01/rdf-schema#subClassOf"
@@ -138,13 +140,10 @@ module Jekyll #:nodoc:
       end
 
       ##
-      # Return a user-facing string representing this RdfResource
+      # Returns the URI of this resource
       #
       def name
-        @name ||= begin
-          n = statements_as(:subject).find{ |s| s.predicate.term.to_s=="http://xmlns.com/foaf/0.1/name" }
-          n ? n.object.name : term.to_s
-        end
+        term.to_s
       end
 
       ##
