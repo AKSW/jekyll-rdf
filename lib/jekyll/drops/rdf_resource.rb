@@ -136,12 +136,16 @@ module Jekyll #:nodoc:
         end
         return false
       end
-
+	  
+      def name
+        term.to_s
+      end
+	  
       ##
       # Return a user-facing string representing this RdfResource
       #
-      def name
-        @name ||= begin
+      def foafName
+        @foafName ||= begin
           n = statements_as(:subject).find{ |s| s.predicate.term.to_s=="http://xmlns.com/foaf/0.1/name" }
           n ? n.object.name : term.to_s
         end
