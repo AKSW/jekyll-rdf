@@ -74,7 +74,7 @@ We included some template examples at
 * test/source/_layouts/rdf_index.html
 * test/source/_layouts/person.html
 ### Liquid Filters
-To access objects which are connected to the current subject via a predicate you can use our custom liquid filters. For only one object please use the `rdf_property`-filter, for a list of properties you can use the `rdf_property_list`-filter.
+To access objects which are connected to the current subject via a predicate you can use our custom liquid filters. For only one object please use the `rdf_property`-filter, for a list of properties you can set a flag.
 ### Single objects
 To access one object which is connected to the current subject through a given predicate please filter `page.rdf` data with the `rdf_property`-filter. Example:
 ```html
@@ -86,10 +86,10 @@ To select a specific language please add a a second parameter to the filter:
 Age: {{ page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/job','en' }}
 ```
 ### Multiple Objects
-To get more than one object which is connected to the current subject through a given predicate please use the filter `rdf_property_list`:
+To get more than one object connected to the current subject through a given predicate please use the filter `rdf_property` in conjunction with a therefor implemented flag:
 ```html
 Sisters: <br />
-{% assign resultset = page.rdf | rdf_property_list: 'http://www.ifi.uio.no/INF3580/family#hasSister' %}
+{% assign resultset = page.rdf | rdf_property: 'http://www.ifi.uio.no/INF3580/family#hasSister', nil, true %}
 <ul>
 {% for result in resultset %}
     <li>{{ result }}</li>
@@ -100,7 +100,7 @@ Sisters: <br />
 To select a specific language please add a second parameter th the filter:
 ```html
 Book titles: <br />
-{% assign resultset = page.rdf | rdf_property_list: 'http://xmlns.com/foaf/0.1/currentProject','de' %}
+{% assign resultset = page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/currentProject','de' %}
 <ul>
 {% for result in resultset %}
     <li>{{ result }}</li>
@@ -120,8 +120,12 @@ We implemented a liquid filter `sparql_query` to run custom SPARQL queries. Each
     <td>{{ result.pre }}</td>
   </tr>
 {% endfor %}
-</table
+</table>
 ```
+### Defining Prefixes for RDF
+It is possible to pre define a set of prefixes for the use in `rdf_property` and `sparql_query`, shortening the amount of text required for each filter. Just define your prefixes in a separate file and include the key `rdf_prefix_path` together with a relative path in the yaml-frontmatter of every layout you want to use your prefixes for. The path gets resolved to /your/jekyll-directory/`rdf-data`/rdf_prefix_path. The format of this prefix file should correspond to the ttl-format.
+It is also adviced to always enclose complete (without prefixes) URIs in `<` and `>` before passing them to `rdf_property` or `sparql_query`, otherwise they don't always get recognized.
+
 ## Configuration
 ### Set default template and map templates to resources
 It is possible to map to a specific ressource, type or superclass
@@ -134,7 +138,19 @@ It is possible to map to a specific ressource, type or superclass
     'http://www.ifi.uio.no/INF3580/simpsons#Abraham' => 'abraham.html'
   }
 ```
-If more than one mapping is specified for only one resource a warning will be output to your command window, so watch out!
+A template mapped to a class will be used to render each instance of that class and its subclasses.
+Each instance is rendered with its most specific class mapped to a template.
+If the mapping is ambigiuous for one resource, a warning will be output to your command window, so watch out!
+
+### Host different resources through a single Host page
+If the URI of a resource contains a fragment identifier the resource can be hosted together with other resources with the same URI on a single page. To activate this feature `use_hash_gathering` has to be set to true in the `_config.yml` file.
+```yaml
+  'super_uri_template_mappings' => {
+    'http://www.ifi.uio.no/INF3580/simpsons#' => 'family.html'
+  }
+```
+
+The example above uses the template `family.html` to render a single page containing every resource whose URI begins with `http://www.ifi.uio.no/INF3580/simpsons#`. The assigned template has to contain the liquid tag `render_named_uris` (the site variable also needs to be passed into it). In its place the renditions of the different resources will appear. Note that Jekyll will first render each resource with its own template and then insert the rendition in the host page. That way, different resources can still be rendered differently on the same page.
 
 ### Restrict resource selection
 Additionally, you can restrict the overall resource selection by adding a SPARQL query as `restriction` parameter to `_config.yml`. Please use ?resourceUri as the placeholder for the resulting literal:
@@ -174,21 +190,22 @@ jekyll_rdf:
 ```
 # Parameters and configuration options at a glance
 ## Liquid Filters
-|Name|Parameter|Optional Parameter|Description|Example|
-|---	|---	|---	|---	|---	|
-|rdf_property|predicate-URI as String|language-tag as String|Selects one object which is connected to the current subject through a given predicate|```{{ page.rdf \| rdf_property: 'http://xmlns.com/foaf/0.1/job','en' }}```|
-|rdf_property_list|predicate-URI as String|language-tag as String|Returns an array with objects which are connected to the current subject through a given predicate|```{% assign resultset = page.rdf \| rdf_property_list: 'http://xmlns.com/foaf/0.1/currentproject','en' %}{% for result in resultset %}<li>{{ result }}</li>{% endfor %}```|
-|sparql_query|SPARQL-Query as String|-|Runs a SPARQL-Query with the current subject as ?resourceURI|```{% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}{% assign resultset = page.rdf \| sparql_query: query %}<table>{% for result in resultset %}<tr><td>{{ result.sub }}</td><td>{{ result.pre }}</td></tr>{% endfor %}</table>```|
+|Name|Parameter|Optional Parameter|Optional Flag|Description|Example|
+|---	|---	|---    |---	|---	|---	|
+|rdf_property|predicate-URI as String|language-tag as String|true to get a list|Returns a single object or an array with objects which are connected to the current subject through a given predicate|```{{ page.rdf \| rdf_property: 'http://xmlns.com/foaf/0.1/job','en' }}``` ```{% assign resultset = page.rdf \| rdf_property: 'http://xmlns.com/foaf/0.1/currentproject','en', true %}{% for result in resultset %}<li>{{ result }}</li>{% endfor %}```|
+|sparql_query|SPARQL-Query as String|-|-|Runs a SPARQL-Query with the current subject as ?resourceURI|```{% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}{% assign resultset = page.rdf \| sparql_query: query %}<table>{% for result in resultset %}<tr><td>{{ result.sub }}</td><td>{{ result.pre }}</td></tr>{% endfor %}</table>```|
 ## Plugin Configuration (\_config.yml)
 |Name|Parameter|Default|Description|Example|
 |---	|---	|---	|---	|---	|
 |path|Relative path to the RDF-File|no default|Specifies the path to the RDF file you want to render the website for|```path: "rdf-data/simpsons.ttl"```|
 |language|Language-Tag as String|no default|Specifies the preferred language when you select objects using our Liquid filters|```language: "en"```|
 |include_blank|Boolean-Expression|false|Specifies whether blank nodes should also be rendered or not|```include_blank: true```|
+|use_hash_gathering|Boolean-Expression|false|Activates or deactivates Hash-serving|```use_hash_gathering: true```|
 |restriction|SPARQL-Query as String or subjects / objects / predicates|no default|Restricts the resource-selection with a given SPARQL-Query or the three keywords subjects (only subject URIs), objects, predicates|```restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"```|
 |default_template|Filename of the default RDF-template in _layouts directory|no default|Specifies the template-file you want Jekyll to use to render all RDF resources|```default_template: "rdf_index.html"```|
 |instance_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files for rendering an individual instance|```instance_template_mappings: "http://www.ifi.uio.no/INF3580/simpsons#Abraham": "abraham.html"```|
 |class_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files for rendering all instances of that class|```class_template_mappings: "http://xmlns.com/foaf/0.1/Person": "person.html"```|
+|super_uri_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URI prefix to template-file for rendering a page containing all resources with the given prefix in their URIs|```super_uri_template_mappings: "http://www.ifi.uio.no/INF3580/simpsons#" : "family.html"```
 # Development
 ## Run tests
 ```
