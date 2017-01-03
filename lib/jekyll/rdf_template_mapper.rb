@@ -49,14 +49,18 @@ module Jekyll
     #
     # * +resources_to_templates+ - A Hash mapping a type resource to a template name
     # * +default_template+ - Default template name
-    def initialize(resources_to_templates, classes_to_templates, default_template, graph, sparql)
-      @resources_to_templates = resources_to_templates
+    def initialize(resources_to_templates, classes_to_templates, super_uri_to_templates, default_template, graph, sparql)
+      if(super_uri_to_templates.nil?)
+        @resources_to_templates = resources_to_templates
+      else
+        @resources_to_templates = resources_to_templates.merge(super_uri_to_templates)
+      end
       @default_template = default_template
       @classes_to_templates = classes_to_templates
 
       @classResources = {}
-	  classRecognitionQuery = "SELECT DISTINCT ?resourceUri WHERE{ {?resourceUri <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?o} UNION{ ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?resourceUri} UNION{ ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?resourceUri}}"
-	  classSearchResults = sparql.query(classRecognitionQuery).map{ |sol| sol[:resourceUri] }.reject do |s|  # Reject literals
+      classRecognitionQuery = "SELECT DISTINCT ?resourceUri WHERE{ {?resourceUri <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?o} UNION{ ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?resourceUri} UNION{ ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?resourceUri}}"
+      classSearchResults = sparql.query(classRecognitionQuery).map{ |sol| sol[:resourceUri] }.reject do |s|  # Reject literals
         s.class <= RDF::Literal
       end.select do |s|  # Select URIs and blank nodes in case of include_blank
         true || s.class == RDF::URI

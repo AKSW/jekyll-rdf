@@ -22,25 +22,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-##
-# JekyllRdf converts RDF data into static websites
-#
-#
-require 'jekyll'
-require 'linkeddata'
-require 'sparql'
 
+module Jekyll
 
-require 'jekyll/drops/rdf_term'
-require 'jekyll/drops/rdf_statement'
-require 'jekyll/drops/rdf_literal'
-require 'jekyll/drops/rdf_resource'
-require 'jekyll/drops/rdf_resource_class'
-require 'jekyll/drops/rdf_resource_proxy'
-require 'jekyll/filters/rdf_sparql_query'
-require 'jekyll/filters/rdf_property'
-require 'jekyll/hooks/mergeLayouts'
-require 'jekyll/rdf_main_generator'
-require 'jekyll/rdf_page_data'
-require 'jekyll/rdf_template_mapper'
-require 'jekyll/tags/place_resources.rb'
+  ##
+  # Internal tag to representing the resources placed in its location
+  #
+  class PlaceProperty < Liquid::Tag
+    def initialize(tag_name, page, tokens)
+      super
+      @site = page
+    end
+    
+    def render(context)
+      '<div id="layoutPlaceholder"></div>'
+    end
+  end
+end
+
+Liquid::Template.register_tag("render_named_uris", Jekyll::PlaceProperty)

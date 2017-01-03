@@ -22,25 +22,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-##
-# JekyllRdf converts RDF data into static websites
-#
-#
-require 'jekyll'
-require 'linkeddata'
-require 'sparql'
 
-
-require 'jekyll/drops/rdf_term'
-require 'jekyll/drops/rdf_statement'
-require 'jekyll/drops/rdf_literal'
-require 'jekyll/drops/rdf_resource'
-require 'jekyll/drops/rdf_resource_class'
-require 'jekyll/drops/rdf_resource_proxy'
-require 'jekyll/filters/rdf_sparql_query'
-require 'jekyll/filters/rdf_property'
-require 'jekyll/hooks/mergeLayouts'
-require 'jekyll/rdf_main_generator'
-require 'jekyll/rdf_page_data'
-require 'jekyll/rdf_template_mapper'
-require 'jekyll/tags/place_resources.rb'
+Jekyll::Hooks.register :site, :post_write do |site|
+  if(site.respond_to? :resourceProxies)
+    site.resourceProxies.each do |proxy|
+      layoutString = ""
+      finalLayout = File.read(site.source + "/_site/" + proxy.render_path)
+      if(!proxy.subResources.nil?)
+        proxy.subResources.each do |uri, resource|
+          layoutString += File.read(site.source + "/_site/" + resource.render_path)
+        end
+      end
+      finalLayout = finalLayout.gsub('<div id="layoutPlaceholder"></div>', layoutString)
+      File.write(site.source + "/_site/" + proxy.render_path, finalLayout)
+    end
+  end
+end

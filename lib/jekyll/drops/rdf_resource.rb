@@ -40,6 +40,11 @@ module Jekyll #:nodoc:
       # The Jekyll::RdfPageData of this Jekyll::Drops::RdfResource
       #
       attr_accessor :page
+     
+      ##
+      # The relative path to the location on the disk where this resource is rendered to
+      #
+      attr_reader :render_path
 
       ##
       # Return a list of Jekyll::Drops::RdfStatements whose subject, predicate or object is the RDF resource represented by the receiver
@@ -180,19 +185,20 @@ module Jekyll #:nodoc:
           uri = URI::split(term.to_s)
           file_name = "rdfsites/" # in this directory all external RDF sites are stored
           if (uri[2] == domain_name)
-            file_name = ""
+          file_name = ""
             uri[0] = nil
             uri[2] = nil
             uri[5] = uri[5].sub(baseurl,'')
           end
+          Jekyll.logger.info("URI:")
+          Jekyll.logger.info(uri)
           (0..8).each do |i|
             if uri[i]
               case i
               when 5
-                file_name += "#{uri[i][1..-1]}"
+                file_name += "#{uri[i][1..-1]}/"
               when 8
-                file_name = file_name[0..-1]
-                file_name += "##{uri[i]}"
+                file_name += "#/#{uri[i]}"
               else
                 file_name += "#{uri[i]}/"
               end
@@ -201,14 +207,21 @@ module Jekyll #:nodoc:
           unless file_name[-1] == '/'
             file_name += '/'
           end
-        rescue URI::InvalidURIError
-          file_name = "rdfsites/blanknode/#{term.to_s}/index.html"
+        rescue URI::InvalidURIError #unclean coding: blanknodes are recognized through errors
+          file_name = "rdfsites/blanknode/#{term.to_s}/"
         end
-		file_name =file_name.gsub('_','_u')
+        file_name = file_name.gsub('_','_u')
+        file_name = file_name.gsub('//','/_/') # needs a better regex to include /// ////...
+        file_name = file_name.gsub(':','_D')
+        file_name = file_name.strip
+        Jekyll.logger.warn("file_name: "+file_name+ "   "+ file_name[-2..-1])
+        if(file_name[-2..-1] == "#/")
+          file_name = file_name[0..-3]
+        end
+        Jekyll.logger.warn("file_name: "+file_name)
         file_name += 'index.html'
-        file_name =file_name.gsub('//','/_/') # needs a better regex to include /// ////...
-        file_name =file_name.gsub(':','_D')
-		file_name
+        @render_path = file_name
+        file_name
       end
 
     end
