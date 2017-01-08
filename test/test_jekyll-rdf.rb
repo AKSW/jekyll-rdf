@@ -7,13 +7,13 @@ class TestJekyllRdf < Test::Unit::TestCase
   site = Jekyll::Site.new(config)
   site.process
   pagearray = site.pages.select{|p|
-    p.name == "INF3580/simpsons#Homer/index.html".gsub(TestHelper::BASE_URL, '')
+    p.name == "INF3580/simpsons/#/Homer/index.html".gsub(TestHelper::BASE_URL, '')
   } # creates an array
   homer_page = pagearray[0] # select first entry of selection
 
   context "Generating a site with RDF data" do
     should "create a file which mentions 'Lisa Simpson'" do
-      s = File.read("#{TestHelper::DEST_DIR}/INF3580/simpsons#Lisa/index.html") # read static file
+      s = File.read("#{TestHelper::DEST_DIR}/INF3580/simpsons/#/Lisa/index.html") # read static file
       expect(s).to include 'Lisa Simpson'
     end
   end

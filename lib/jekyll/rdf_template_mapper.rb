@@ -49,7 +49,7 @@ module Jekyll
     #
     # * +resources_to_templates+ - A Hash mapping a type resource to a template name
     # * +default_template+ - Default template name
-    def initialize(resources_to_templates, classes_to_templates, super_uri_to_templates, default_template, graph, sparql)
+    def initialize(resources_to_templates, classes_to_templates, super_uri_to_templates = nil, default_template, graph, sparql)
       if(super_uri_to_templates.nil?)
         @resources_to_templates = resources_to_templates
       else

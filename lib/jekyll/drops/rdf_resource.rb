@@ -190,8 +190,6 @@ module Jekyll #:nodoc:
             uri[2] = nil
             uri[5] = uri[5].sub(baseurl,'')
           end
-          Jekyll.logger.info("URI:")
-          Jekyll.logger.info(uri)
           (0..8).each do |i|
             if uri[i]
               case i
@@ -214,11 +212,9 @@ module Jekyll #:nodoc:
         file_name = file_name.gsub('//','/_/') # needs a better regex to include /// ////...
         file_name = file_name.gsub(':','_D')
         file_name = file_name.strip
-        Jekyll.logger.warn("file_name: "+file_name+ "   "+ file_name[-2..-1])
         if(file_name[-2..-1] == "#/")
           file_name = file_name[0..-3]
         end
-        Jekyll.logger.warn("file_name: "+file_name)
         file_name += 'index.html'
         @render_path = file_name
         file_name

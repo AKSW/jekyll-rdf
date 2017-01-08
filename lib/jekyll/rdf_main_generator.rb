@@ -53,8 +53,6 @@ module Jekyll
       pageResources={};
       blanknodes=[]
       resources.each do |uri|
-        puts "uriClass: " + uri.class.name
-        puts uri
         resource = Jekyll::Drops::RdfResource.new(uri, graph)
         if(uri.instance_of? RDF::URI)
           uriString = uri.to_s
@@ -73,7 +71,6 @@ module Jekyll
         elsif(uri.instance_of? RDF::Node)
           blanknodes << resource
         end
-        #pageResources << resource
       end
 
       mapper = Jekyll::RdfTemplateMapper.new(config['instance_template_mappings'], config['class_template_mappings'], config['super_uri_template_mappings'], config['default_template'], graph, sparql)
