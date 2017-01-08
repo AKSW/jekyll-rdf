@@ -14,7 +14,7 @@ class TestRdfPageData < Test::Unit::TestCase
     page = Jekyll::RdfPageData.new(site, site.source, Jekyll::Drops::RdfResource.new(test_uri, graph), mapper)
 
     should "have correct title" do
-      assert_equal page.data['title'], "Homer Simpson"
+      assert_equal page.data['title'], "http://www.ifi.uio.no/INF3580/simpsons#Homer"
     end
 
     should "have correct job" do

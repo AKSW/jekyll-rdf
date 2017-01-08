@@ -24,7 +24,7 @@ class TestJekyllRdf < Test::Unit::TestCase
     end
     should "contain correct age of Homer Simpson" do
       plain_statements =  homer_page.data['rdf'].statements.map{|statement| [statement.subject.to_s, statement.predicate.to_s, statement.object.to_s]}
-      assert plain_statements.include?(['Homer Simpson','http://xmlns.com/foaf/0.1/age','36'])
+      assert plain_statements.include?(["http://www.ifi.uio.no/INF3580/simpsons#Homer",'http://xmlns.com/foaf/0.1/age','36'])
     end
   end
 
