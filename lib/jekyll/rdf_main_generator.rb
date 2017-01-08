@@ -41,6 +41,11 @@ module Jekyll
     def generate(site)
       config = site.config.fetch('jekyll_rdf')
 
+      if(config.key? "template_mapping")
+        Jekyll.logger.error("Outdated format in _config.yml:\n  'template_mapping' detected but the following keys must be used now instead:\n    instance_template_mappings -> maps single resources to single layouts\n    class_template_mappings -> maps entire classes of resources to layouts\nJekyll-RDF wont render any pages for #{site.source}")
+        return
+      end
+
       graph = RDF::Graph.load(config['path'])
       sparql = SPARQL::Client.new(graph)
 
