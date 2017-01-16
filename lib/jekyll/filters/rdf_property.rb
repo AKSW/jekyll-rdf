@@ -89,6 +89,9 @@ module Jekyll
 
     private
     def rdf_resolve_prefix(input, predicate)
+      if(predicate[0] == "<" && predicate[-1] == ">")
+        return predicate[1..-2]
+      end
       if(!input.page.data["rdf_prefixes"].nil?)
         arr=predicate.split(":",2)  #bad regex, would also devide 'http://example....' into 'http' and '//example....',even though it is already a complete URI; if 'PREFIX http: <http://...> is defined, 'http' in 'http://example....' could be mistaken for a prefix
         if(!input.page.data["rdf_prefix_map"][arr[0]].nil?)
