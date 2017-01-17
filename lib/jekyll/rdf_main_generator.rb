@@ -50,18 +50,13 @@ module Jekyll
       site.data['sparql'] = sparql
       site.data['resources'] = []
 
-
       #parse resources
-      classResources={}
       pageResources=[];
       resources.each do |uri|
         resource = Jekyll::Drops::RdfResource.new(uri, graph)
-        if resource.is_a_resource_class?
-          classResources[uri.to_s]=Jekyll::Drops::RdfResourceClass.new(uri, graph)
-	end
         pageResources << resource
       end
-      mapper = Jekyll::RdfTemplateMapper.new(config['instance_template_mappings'],config['class_template_mappings'], config['default_template'], classResources)
+      mapper = Jekyll::RdfTemplateMapper.new(config['instance_template_mappings'], config['class_template_mappings'], config['default_template'], graph, sparql)
       # create RDF pages for each URI
       pageResources.each{|resource| site.pages << RdfPageData.new(site, site.source, resource, mapper)}
 
