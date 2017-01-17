@@ -61,7 +61,7 @@ module Jekyll
         end
         return result
       rescue SPARQL::Client::ClientError => ce
-        Jekyll.logger.error("malformed query found: \n #{query} \n Error Message: #{ce.message}")
+        Jekyll.logger.error("client error experienced: \n #{query} \n Error Message: #{ce.message}")
       rescue SPARQL::MalformedQuery => mq
         Jekyll.logger.error("malformed query found: \n #{query} \n Error Message: #{mq.message}")
       rescue Exception => e
