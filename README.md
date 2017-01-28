@@ -74,18 +74,18 @@ We included some template examples at
 * test/source/_layouts/rdf_index.html
 * test/source/_layouts/person.html
 ### Liquid Filters
-To access objects which are connected to the current subject via a predicate you can use our custom liquid filters. For only one object please use the `rdf_property`-filter, for a list of properties you can set a flag.
-### Single objects
+To access objects which are connected to the current subject via a predicate you can use our custom liquid filters. For single objects or lists of objects use the `rdf_property`-filter (see [1](#singleObjects) and [2](#multipleObjects)).
+### Single Objects {#singleObjects}
 To access one object which is connected to the current subject through a given predicate please filter `page.rdf` data with the `rdf_property`-filter. Example:
 ```html
 Age: {{ page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/age' }}
 ```
-### Optional language selection
+### Optional Language Selection
 To select a specific language please add a a second parameter to the filter:
 ```html
 Age: {{ page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/job','en' }}
 ```
-### Multiple Objects
+### Multiple Objects {#multipleObjects}
 To get more than one object connected to the current subject through a given predicate please use the filter `rdf_property` in conjunction with a therefor implemented flag:
 ```html
 Sisters: <br />
@@ -97,7 +97,7 @@ Sisters: <br />
 </ul>
 ```
 ### Optional Language Selection
-To select a specific language please add a second parameter th the filter:
+To select a specific language please add a second parameter to the filter:
 ```html
 Book titles: <br />
 {% assign resultset = page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/currentProject','de' %}
