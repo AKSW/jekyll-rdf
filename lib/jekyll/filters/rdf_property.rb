@@ -41,7 +41,7 @@ module Jekyll
       return input unless input.is_a?(Jekyll::Drops::RdfResource)
       begin
         predicate = rdf_resolve_prefix(input, predicate)
-        result = input.page.data['rdf'].statements_as_subject.select{ |s| s.predicate.term.to_s == predicate }
+        result = input.statements_as_subject.select{ |s| s.predicate.term.to_s == predicate }
         if lang != nil
           if lang == 'cfg'
             lang = input.site.config['jekyll_rdf']['language']
@@ -54,7 +54,7 @@ module Jekyll
             end
           }
         end
-        return unless !result
+        return unless !result.empty?
         if(list)
           return result.map{|p|
             p.object.name.to_s

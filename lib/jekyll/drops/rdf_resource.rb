@@ -47,6 +47,11 @@ module Jekyll #:nodoc:
       attr_reader :render_path
 
       ##
+      #
+      #
+      attr_accessor :subResources
+
+      ##
       # Return a list of Jekyll::Drops::RdfStatements whose subject, predicate or object is the RDF resource represented by the receiver
       #
       def statements

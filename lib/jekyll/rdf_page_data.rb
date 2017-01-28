@@ -48,6 +48,13 @@ module Jekyll
       self.read_yaml(File.join(base, '_layouts'), template)
       self.data['title'] = resource.name
       self.data['rdf'] = resource
+      if(!resource.subResources.nil?)
+        self.data['sub_rdf'] = resource.subResources.values
+        self.data['sub_rdf'].each { |res|
+          res.page = self
+          res.site = site
+        }
+      end
       if !self.data["rdf_prefix_path"].nil?
         begin
           prefixFile=File.new(File.join(base, 'rdf-data', self.data["rdf_prefix_path"].strip)).readlines

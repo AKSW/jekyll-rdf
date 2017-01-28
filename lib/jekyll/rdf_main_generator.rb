@@ -81,40 +81,24 @@ module Jekyll
 
       mapper = Jekyll::RdfTemplateMapper.new(config['instance_template_mappings'], config['class_template_mappings'], config['super_uri_template_mappings'], config['default_template'], graph, sparql)
 
-      #this could be considered a hack
-#-------------------------------------
-      def site.resourceProxies= x
-        @resourceProxies = x
-      end
-
-      def site.resourceProxies
-        @resourceProxies
-      end
-
-      site.resourceProxies=[]
-#-------------------------------------
-
       # create RDF pages for each URI
       pageResources.each{|uri, entry|
-        entry.each{|name, resource|
+        if(entry['./'].nil?)
+          if(config['render_orphaned_uris'])
+            entry.each{|name, resource|
+              site.pages << RdfPageData.new(site, site.source, resource, mapper)
+            }
+          end
+        else
+          resource = entry.delete('./')
+          resource.subResources = entry
           site.pages << RdfPageData.new(site, site.source, resource, mapper)
-        }
+        end
       }
       
       blanknodes.each{|resource|
         site.pages << RdfPageData.new(site, site.source, resource, mapper)
       }
-
-      # create RDF pages for named uris of the form uri1#name1, uri1#name2, uri1#name3...
-      if(config['use_hash_gathering'] && !((pageResources.key? 'super_uri_template_mappings') || (config['super_uri_template_mappings'].nil?)))
-        config['super_uri_template_mappings'].each{ |uri, template|
-          resource = Jekyll::Drops::RdfResourceProxy.new(RDF::URI.new(uri), graph)
-          resource.subResources = pageResources[uri[0..-2]]
-          site.resourceProxies << resource
-          site.pages << RdfPageData.new(site, site.source, resource, mapper)
-        }
-      end
-
     end
 
     ##
