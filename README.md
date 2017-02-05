@@ -1,5 +1,5 @@
 # jekyll-rdf
-[![Build Status](https://travis-ci.org/DTP16/jekyll-rdf.png?branch=develop)](https://travis-ci.org/DTP16/jekyll-rdf) [![Coverage Status](https://coveralls.io/repos/github/DTP16/jekyll-rdf/badge.png?branch=develop)](https://coveralls.io/github/DTP16/jekyll-rdf?branch=develop)
+[![Build Status](https://travis-ci.org/white-gecko/jekyll-rdf.png?branch=develop)](https://travis-ci.org/white-gecko/jekyll-rdf) [![Coverage Status](https://coveralls.io/repos/github/white-gecko/jekyll-rdf/badge.png?branch=develop)](https://coveralls.io/github/white-gecko/jekyll-rdf?branch=develop)
 A [Jekyll plugin](https://jekyllrb.com/docs/plugins/) for including RDF data in your static site.
 
 The API Documentation is available at [http://www.rubydoc.info/gems/jekyll-rdf/](http://www.rubydoc.info/gems/jekyll-rdf/).<br />
@@ -73,9 +73,10 @@ layout: default
 We included some template examples at
 * test/source/_layouts/rdf_index.html
 * test/source/_layouts/person.html
+
 ### Liquid Filters
-To access objects which are connected to the current subject via a predicate you can use our custom liquid filters. For single objects or lists of objects use the `rdf_property`-filter (see [1](#singleObjects) and [2](#multipleObjects)).
-### Single Objects {#singleObjects}
+To access objects which are connected to the current subject via a predicate you can use our custom liquid filters. For single objects or lists of objects use the `rdf_property`-filter (see [1](#single-objects) and [2](#multiple-objects)).
+### Single Objects
 To access one object which is connected to the current subject through a given predicate please filter `page.rdf` data with the `rdf_property`-filter. Example:
 ```html
 Age: {{ page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/age' }}
@@ -85,8 +86,8 @@ To select a specific language please add a a second parameter to the filter:
 ```html
 Age: {{ page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/job','en' }}
 ```
-### Multiple Objects {#multipleObjects}
-To get more than one object connected to the current subject through a given predicate please use the filter `rdf_property` in conjunction with a therefor implemented flag:
+### Multiple Objects
+To get more than one object connected to the current subject through a given predicate please use the filter `rdf_property` in conjunction with a third argument set to `true` (the second argument for the language can be omitted by setting it to `nil`):
 ```html
 Sisters: <br />
 {% assign resultset = page.rdf | rdf_property: 'http://www.ifi.uio.no/INF3580/family#hasSister', nil, true %}
@@ -145,12 +146,18 @@ If the mapping is ambigiuous for one resource, a warning will be output to your 
 ### Host different resources through a single Host page
 If the URI of a resource contains a fragment identifier the resource can be hosted together with other resources with the same URI on a single page. To activate this feature `use_hash_gathering` has to be set to true in the `_config.yml` file.
 ```yaml
-  'super_uri_template_mappings' => {
+  'instance_uri_template_mappings' => {
     'http://www.ifi.uio.no/INF3580/simpsons#' => 'family.html'
   }
 ```
 
-The example above uses the template `family.html` to render a single page containing every resource whose URI begins with `http://www.ifi.uio.no/INF3580/simpsons#`. The assigned template has to contain the liquid tag `render_named_uris` (the site variable also needs to be passed into it). In its place the renditions of the different resources will appear. Note that Jekyll will first render each resource with its own template and then insert the rendition in the host page. That way, different resources can still be rendered differently on the same page.
+```html
+  {% for member in page.sub_rdf%}
+    {% include simPerson.html person = member%}
+  {% endfor %}
+```
+The example above uses the template `family.html` to render a single page containing every resource whose URI begins with `http://www.ifi.uio.no/INF3580/simpsons#`. Jekyll-rdf collects all resources with a fragment indetifier in their URI (from here on called `subResources`) and passes them through `page.sub_rdf` into the templates of its superResource (resources whose URIs are equal to its subResources, but do not contain a fragment identifier).
+To render resources with a fragment identifier without a rendered superResource, set `render_orphaned_uris` to `true`.
 
 ### Restrict resource selection
 Additionally, you can restrict the overall resource selection by adding a SPARQL query as `restriction` parameter to `_config.yml`. Please use ?resourceUri as the placeholder for the resulting literal:
@@ -186,7 +193,7 @@ jekyll_rdf:
   class_template_mappings:
     "http://xmlns.com/foaf/0.1/Person": "person.html"
   instance_template_mappings:
-    "http://www.ifi.uio.no/INF3580/simpsons#Abraham": "abraham.html"  
+    "http://www.ifi.uio.no/INF3580/simpsons#Abraham": "abraham.html"
 ```
 # Parameters and configuration options at a glance
 ## Liquid Filters
@@ -200,12 +207,11 @@ jekyll_rdf:
 |path|Relative path to the RDF-File|no default|Specifies the path to the RDF file you want to render the website for|```path: "rdf-data/simpsons.ttl"```|
 |language|Language-Tag as String|no default|Specifies the preferred language when you select objects using our Liquid filters|```language: "en"```|
 |include_blank|Boolean-Expression|false|Specifies whether blank nodes should also be rendered or not|```include_blank: true```|
-|use_hash_gathering|Boolean-Expression|false|Activates or deactivates Hash-serving|```use_hash_gathering: true```|
+|render_orphaned_uris|Boolean-Expression|false|Decide to render resources referenced by URI fragment identifier without a container URI (or not)|```render_orphaned_uirs: true```|
 |restriction|SPARQL-Query as String or subjects / objects / predicates|no default|Restricts the resource-selection with a given SPARQL-Query or the three keywords subjects (only subject URIs), objects, predicates|```restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"```|
 |default_template|Filename of the default RDF-template in _layouts directory|no default|Specifies the template-file you want Jekyll to use to render all RDF resources|```default_template: "rdf_index.html"```|
 |instance_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files for rendering an individual instance|```instance_template_mappings: "http://www.ifi.uio.no/INF3580/simpsons#Abraham": "abraham.html"```|
 |class_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files for rendering all instances of that class|```class_template_mappings: "http://xmlns.com/foaf/0.1/Person": "person.html"```|
-|super_uri_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URI prefix to template-file for rendering a page containing all resources with the given prefix in their URIs|```super_uri_template_mappings: "http://www.ifi.uio.no/INF3580/simpsons#" : "family.html"```
 # Development
 ## Run tests
 ```
