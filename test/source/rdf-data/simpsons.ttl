@@ -7,11 +7,17 @@
 @prefix sim: <http://www.ifi.uio.no/INF3580/simpsons#> .
 
 @prefix dtp16: <http://pcai042.informatik.uni-leipzig.de/~dtp16/#> .
+@prefix plh: <http://placeholder.host.plh/placeholder#> .
+
+# uncomment this if you want to include the simpsons family as a resource
+<http://www.ifi.uio.no/INF3580/simpsons> a <http://www.ifi.uio.no/INF3580/family>.
 
 dtp16:SpecialPerson rdfs:subClassOf foaf:Person .
 dtp16:SpecialPerson rdfs:subClassOf dtp16:AnotherSpecialPerson .
 dtp16:AnotherSpecialPerson rdfs:subClassOf foaf:Person .
 
+foaf:Person plh:predicate plh:object.
+plh:TPerson foaf:name sim:Homer.
 #Homer
 sim:Homer rdf:type dtp16:SpecialPerson .
 sim:Homer rdf:type dtp16:AnotherSpecialPerson .

@@ -25,8 +25,8 @@ class TestRdfPageData < Test::Unit::TestCase
       assert_equal page.data['rdf'].statements[5].object.name, "unbekannt"
     end
 
-    should "have 14 rdf statements" do
-      assert_equal 14, page.data['rdf'].statements.count
+    should "have 15 rdf statements" do
+      assert_equal 15, page.data['rdf'].statements.count
     end
 
   end

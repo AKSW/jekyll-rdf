@@ -20,6 +20,7 @@ class TestHelper
     'jekyll_rdf'     => {
       'path' => "#{SOURCE_DIR}/rdf-data/simpsons.ttl",
       'language' => 'de',
+      'render_orphaned_uris' => true,
       'include_blank' => true,
       'restriction' => 'SELECT ?resourceUri WHERE { ?resourceUri ?p ?o }',
       'default_template' => 'rdf_index.html',
@@ -28,9 +29,9 @@ class TestHelper
         'http://www.ifi.uio.no/INF3580/simpsons#Abraham' => 'abraham.html',
         'http://www.ifi.uio.no/INF3580/simpsons#Homer' => 'homer.html'
       },
-	  'class_template_mappings' => {
-	    'http://xmlns.com/foaf/0.1/Person' => 'person.html'
-	  }
+      'class_template_mappings' => {
+          'http://xmlns.com/foaf/0.1/Person' => 'person.html'
+      }
     }
   }
 

@@ -1,0 +1,5 @@
+<div>
+  {% assign person = include.person %}
+  Name: {{person.name}}
+  Age: {{person | rdf_property: 'foaf:age'}}
+</div>
