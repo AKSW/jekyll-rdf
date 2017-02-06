@@ -49,12 +49,8 @@ module Jekyll
     #
     # * +resources_to_templates+ - A Hash mapping a type resource to a template name
     # * +default_template+ - Default template name
-    def initialize(resources_to_templates, classes_to_templates, super_uri_to_templates = nil, default_template, graph, sparql)
-      if(super_uri_to_templates.nil?)
-        @resources_to_templates = resources_to_templates
-      else
-        @resources_to_templates = resources_to_templates.merge(super_uri_to_templates)
-      end
+    def initialize(resources_to_templates, classes_to_templates, default_template, graph, sparql)
+      @resources_to_templates = resources_to_templates
       @default_template = default_template
       @classes_to_templates = classes_to_templates
 
@@ -116,7 +112,7 @@ module Jekyll
           end unless classRes.nil?
         end
         if(warnMultTempl)
-          Jekyll.logger.warn("Warning: multiple possible templates for #{resource.term.to_s}: #{duplicateLevelTempl.unique.join(', ')}")
+          Jekyll.logger.warn("Warning: multiple possible templates for #{resource.term.to_s}: #{duplicateLevelTempl.uniq.join(', ')}")
         end
       end
       return tmpl unless tmpl.nil?

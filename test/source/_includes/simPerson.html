@@ -2,4 +2,10 @@
   {% assign person = include.person %}
   Name: {{person.name}}
   Age: {{person | rdf_property: 'foaf:age'}}
+  {% assign jobs = person | rdf_property: '<http://xmlns.com/foaf/0.1/job>', 'cfg', true %}
+  Job:  {% for job in jobs %}
+            {{job}}
+        {% endfor %}
+  <br/>
+  German Job: {{person | rdf_property: '<http://xmlns.com/foaf/0.1/job>', 'de'}}
 </div>

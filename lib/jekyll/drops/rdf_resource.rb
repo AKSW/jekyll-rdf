@@ -40,7 +40,7 @@ module Jekyll #:nodoc:
       # The Jekyll::RdfPageData of this Jekyll::Drops::RdfResource
       #
       attr_accessor :page
-     
+
       ##
       # The relative path to the location on the disk where this resource is rendered to
       #
@@ -86,30 +86,6 @@ module Jekyll #:nodoc:
         @filename ||= generate_file_name(domain_name, baseurl)
       end
 
-      ##
-      # types finds the type and superclasses of the resource
-      #
-      def types
-        @types ||= begin
-          types = [ term.to_s ]
-          selection = statements_as(:subject).select{ |s| s.predicate.term.to_s=="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" }
-          unless selection.empty?
-            t = selection.first
-            if selection.count > 1
-              Jekyll.logger.warn "Resource #{name} has multiple RDFS types. Will use #{t.object.term.to_s} for template mapping.  "
-            end
-            types << t.object.term.to_s
-            t = t.object
-            s = t.super_class
-            while s
-              types << s.term.to_s
-              s = s.super_class
-            end
-          end
-          types
-        end
-      end
-
       def directClasses
         @directClasses ||= begin
           classes=[]
@@ -120,31 +96,6 @@ module Jekyll #:nodoc:
           classes.uniq!
           classes
         end
-      end
-
-      ##
-      # Return the first super class resource of the receiver or nil, if no super class resource can be found
-      #
-      def super_class
-        selection = statements_as(:subject).select{ |s| s.predicate.term.to_s=="http://www.w3.org/2000/01/rdf-schema#subClassOf" }
-        unless selection.empty?
-          super_class = selection.first
-          if selection.count > 1
-            Jekyll.logger.warn "Type #{name} has multiple RDFS super classes. Will use #{super_class.object.term.to_s} for template mapping.  "
-          end
-          super_class.object
-        end
-      end
-
-
-      def is_a_resource_class?
-        selection = statements_as(:object).select{ |s|
-          s.predicate.term.to_s=="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"||s.predicate.term.to_s=="http://www.w3.org/2000/01/rdf-schema#subClassOf"
-        }
-        unless selection.empty?
-          return true
-        end
-        return false
       end
 
       ##

@@ -10,14 +10,19 @@
 @prefix plh: <http://placeholder.host.plh/placeholder#> .
 
 # uncomment this if you want to include the simpsons family as a resource
-<http://www.ifi.uio.no/INF3580/simpsons> a <http://www.ifi.uio.no/INF3580/family>.
+<http://www.ifi.uio.no/INF3580/simpsons> a <http://www.ifi.uio.no/INF3580/family>.         #test purpose
 
 dtp16:SpecialPerson rdfs:subClassOf foaf:Person .
-dtp16:SpecialPerson rdfs:subClassOf dtp16:AnotherSpecialPerson .
-dtp16:AnotherSpecialPerson rdfs:subClassOf foaf:Person .
+dtp16:SpecialPerson rdfs:subClassOf dtp16:AnotherSpecialPerson .         #test purpose
+dtp16:AnotherSpecialPerson rdfs:subClassOf foaf:Person .         #test purpose
+dtp16:ThirdSpecialPerson rdfs:subClassOf dtp16:AnotherSpecialPerson .         #test purpose
+dtp16:MagridsSpecialClass rdfs:subClassOf dtp16:SpecialPerson .         #test purpose
+dtp16:MagridsSpecialClass rdfs:subClassOf dtp16:ThirdSpecialPerson .         #test purpose
+dtp16:PersonClass rdfs:subClassOf dtp16:SimpsonPerson .
+dtp16:PersonClass rdfs:subClassOf foaf:Person .
 
 foaf:Person plh:predicate plh:object.
-plh:TPerson foaf:name sim:Homer.
+plh:TPerson foaf:name sim:Homer.         #test purpose
 #Homer
 sim:Homer rdf:type dtp16:SpecialPerson .
 sim:Homer rdf:type dtp16:AnotherSpecialPerson .
@@ -27,7 +32,7 @@ sim:Homer foaf:job "unknown"@en .
 sim:Homer foaf:job "unbekannt"@de .
 sim:Homer foaf:job "unbekannter Job 2"@de .
 sim:Homer foaf:job "unknown Job 2"@en .
-
+sim:Homer foaf:job sim:Marge. #just for test purposes
 #Marge
 sim:Marge rdf:type foaf:Person ;
           foaf:name "Marge Simpson" ;
@@ -112,3 +117,7 @@ sim:Lisa fam:hasParent [
 sim:Marge fam:hasSpouse [
     fam:hasFather sim:Abraham
 ] .
+
+dtp16:TestPersonMagrid rdf:type dtp16:MagridsSpecialClass.         #test purpose
+dtp16:TestPersonIra rdf:type foaf:Person,
+                             dtp16:SimpsonPerson.

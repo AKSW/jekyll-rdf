@@ -67,7 +67,7 @@ module Jekyll
             if(!pageResources.key? preSufUri[0])
               pageResources[preSufUri[0]] = {}
             end
-            pageResources[preSufUri[0]][preSufUri[1]] = resource                       
+            pageResources[preSufUri[0]][preSufUri[1]] = resource
           elsif                                  #sorting in uris without a #
             if(!pageResources.key? uriString)
               pageResources[uriString]={}
@@ -79,7 +79,7 @@ module Jekyll
         end
       end
 
-      mapper = Jekyll::RdfTemplateMapper.new(config['instance_template_mappings'], config['class_template_mappings'], config['super_uri_template_mappings'], config['default_template'], graph, sparql)
+      mapper = Jekyll::RdfTemplateMapper.new(config['instance_template_mappings'], config['class_template_mappings'], config['default_template'], graph, sparql)
 
       # create RDF pages for each URI
       pageResources.each{|uri, entry|
@@ -95,7 +95,7 @@ module Jekyll
           site.pages << RdfPageData.new(site, site.source, resource, mapper)
         end
       }
-      
+
       blanknodes.each{|resource|
         site.pages << RdfPageData.new(site, site.source, resource, mapper)
       }
