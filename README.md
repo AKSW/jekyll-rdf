@@ -43,7 +43,7 @@ Running `jekyll build` will render the RDF resources to `_site/rdfsites/…` for
 In the example of the simpsons model it could be:
 ```yaml
 baseurl: "/INF3580"
-url: "http://www.ifi.uio.no" 
+url: "http://www.ifi.uio.no"
 ```
 
 ## Make use of RDF data
