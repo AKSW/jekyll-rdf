@@ -141,7 +141,7 @@ module Jekyll #:nodoc:
 
       ##
       # Returns the URI of this resource
-      #	  
+      #
       def name
         term.to_s
       end
