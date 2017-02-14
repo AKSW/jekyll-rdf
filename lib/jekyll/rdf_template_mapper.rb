@@ -55,8 +55,8 @@ module Jekyll
       @classes_to_templates = classes_to_templates
 
       @classResources = {}
-	  classRecognitionQuery = "SELECT DISTINCT ?resourceUri WHERE{ {?resourceUri <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?o} UNION{ ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?resourceUri} UNION{ ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?resourceUri}}"
-	  classSearchResults = sparql.query(classRecognitionQuery).map{ |sol| sol[:resourceUri] }.reject do |s|  # Reject literals
+      classRecognitionQuery = "SELECT DISTINCT ?resourceUri WHERE{ {?resourceUri <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?o} UNION{ ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?resourceUri} UNION{ ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?resourceUri}}"
+      classSearchResults = sparql.query(classRecognitionQuery).map{ |sol| sol[:resourceUri] }.reject do |s|  # Reject literals
         s.class <= RDF::Literal
       end.select do |s|  # Select URIs and blank nodes in case of include_blank
         true || s.class == RDF::URI
@@ -112,7 +112,7 @@ module Jekyll
           end unless classRes.nil?
         end
         if(warnMultTempl)
-          Jekyll.logger.warn("Warning: multiple possible templates for #{resource.term.to_s}: #{duplicateLevelTempl.unique.join(', ')}")
+          Jekyll.logger.warn("Warning: multiple possible templates for #{resource.term.to_s}: #{duplicateLevelTempl.uniq.join(', ')}")
         end
       end
       return tmpl unless tmpl.nil?
