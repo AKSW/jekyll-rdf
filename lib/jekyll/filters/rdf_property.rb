@@ -29,47 +29,19 @@ module Jekyll
   # Internal module to hold the medthod #rdf_property
   #
   module RdfProperty
-
     ##
     # Computes all objects for which statements exist containing the given subject and predicate and returns any of them
     #
     # * +input+ - is the subject of the statements to be matched
     # * +predicate+ - is the predicate of the statements to be matched
-    # * +lang+ - (optional) preferred language of a the returned object. The precise implementation of choosing which object to returned (both in case a language is supplied and in case is not supplied) is undefined
+    # * +lang+ - (optional) preferred language of a the returned object. The precise implementation of choosing which object to return (both in case a language is supplied and in case is not supplied) is undefined
+    # * +list+ - (optional) decides the format of the return value. If set to true it returns an array, otherwise it returns a singleton String containing a URI.
     #
-    def rdf_property(input, predicate, lang = nil)
+    def rdf_property(input, predicate, lang = nil, list = false)
       return input unless input.is_a?(Jekyll::Drops::RdfResource)
       begin
         predicate = rdf_resolve_prefix(input, predicate)
-        results = input.page.data['rdf'].statements_as_subject.select{ |s| s.predicate.term.to_s == predicate }
-        lang ||= input.site.config['jekyll_rdf']['language']
-        if results.count > 1 && lang != nil
-          p = results.find{ |s|
-            if(s.object.term.is_a?(RDF::Literal))
-              s.object.term.language == lang.to_sym
-            else
-              false
-            end
-          }
-        end
-        p = results.first unless p
-        return unless p
-        (p.object.name).to_s
-      end
-    end
-
-    ##
-    # Computes all objects for which statements exist containing the given subject and predicate and returns an Array of them
-    #
-    # * +input+ - is the subject of the statements to be matched
-    # * +predicate+ - is the predicate of the statements to be matched
-    # * +lang+ - (optional) preferred language of the returned objects. If 'cfg' is specified the preferred language is provides by the site configuration _config.yml
-    #
-    def rdf_property_list(input, predicate, lang = nil)
-      return input unless input.is_a?(Jekyll::Drops::RdfResource)
-      begin
-        predicate = rdf_resolve_prefix(input, predicate)
-        result = input.page.data['rdf'].statements_as_subject.select{ |s| s.predicate.term.to_s == predicate } # select all matching statements with given predicate
+        result = input.statements_as_subject.select{ |s| s.predicate.term.to_s == predicate }
         if lang != nil
           if lang == 'cfg'
             lang = input.site.config['jekyll_rdf']['language']
@@ -80,10 +52,16 @@ module Jekyll
             else
               false
             end
-          } # select all statements with matching language
+          }
         end
-        return unless result
-        result.map{|p| p.object.name}
+        return unless !result.empty?
+        if(list)
+          return result.map{|p|
+            p.object.name.to_s
+          }
+        else
+          return (result.first.object.name).to_s
+        end
       end
     end
 

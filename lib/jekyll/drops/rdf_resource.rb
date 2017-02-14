@@ -42,6 +42,16 @@ module Jekyll #:nodoc:
       attr_accessor :page
 
       ##
+      # The relative path to the location on the disk where this resource is rendered to
+      #
+      attr_reader :render_path
+
+      ##
+      #
+      #
+      attr_accessor :subResources
+
+      ##
       # Return a list of Jekyll::Drops::RdfStatements whose subject, predicate or object is the RDF resource represented by the receiver
       #
       def statements
@@ -76,30 +86,6 @@ module Jekyll #:nodoc:
         @filename ||= generate_file_name(domain_name, baseurl)
       end
 
-      ##
-      # types finds the type and superclasses of the resource
-      #
-      def types
-        @types ||= begin
-          types = [ term.to_s ]
-          selection = statements_as(:subject).select{ |s| s.predicate.term.to_s=="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" }
-          unless selection.empty?
-            t = selection.first
-            if selection.count > 1
-              Jekyll.logger.warn "Resource #{name} has multiple RDFS types. Will use #{t.object.term.to_s} for template mapping.  "
-            end
-            types << t.object.term.to_s
-            t = t.object
-            s = t.super_class
-            while s
-              types << s.term.to_s
-              s = s.super_class
-            end
-          end
-          types
-        end
-      end
-
       def directClasses
         @directClasses ||= begin
           classes=[]
@@ -110,33 +96,6 @@ module Jekyll #:nodoc:
           classes.uniq!
           classes
         end
-      end
-
-      ##
-      # Return the first super class resource of the receiver or nil, if no super class resource can be found
-      #
-      def super_class
-        selection = statements_as(:subject).select{ |s| s.predicate.term.to_s=="http://www.w3.org/2000/01/rdf-schema#subClassOf" }
-        unless selection.empty?
-          super_class = selection.first
-          if selection.count > 1
-            Jekyll.logger.warn "Type #{name} has multiple RDFS super classes. Will use #{super_class.object.term.to_s} for template mapping.  "
-          end
-          super_class.object
-        end
-      end
-
-      ##
-      # Returns true if self is a resource class
-      #
-      def is_a_resource_class?
-        selection = statements_as(:object).select{ |s|
-          s.predicate.term.to_s=="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"||s.predicate.term.to_s=="http://www.w3.org/2000/01/rdf-schema#subClassOf"
-        }
-        unless selection.empty?
-          return true
-        end
-        return false
       end
 
       ##
@@ -179,7 +138,7 @@ module Jekyll #:nodoc:
           uri = URI::split(term.to_s)
           file_name = "rdfsites/" # in this directory all external RDF sites are stored
           if (uri[2] == domain_name)
-            file_name = ""
+          file_name = ""
             uri[0] = nil
             uri[2] = nil
             uri[5] = uri[5].sub(baseurl,'')
@@ -188,10 +147,9 @@ module Jekyll #:nodoc:
             if uri[i]
               case i
               when 5
-                file_name += "#{uri[i][1..-1]}"
+                file_name += "#{uri[i][1..-1]}/"
               when 8
-                file_name = file_name[0..-1]
-                file_name += "##{uri[i]}"
+                file_name += "#/#{uri[i]}"
               else
                 file_name += "#{uri[i]}/"
               end
@@ -200,14 +158,19 @@ module Jekyll #:nodoc:
           unless file_name[-1] == '/'
             file_name += '/'
           end
-        rescue URI::InvalidURIError
-          file_name = "rdfsites/blanknode/#{term.to_s}/index.html"
+        rescue URI::InvalidURIError #unclean coding: blanknodes are recognized through errors
+          file_name = "rdfsites/blanknode/#{term.to_s}/"
         end
-		file_name =file_name.gsub('_','_u')
+        file_name = file_name.gsub('_','_u')
+        file_name = file_name.gsub('//','/_/') # needs a better regex to include /// ////...
+        file_name = file_name.gsub(':','_D')
+        file_name = file_name.strip
+        if(file_name[-2..-1] == "#/")
+          file_name = file_name[0..-3]
+        end
         file_name += 'index.html'
-        file_name =file_name.gsub('//','/_/') # needs a better regex to include /// ////...
-        file_name =file_name.gsub(':','_D')
-		file_name
+        @render_path = file_name
+        file_name
       end
 
     end

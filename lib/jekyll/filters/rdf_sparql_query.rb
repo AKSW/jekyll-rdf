@@ -37,25 +37,16 @@ module Jekyll
     # * +input+ - the context RDF resource
     # * +query+ - the SPARQL query
     #
-    def sparql_query(input, query, test = false)
+    def sparql_query(input, query)
       return input unless input.is_a?(Jekyll::Drops::RdfResource)
       query.gsub!('?resourceUri', "<#{input.term.to_s}>")
       if(!input.page.data["rdf_prefixes"].nil?)
         query = query.prepend(" ").prepend(input.page.data["rdf_prefixes"])
       end
-      if(test)
-         Jekyll.logger.info("Testoutput:");
-         Jekyll.logger.info(query)
-      end
       begin
         input.site.data['sparql']
         result = input.site.data['sparql'].query(query).map do |solution|
           hsh = solution.to_hash
-          if(test)
-            Jekyll.logger.info(query)
-            Jekyll.logger.info(solution)
-            Jekyll.logger.info(hsh)
-          end
           hsh.update(hsh){ |k,v| Jekyll::Drops::RdfTerm.build_term_drop(v, input.graph, input.site) }
           hsh.collect{|k,v| [k.to_s, v]}.to_h
         end
