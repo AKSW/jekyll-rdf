@@ -35,13 +35,13 @@ module Jekyll
     # * +input+ - is the subject of the statements to be matched
     # * +predicate+ - is the predicate of the statements to be matched
     # * +lang+ - (optional) preferred language of a the returned object. The precise implementation of choosing which object to return (both in case a language is supplied and in case is not supplied) is undefined
-    # * +list+ - (optional) decides the format of the return value. If set to true it returns an array, otherwise it returns a singleton String containing a URI. 
+    # * +list+ - (optional) decides the format of the return value. If set to true it returns an array, otherwise it returns a singleton String containing a URI.
     #
     def rdf_property(input, predicate, lang = nil, list = false)
       return input unless input.is_a?(Jekyll::Drops::RdfResource)
       begin
         predicate = rdf_resolve_prefix(input, predicate)
-        result = input.page.data['rdf'].statements_as_subject.select{ |s| s.predicate.term.to_s == predicate }
+        result = input.statements_as_subject.select{ |s| s.predicate.term.to_s == predicate }
         if lang != nil
           if lang == 'cfg'
             lang = input.site.config['jekyll_rdf']['language']
@@ -54,7 +54,7 @@ module Jekyll
             end
           }
         end
-        return unless !result
+        return unless !result.empty?
         if(list)
           return result.map{|p|
             p.object.name.to_s

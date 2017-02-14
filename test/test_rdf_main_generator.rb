@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'pp'
 
 class TestRdfMainGenerator < Test::Unit::TestCase
 
@@ -9,18 +10,33 @@ class TestRdfMainGenerator < Test::Unit::TestCase
     graph = RDF::Graph.load(config['jekyll_rdf']['path'])
     sparql = SPARQL::Client.new(graph)
 
+    config["jekyll_rdf"] = config["jekyll_rdf"].merge({"template_mapping" => {}})
+    errorConfig = config
+    fakeSite = Object.new
+    def fakeSite.config= c
+      @config=c
+    end
+    def fakeSite.config
+      @config
+    end
+    def fakeSite.source
+      "error test source"
+    end
+    fakeSite.config = errorConfig
+    generator.generate(fakeSite)
+
     context "without blank nodes" do
 
-      should "get 28 unique resources" do
-        assert_equal 28, generator.extract_resources(nil, false, graph, sparql).count
+      should "get 38 unique resources" do
+        assert_equal 38, generator.extract_resources(nil, false, graph, sparql).count
       end
 
-      should "get 13 subjects" do
-        assert_equal 13, generator.extract_resources("subjects", false, graph, sparql).count
+      should "get 21 subjects" do
+        assert_equal 21, generator.extract_resources("subjects", false, graph, sparql).count
       end
 
-      should "get 14 objects" do
-        assert_equal 14, generator.extract_resources("objects", false, graph, sparql).count
+      should "get 19 objects" do
+        assert_equal 19, generator.extract_resources("objects", false, graph, sparql).count
       end
 
       should "get 13 predicates" do
@@ -35,26 +51,33 @@ class TestRdfMainGenerator < Test::Unit::TestCase
 
     context "with blank nodes" do
 
-      should "get 33 unique resources" do
-        assert_equal 33, generator.extract_resources(nil, true, graph, sparql).count
+      should "get 44 unique resources" do
+        assert_equal 44, generator.extract_resources(nil, true, graph, sparql).count
       end
 
-      should "get 18 subjects" do
-        assert_equal 18, generator.extract_resources("subjects", true, graph, sparql).count
+      should "get 26 subjects" do
+        assert_equal 26, generator.extract_resources("subjects", true, graph, sparql).count
       end
 
-      should "get 19 objects" do
-        assert_equal 19, generator.extract_resources("objects", true, graph, sparql).count
+      should "get 24 objects" do
+        assert_equal 24, generator.extract_resources("objects", true, graph, sparql).count
       end
 
-      should "get 13 predicates" do
-        assert_equal 13, generator.extract_resources("predicates", true, graph, sparql).count
+      should "get 14 predicates" do
+        assert_equal 14, generator.extract_resources("predicates", true, graph, sparql).count
       end
 
       should "get 3 children of homer simpson" do
         assert_equal 3, generator.extract_resources("SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }", true, graph, sparql).count
       end
 
+    end
+
+  end
+
+  context "an old config format" do
+    should "throw an error message" do
+      assert Jekyll.logger.messages.any? {|message| !!(message =~ /Outdated format in _config\.yml:\n  'template_mapping' detected but the following keys must be used now instead:\n    instance_template_mappings -> maps single resources to single layouts\n    class_template_mappings -> maps entire classes of resources to layouts\nJekyll-RDF wont render any pages for .*/)}
     end
 
   end

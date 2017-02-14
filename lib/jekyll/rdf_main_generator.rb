@@ -56,15 +56,49 @@ module Jekyll
       site.data['resources'] = []
 
       #parse resources
-      pageResources=[];
+      pageResources={};
+      blanknodes=[]
       resources.each do |uri|
         resource = Jekyll::Drops::RdfResource.new(uri, graph)
-        pageResources << resource
+        if(uri.instance_of? RDF::URI)
+          uriString = uri.to_s
+          if((uriString.include? "#") && (uriString.index("#") < (uriString.length - 1)))   #sorting in uris with a #
+            preSufUri = uriString.split("#")
+            if(!pageResources.key? preSufUri[0])
+              pageResources[preSufUri[0]] = {}
+            end
+            pageResources[preSufUri[0]][preSufUri[1]] = resource
+          elsif                                  #sorting in uris without a #
+            if(!pageResources.key? uriString)
+              pageResources[uriString]={}
+            end
+            pageResources[uriString]['./'] = resource
+          end
+        elsif(uri.instance_of? RDF::Node)
+          blanknodes << resource
+        end
       end
-      mapper = Jekyll::RdfTemplateMapper.new(config['instance_template_mappings'], config['class_template_mappings'], config['default_template'], graph, sparql)
-      # create RDF pages for each URI
-      pageResources.each{|resource| site.pages << RdfPageData.new(site, site.source, resource, mapper)}
 
+      mapper = Jekyll::RdfTemplateMapper.new(config['instance_template_mappings'], config['class_template_mappings'], config['default_template'], graph, sparql)
+
+      # create RDF pages for each URI
+      pageResources.each{|uri, entry|
+        if(entry['./'].nil?)
+          if(config['render_orphaned_uris'])
+            entry.each{|name, resource|
+              site.pages << RdfPageData.new(site, site.source, resource, mapper)
+            }
+          end
+        else
+          resource = entry.delete('./')
+          resource.subResources = entry
+          site.pages << RdfPageData.new(site, site.source, resource, mapper)
+        end
+      }
+
+      blanknodes.each{|resource|
+        site.pages << RdfPageData.new(site, site.source, resource, mapper)
+      }
     end
 
     ##
