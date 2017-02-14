@@ -1,5 +1,6 @@
 # jekyll-rdf
-[![Build Status](https://travis-ci.org/white-gecko/jekyll-rdf.png?branch=develop)](https://travis-ci.org/white-gecko/jekyll-rdf) [![Coverage Status](https://coveralls.io/repos/github/white-gecko/jekyll-rdf/badge.png?branch=develop)](https://coveralls.io/github/white-gecko/jekyll-rdf?branch=develop)
+[![Build Status](https://travis-ci.org/white-gecko/jekyll-rdf.png?branch=develop)](https://travis-ci.org/white-gecko/jekyll-rdf)
+[![Coverage Status](https://coveralls.io/repos/github/white-gecko/jekyll-rdf/badge.png?branch=develop)](https://coveralls.io/github/white-gecko/jekyll-rdf?branch=develop)
 A [Jekyll plugin](https://jekyllrb.com/docs/plugins/) for including RDF data in your static site.
 
 The API Documentation is available at [http://www.rubydoc.info/gems/jekyll-rdf/](http://www.rubydoc.info/gems/jekyll-rdf/).<br />
