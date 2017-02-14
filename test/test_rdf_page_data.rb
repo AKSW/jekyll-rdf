@@ -24,7 +24,7 @@ class TestRdfPageData < Test::Unit::TestCase
 
 
     should "have correct title" do
-      assert_equal page.data['title'], "Homer Simpson"
+      assert_equal page.data['title'], "http://www.ifi.uio.no/INF3580/simpsons#Homer"
     end
 
     should "have correct job" do
