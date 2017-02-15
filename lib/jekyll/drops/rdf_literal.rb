@@ -34,7 +34,7 @@ module Jekyll
       ##
       # Return a user-facing string representing this RdfLiteral
       #
-      def name
+      def literal
         term.to_s
       end
 
