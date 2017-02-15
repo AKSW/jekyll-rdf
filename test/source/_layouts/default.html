@@ -15,9 +15,9 @@
         <h3>List of resources:</h3>
         <ul>
           {% for my_page in site.pages %}
-            {% if my_page.rdf.name %}
+            {% if my_page.rdf.iri %}
               <li>
-                <a class="page-link" href="{{ my_page.url | prepend: site.baseurl }}">{{ my_page.rdf.name }}</a>
+                <a class="page-link" href="{{ my_page.url | prepend: site.baseurl }}">{{ my_page.rdf | rdf_property: 'foaf:name' }} ({{ my_page.rdf.iri }})</a>
               </li>
             {% endif %}
           {% endfor %}

@@ -28,11 +28,11 @@ class TestRdfPageData < Test::Unit::TestCase
     end
 
     should "have correct job" do
-      assert_equal page.data['rdf'].statements[4].object.name, "unknown"
+      assert_equal page.data['rdf'].statements[4].object.literal, "unknown"
     end
 
     should "have correct translated job" do
-      assert_equal page.data['rdf'].statements[5].object.name, "unbekannt"
+      assert_equal page.data['rdf'].statements[5].object.literal, "unbekannt"
     end
 
     should "have 16 rdf statements" do
