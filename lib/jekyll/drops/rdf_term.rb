@@ -53,10 +53,13 @@ module Jekyll
       end
 
       ##
-      # Convert this RdfTerm into a human-readable string
+      # Convert this RdfTerm into a string
+      # This should be:
+      # - for resoruces: the IRI
+      # - for literals: the literal representation e.g. "Hallo"@de or "123"^^<http://www.w3.org/2001/XMLSchema#integer>
       #
       def to_s
-        name
+        term.to_s
       end
 
       ##

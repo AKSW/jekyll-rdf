@@ -57,10 +57,10 @@ module Jekyll
         return unless !result.empty?
         if(list)
           return result.map{|p|
-            p.object.name.to_s
+            p.object.to_s
           }
         else
-          return (result.first.object.name).to_s
+          return (result.first.object).to_s
         end
       end
     end
