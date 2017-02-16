@@ -41,7 +41,7 @@ class TestJekyllRdf < Test::Unit::TestCase
   include Jekyll::RdfProperty
   include Jekyll::RdfSparqlQuery
   context "Generate a rdf_resource Homer that" do
-    homer_resource = simpson_page.data['sub_rdf'].find{|res| res.name == 'http://www.ifi.uio.no/INF3580/simpsons#Homer'} #needs to be adjusted to http://www.ifi.uio.no/INF3580/simpsons#Homer when branch gets merged with Fix_Wrong_Naming_Issue
+    homer_resource = simpson_page.data['sub_rdf'].find{|res| res.iri == 'http://www.ifi.uio.no/INF3580/simpsons#Homer'}
 
     should "contain correct age of Homer Simpson" do
       plain_statements =  homer_resource.statements.map{|statement| [statement.subject.to_s, statement.predicate.to_s, statement.object.to_s]}
@@ -53,12 +53,12 @@ class TestJekyllRdf < Test::Unit::TestCase
     end
 
     should "have a job listed with the language tag 'en'" do
-      assert rdf_property(homer_resource, "<http://xmlns.com/foaf/0.1/job>", "en", false) == "unknown"
+      assert_equal("unknown", rdf_property(homer_resource, "<http://xmlns.com/foaf/0.1/job>", "en", false))
     end
   end
 
   context "rdf_sparql_query" do
-    homer_resource = simpson_page.data['sub_rdf'].find{|res| res.name == 'http://www.ifi.uio.no/INF3580/simpsons#Homer'} #needs to be adjusted to http://www.ifi.uio.no/INF3580/simpsons#Homer when branch gets merged with Fix_Wrong_Naming_Issue
+    homer_resource = simpson_page.data['sub_rdf'].find{|res| res.iri == 'http://www.ifi.uio.no/INF3580/simpsons#Homer'}
 
     should "create a result " do
       query = "SELECT ?s WHERE{ ?s fam:hasFather ?resourceUri }"

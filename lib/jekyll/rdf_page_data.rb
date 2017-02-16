@@ -46,7 +46,7 @@ module Jekyll
 
       template = mapper.map(resource)
       self.read_yaml(File.join(base, '_layouts'), template)
-      self.data['title'] = resource.name
+      self.data['title'] = resource.iri
       self.data['rdf'] = resource
       if(!resource.subResources.nil?)
         self.data['sub_rdf'] = resource.subResources.values
@@ -64,7 +64,7 @@ module Jekyll
             [arr[0][7..-1].strip, arr[1].strip[1..-2]]
           }.flatten)]
         rescue Errno::ENOENT => ex
-          Jekyll.logger.error("context: #{resource.name}  template: #{template}  file not found: #{File.join(base, 'rdf-data', self.data["rdf_prefix_path"])}")
+          Jekyll.logger.error("context: #{resource}  template: #{template}  file not found: #{File.join(base, 'rdf-data', self.data["rdf_prefix_path"])}")
         end
       end
       resource.page = self

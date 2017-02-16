@@ -98,10 +98,7 @@ module Jekyll #:nodoc:
         end
       end
 
-      ##
-      # Returns the URI of this resource
-      #
-      def name
+      def iri
         term.to_s
       end
 
