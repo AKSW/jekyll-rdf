@@ -1,6 +1,4 @@
 require 'test_helper'
-require 'pp'
-#require 'RdfProperty'
 
 class TestJekyllRdf < Test::Unit::TestCase
   include RSpec::Matchers
@@ -9,7 +7,7 @@ class TestJekyllRdf < Test::Unit::TestCase
   site = Jekyll::Site.new(config)
   site.process
   pagearray = site.pages.select{|p|
-    p.name == "INF3580/simpsons/index.html".gsub(TestHelper::BASE_URL, '')
+    p.name == "simpsons/index.html".gsub(TestHelper::BASE_URL, '')
   } # creates an array
   simpson_page = pagearray[0] # select first entry of selection
 
@@ -25,7 +23,7 @@ class TestJekyllRdf < Test::Unit::TestCase
     end
 
     should "create a file for http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestPersonMagrid" do
-      s = File.read("#{TestHelper::DEST_DIR}/rdfsites/http/pcai042.informatik.uni-leipzig.de/~dtp16/_/#/TestPersonMagrid/index.html")
+      s = File.read("#{TestHelper::DEST_DIR}/INF3580/rdfsites/http/pcai042.informatik.uni-leipzig.de/~dtp16/#/TestPersonMagrid/index.html")
       expect(s).to include "http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestPersonMagrid"
       assert Jekyll.logger.messages.any? {|message| message.strip.eql? "classMapped: http://pcai042.informatik.uni-leipzig.de/~dtp16/#MagridsSpecialClass : http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestPersonMagrid : person.html"}
       assert Jekyll.logger.messages.any? {|message| message.strip.eql? "Warning: multiple possible templates for http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestPersonMagrid: person.html"}
