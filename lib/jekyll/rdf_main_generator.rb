@@ -39,8 +39,12 @@ module Jekyll
     # * +site+ - The Jekyll::Site whose #data is to be enriched
     #
     def generate(site)
-      config = site.config.fetch('jekyll_rdf')
-
+      begin
+        config = site.config.fetch('jekyll_rdf')
+      rescue Exception
+        Jekyll.logger.error("You've included Jekyll-RDF, but it is not configured. Aborting the jekyll-rdf plugin.")
+        return
+      end
       if(config.key? "template_mapping")
         Jekyll.logger.error("Outdated format in _config.yml:\n  'template_mapping' detected but the following keys must be used now instead:\n    instance_template_mappings -> maps single resources to single layouts\n    class_template_mappings -> maps entire classes of resources to layouts\nJekyll-RDF wont render any pages for #{site.source}")
         return
