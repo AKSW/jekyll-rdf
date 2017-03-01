@@ -55,6 +55,37 @@ class TestJekyllRdf < Test::Unit::TestCase
     end
   end
 
+  context "The method rdf_property" do
+    resource_no_pref_defined = Jekyll::Drops::RdfResource.new("http://thats.a.test.de/path", nil)
+    no_pref_page = Object.new
+    def no_pref_page.data
+      {}
+    end
+    resource_no_pref_defined.page = no_pref_page
+    should "be able to throw a NoPrefixDefined" do
+      assert_raise(NoPrefixesDefined) do# Jekyll.logger.messages.any? {|message| !!(message =~ /\s*No Prefixes are defined when .* gets passed in\s*/)}
+        rdf_property(resource_no_pref_defined, "sup:that", "chk", false)
+      end
+    end
+
+    resource_with_pref_defined = Jekyll::Drops::RdfResource.new("http://thats.a.test.de/path", nil)
+    with_pref_page = Object.new
+    def with_pref_page.data
+      {"rdf_prefixes" => {}, "rdf_prefix_map" => {}}
+    end
+    resource_with_pref_defined.page = with_pref_page
+    should "be able to throw a NoPrefixMapped" do
+      assert_raise(NoPrefixMapped) do
+        rdf_property(resource_with_pref_defined, "sup:that", "chk", false)
+      end # Jekyll.logger.messages.any? {|message| !!(message =~ /\s*Their is no mapping defined for .* in context to .*\s*/)}
+    end
+    should "be able to throw an UnMarkedUri exception" do
+      assert_raise(UnMarkedUri) do #Jekyll.logger.messages.any? {|message| !!(message =~ /\s*The URI .* is not correctly marked\. Pls use the form <.*> instead\.\s*/)}
+        rdf_property(resource_with_pref_defined, "sup:that:asdf", "chk", false)
+      end
+    end
+  end
+
   context "rdf_sparql_query" do
     homer_resource = simpson_page.data['sub_rdf'].find{|res| res.iri == 'http://www.ifi.uio.no/INF3580/simpsons#Homer'}
 

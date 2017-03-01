@@ -48,6 +48,7 @@ module Jekyll
       self.read_yaml(File.join(base, '_layouts'), template)
       self.data['title'] = resource.iri
       self.data['rdf'] = resource
+      self.data['template'] = template
       if(!resource.subResources.nil?)
         self.data['sub_rdf'] = resource.subResources.values
         self.data['sub_rdf'].each { |res|
