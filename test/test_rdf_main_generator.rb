@@ -24,6 +24,21 @@ class TestRdfMainGenerator < Test::Unit::TestCase
     fakeSite.config = errorConfig
     generator.generate(fakeSite)
 
+    badSite = Object.new
+    emptyConfig = Object.new
+    def emptyConfig.fetch x
+      throw Exception
+    end
+    def badSite.config= c
+      @config = c
+    end
+    def badSite.config
+      @config
+    end
+
+    badSite.config = emptyConfig #causes site.config.fetch to fail
+    generator.generate(badSite)
+
     context "without blank nodes" do
 
       should "get 39 unique resources" do
@@ -79,6 +94,11 @@ class TestRdfMainGenerator < Test::Unit::TestCase
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /Outdated format in _config\.yml:\n  'template_mapping' detected but the following keys must be used now instead:\n    instance_template_mappings -> maps single resources to single layouts\n    class_template_mappings -> maps entire classes of resources to layouts\nJekyll-RDF wont render any pages for .*/)}
     end
 
+  end
+  context "using jekyll-rdf without configuration" do
+    should "throw an error message" do
+      assert Jekyll.logger.messages.any? {|message| !!(message=~ /\s*You've included Jekyll-RDF, but it is not configured. Aborting the jekyll-rdf plugin.\s*/)}
+    end
   end
 
 end

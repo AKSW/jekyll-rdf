@@ -39,7 +39,14 @@ module Jekyll
     # * +site+ - The Jekyll::Site whose #data is to be enriched
     #
     def generate(site)
-      config = site.config.fetch('jekyll_rdf')
+
+      begin
+        config = site.config.fetch('jekyll_rdf')
+      rescue Exception
+        Jekyll.logger.error("You've included Jekyll-RDF, but it is not configured. Aborting the jekyll-rdf plugin.")
+        return
+      end
+
       global_config = Jekyll.configuration({})
 
       #small fix because global_config doesn't work in a test enviorment
