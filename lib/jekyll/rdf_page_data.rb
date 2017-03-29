@@ -37,11 +37,11 @@ module Jekyll
     # * +resource+ - The RDF resource for which the page is rendered
     # * +mapper+ - The layout-mapping
     #
-    def initialize(site, base, resource, mapper)
+    def initialize(site, base, resource, mapper, config)
       @site = site
       @base = base
       @dir = ""
-      @name = resource.filename(URI::split(site.config['url'])[2], site.config['baseurl'])
+      @name = resource.filename(URI::split(config['url'])[2], config['baseurl'])
       self.process(@name)
 
       template = mapper.map(resource)

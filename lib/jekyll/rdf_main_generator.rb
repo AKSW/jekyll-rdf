@@ -40,6 +40,13 @@ module Jekyll
     #
     def generate(site)
       config = site.config.fetch('jekyll_rdf')
+      global_config = Jekyll.configuration({})
+
+      #small fix because global_config doesn't work in a test enviorment
+      if(!global_config.key? "url")
+        global_config["url"] = site.config["url"]
+        global_config["baseurl"] = site.config["baseurl"]
+      end
 
       if(config.key? "template_mapping")
         Jekyll.logger.error("Outdated format in _config.yml:\n  'template_mapping' detected but the following keys must be used now instead:\n    instance_template_mappings -> maps single resources to single layouts\n    class_template_mappings -> maps entire classes of resources to layouts\nJekyll-RDF wont render any pages for #{site.source}")
@@ -86,18 +93,18 @@ module Jekyll
         if(entry['./'].nil?)
           if(config['render_orphaned_uris'])
             entry.each{|name, resource|
-              site.pages << RdfPageData.new(site, site.source, resource, mapper)
+              site.pages << RdfPageData.new(site, site.source, resource, mapper, global_config)
             }
           end
         else
           resource = entry.delete('./')
           resource.subResources = entry
-          site.pages << RdfPageData.new(site, site.source, resource, mapper)
+          site.pages << RdfPageData.new(site, site.source, resource, mapper, global_config)
         end
       }
 
       blanknodes.each{|resource|
-        site.pages << RdfPageData.new(site, site.source, resource, mapper)
+        site.pages << RdfPageData.new(site, site.source, resource, mapper, global_config)
       }
     end
 

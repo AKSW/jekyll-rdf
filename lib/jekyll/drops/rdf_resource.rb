@@ -135,20 +135,26 @@ module Jekyll #:nodoc:
           uri = URI::split(term.to_s)
           file_name = "rdfsites/" # in this directory all external RDF sites are stored
           if (uri[2] == domain_name)
-          file_name = ""
+            file_name = ""
             uri[0] = nil
             uri[2] = nil
-            uri[5] = uri[5].sub(baseurl,'')
+            if(uri[5].length > baseurl.length)
+              if(uri[5][0..(baseurl.length)].eql? (baseurl + "/"))
+                uri[5] = uri[5][(baseurl.length)..-1]
+              end
+            elsif(uri[5].eql?(baseurl))
+              uri[5] = nil
+            end
           end
           (0..8).each do |i|
-            if uri[i]
+            if !(uri[i].nil?)
               case i
               when 5
                 file_name += "#{uri[i][1..-1]}/"
               when 8
                 file_name += "#/#{uri[i]}"
               else
-                file_name += "#{uri[i]}/"
+               file_name += "#{uri[i]}/"
               end
             end
           end
@@ -159,7 +165,7 @@ module Jekyll #:nodoc:
           file_name = "rdfsites/blanknode/#{term.to_s}/"
         end
         file_name = file_name.gsub('_','_u')
-        file_name = file_name.gsub('//','/_/') # needs a better regex to include /// ////...
+        file_name = file_name.gsub('//','/') # needs a better regex to include /// ////...
         file_name = file_name.gsub(':','_D')
         file_name = file_name.strip
         if(file_name[-2..-1] == "#/")
