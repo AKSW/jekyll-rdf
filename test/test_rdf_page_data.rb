@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'pp'
 
 class TestRdfPageData < Test::Unit::TestCase
 
@@ -12,12 +11,12 @@ class TestRdfPageData < Test::Unit::TestCase
 	sparql = SPARQL::Client.new(graph)
     mapper = Jekyll::RdfTemplateMapper.new(config['jekyll_rdf']['instance_template_mappings'], config['jekyll_rdf']['class_template_mappings'], config['jekyll_rdf']['default_template'], graph, sparql)
     test_uri = RDF::URI.new("http://www.ifi.uio.no/INF3580/simpsons#Homer")
-    page = Jekyll::RdfPageData.new(site, site.source, Jekyll::Drops::RdfResource.new(test_uri, graph), mapper)
+    page = Jekyll::RdfPageData.new(site, site.source, Jekyll::Drops::RdfResource.new(test_uri, graph), mapper, config)
 
     # for testing exceptions
     error_uri = RDF::URI.new("http://error.causing/uri#error")
     exceptionMapper = Jekyll::RdfTemplateMapper.new(config['jekyll_rdf']['instance_template_mappings'].merge({"http://error.causing/uri#error" => "testExceptions.html"}), config['jekyll_rdf']['class_template_mappings'], config['jekyll_rdf']['default_template'], graph, sparql)
-    page2 = Jekyll::RdfPageData.new(site, site.source, Jekyll::Drops::RdfResource.new(error_uri, graph), exceptionMapper)
+    page2 = Jekyll::RdfPageData.new(site, site.source, Jekyll::Drops::RdfResource.new(error_uri, graph), exceptionMapper, config)
 
     special_path_uri = RDF::URI.new("http://www.ifi.uio.no/INF3580/simpsons#")
     testPathResource = Jekyll::Drops::RdfResource.new(special_path_uri, graph)

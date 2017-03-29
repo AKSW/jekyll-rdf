@@ -30,7 +30,6 @@ require 'jekyll'
 require 'linkeddata'
 require 'sparql'
 
-
 require 'jekyll/drops/rdf_term'
 require 'jekyll/drops/rdf_statement'
 require 'jekyll/drops/rdf_literal'

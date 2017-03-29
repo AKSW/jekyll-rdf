@@ -41,12 +41,12 @@ class TestRdfMainGenerator < Test::Unit::TestCase
 
     context "without blank nodes" do
 
-      should "get 38 unique resources" do
-        assert_equal 38, generator.extract_resources(nil, false, graph, sparql).count
+      should "get 39 unique resources" do
+        assert_equal 39, generator.extract_resources(nil, false, graph, sparql).count
       end
 
-      should "get 21 subjects" do
-        assert_equal 21, generator.extract_resources("subjects", false, graph, sparql).count
+      should "get 22 subjects" do
+        assert_equal 22, generator.extract_resources("subjects", false, graph, sparql).count
       end
 
       should "get 19 objects" do
@@ -65,12 +65,12 @@ class TestRdfMainGenerator < Test::Unit::TestCase
 
     context "with blank nodes" do
 
-      should "get 44 unique resources" do
-        assert_equal 44, generator.extract_resources(nil, true, graph, sparql).count
+      should "get 45 unique resources" do
+        assert_equal 45, generator.extract_resources(nil, true, graph, sparql).count
       end
 
-      should "get 26 subjects" do
-        assert_equal 26, generator.extract_resources("subjects", true, graph, sparql).count
+      should "get 27 subjects" do
+        assert_equal 27, generator.extract_resources("subjects", true, graph, sparql).count
       end
 
       should "get 24 objects" do
