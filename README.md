@@ -55,25 +55,35 @@ Now, create one or more files (e.g `rdf_index.html` or `person.html`) in the `_l
 layout: default
 ---
 <div class="home">
-  <h1 class="page-heading"><b>{{ page.rdf.name }}</b></h1>
+  <h1 class="page-heading"><b>{{ page.rdf.iri }}</b></h1>
   <p>
-    <h3>Statements in which {{ page.rdf.name }} occurs as subject:</h3>
+    <h3>Statements in which {{ page.rdf.iri }} occurs as subject:</h3>
     {% include statements_table.html collection=page.rdf.statements_as_subject %}
   </p>
   <p>
-    <h3>Statements in which {{ page.rdf.name }} occurs as predicate:</h3>
+    <h3>Statements in which {{ page.rdf.iri }} occurs as predicate:</h3>
     {% include statements_table.html collection=page.rdf.statements_as_predicate %}
   </p>
   <p>
-    <h3>Statements in which {{ page.rdf.name }} occurs as object:</h3>
+    <h3>Statements in which {{ page.rdf.iri }} occurs as object:</h3>
     {% include statements_table.html collection=page.rdf.statements_as_object %}
   </p>
 </div>
 ```
 ### Template Examples
 We included some template examples at
-* test/source/_layouts/rdf_index.html
-* test/source/_layouts/person.html
+* `test/source/_layouts/rdf_index.html`
+* `test/source/_layouts/person.html`
+
+### Get the IRI of a resource
+
+    {{ page.rdf }}
+
+Is the currently rendered resource.
+
+    {{ page.rdf.iri }}
+
+Returns the IRI of the currently rendered resource.
 
 ### Liquid Filters
 To access objects which are connected to the current subject via a predicate you can use our custom liquid filters. For single objects or lists of objects use the `rdf_property`-filter (see [1](#single-objects) and [2](#multiple-objects)).
