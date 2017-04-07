@@ -29,6 +29,7 @@ module Jekyll
   # JekyllRdf::RdfPageData creates pages for each RDF resource using a given template
   #
   class RdfPageData < Jekyll::Page
+    attr_accessor :complete
 
     ##
     # initialize initializes the page
@@ -45,6 +46,12 @@ module Jekyll
       self.process(@name)
 
       template = mapper.map(resource)
+      if(template.nil?)
+        @complete = false
+        return
+      else
+        @complete = true
+      end
       self.read_yaml(File.join(base, '_layouts'), template)
       self.data['title'] = resource.iri
       self.data['rdf'] = resource

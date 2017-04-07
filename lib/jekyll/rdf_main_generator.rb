@@ -100,18 +100,18 @@ module Jekyll
         if(entry['./'].nil?)
           if(config['render_orphaned_uris'])
             entry.each{|name, resource|
-              site.pages << RdfPageData.new(site, site.source, resource, mapper, global_config)
+              createPage(site, resource, mapper, global_config)
             }
           end
         else
           resource = entry.delete('./')
           resource.subResources = entry
-          site.pages << RdfPageData.new(site, site.source, resource, mapper, global_config)
+          createPage(site, resource, mapper, global_config)
         end
       }
 
       blanknodes.each{|resource|
-        site.pages << RdfPageData.new(site, site.source, resource, mapper, global_config)
+        createPage(site, resource, mapper, global_config)
       }
     end
 
@@ -159,6 +159,15 @@ module Jekyll
       end.select do |s|  # Select URIs and blank nodes in case of include_blank
         include_blank || s.class == RDF::URI
       end.uniq
+    end
+
+    def createPage(site, resource, mapper, global_config)
+      page = RdfPageData.new(site, site.source, resource, mapper, global_config)
+      if(page.complete)
+        site.pages << page
+      else
+        Jekyll.logger.warn("Resource #{resource} not rendered: No fitting template or default template found.")
+      end
     end
 
   end
