@@ -165,6 +165,7 @@ module Jekyll #:nodoc:
               file_name += '/'
             end
           rescue URI::InvalidURIError #unclean coding: blanknodes are recognized through errors
+            file_name = "invalids/#{term.to_s}"
             Jekyll.logger.error("Invalid resource found: #{term.to_s} is not a proper uri")
           end
         end

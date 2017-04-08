@@ -57,4 +57,14 @@ class TestRdfPageData < Test::Unit::TestCase
 
   end
 
+  context "Invalid uris" do
+    config = Jekyll.configuration(TestHelper::TEST_OPTIONS)
+    graph = RDF::Graph.load(config['jekyll_rdf']['path'])
+    invalidResource = Jekyll::Drops::RdfResource.new("ahfkas/aljöfa,sldf/slf", graph)
+    invalidResource.filename("site","base")
+    should "be recognized by rdf_resource.rb" do
+      assert Jekyll.logger.messages.any? {|message| !!(message =~ /\s*Invalid resource found: .* is not a proper uri\s*/)}
+    end
+  end
+
 end
