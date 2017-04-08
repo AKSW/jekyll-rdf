@@ -210,7 +210,8 @@ jekyll_rdf:
 ## Liquid Filters
 |Name|Parameter|Optional Parameter|Optional Flag|Description|Example|
 |---	|---	|---    |---	|---	|---	|
-|rdf_property|predicate-URI as String|language-tag as String|true to get a list|Returns a single object or an array with objects which are connected to the current subject through a given predicate|```{{ page.rdf \| rdf_property: 'http://xmlns.com/foaf/0.1/job','en' }}``` ```{% assign resultset = page.rdf \| rdf_property: 'http://xmlns.com/foaf/0.1/currentproject','en', true %}{% for result in resultset %}<li>{{ result }}</li>{% endfor %}```|
+|rdf_property|predicate-URI as String|language-tag as String|true to get a list|Returns a single object or an array with objects which are connected to the current subject through a given predicate|```{{ page.rdf \| rdf_property: '<http://xmlns.com/foaf/0.1/job>','en' }}``` ```{% assign resultset = page.rdf \| rdf_property: '<http://xmlns.com/foaf/0.1/currentproject>','en', true %}{% for result in resultset %}<li>{{ result }}</li>{% endfor %}```|
+|rdf_inverse_property|predicate-URI as String|language-tag as String|true to get a list|The same as rdf_property, but the predicate is used reversed|```{{ page.rdf \| rdf_inverse_property: '<http://www.ifi.uio.no/INF3580/family#hasFather>','en' }} <!--Returns a Son instead of a Father-->```|
 |sparql_query|SPARQL-Query as String|-|-|Runs a SPARQL-Query with the current subject as ?resourceURI|```{% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}{% assign resultset = page.rdf \| sparql_query: query %}<table>{% for result in resultset %}<tr><td>{{ result.sub }}</td><td>{{ result.pre }}</td></tr>{% endfor %}</table>```|
 ## Plugin Configuration (\_config.yml)
 |Name|Parameter|Default|Description|Example|
