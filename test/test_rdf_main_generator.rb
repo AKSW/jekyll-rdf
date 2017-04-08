@@ -101,4 +101,28 @@ class TestRdfMainGenerator < Test::Unit::TestCase
     end
   end
 
+  context "rendering a page without a template" do
+    generator = Jekyll::RdfMainGenerator.new
+    emptyMapper = Object.new
+    def emptyMapper.map x
+      nil
+    end
+    fakeConfig = {'url' => "test", 'baseurl' => "baseurl"}
+    fakeResource = Object.new
+    def fakeResource.filename a, b
+      "test/URI"
+    end
+    def fakeResource.to_s
+      "fakeResource"
+    end
+    fakeSite = Object.new
+    def fakeSite.source
+      nil
+    end
+    generator.createPage(fakeSite, fakeResource, emptyMapper, fakeConfig)
+    should "display a warning" do
+      assert Jekyll.logger.messages.any? {|message| !!(message=~ /\s*Resource .* not rendered: No fitting template or default template found\.\s*/)}
+    end
+  end
+
 end

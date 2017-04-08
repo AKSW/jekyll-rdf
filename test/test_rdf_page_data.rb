@@ -8,7 +8,7 @@ class TestRdfPageData < Test::Unit::TestCase
     site = Jekyll::Site.new(config)
     site.data['resources'] = []
     graph = RDF::Graph.load(config['jekyll_rdf']['path'])
-	sparql = SPARQL::Client.new(graph)
+    sparql = SPARQL::Client.new(graph)
     mapper = Jekyll::RdfTemplateMapper.new(config['jekyll_rdf']['instance_template_mappings'], config['jekyll_rdf']['class_template_mappings'], config['jekyll_rdf']['default_template'], graph, sparql)
     test_uri = RDF::URI.new("http://www.ifi.uio.no/INF3580/simpsons#Homer")
     page = Jekyll::RdfPageData.new(site, site.source, Jekyll::Drops::RdfResource.new(test_uri, graph), mapper, config)
@@ -21,6 +21,13 @@ class TestRdfPageData < Test::Unit::TestCase
     special_path_uri = RDF::URI.new("http://www.ifi.uio.no/INF3580/simpsons#")
     testPathResource = Jekyll::Drops::RdfResource.new(special_path_uri, graph)
 
+    missing_template_uri = RDF::URI.new("http://this.uri/has/no/template")
+    no_template_mapper = Jekyll::RdfTemplateMapper.new(config['jekyll_rdf']['instance_template_mappings'], config['jekyll_rdf']['class_template_mappings'], nil, graph, sparql)
+    missing_template_page = Jekyll::RdfPageData.new(site, site.source, Jekyll::Drops::RdfResource.new(missing_template_uri, graph), exceptionMapper, config)
+
+    should "recognize templateless pages and resources" do
+      assert(missing_template_page.complete)
+    end
 
     should "have correct title" do
       assert_equal page.data['title'], "http://www.ifi.uio.no/INF3580/simpsons#Homer"
