@@ -50,6 +50,11 @@ class TestJekyllRdf < Test::Unit::TestCase
       assert (rdf_property(homer_resource, "<http://xmlns.com/foaf/0.1/job>", "chk", false)).nil?
     end
 
+    should "be part of the Simpsons family" do
+      puts "test inverse properties " + rdf_inverse_property(homer_resource, "<http://www.ifi.uio.no/INF3580/family#hasFamilyMember>", nil, false)
+      assert_equal(rdf_inverse_property(homer_resource, "<http://www.ifi.uio.no/INF3580/family#hasFamilyMember>", nil, false), "http://www.ifi.uio.no/INF3580/simpsons#TheSimpsons")
+    end
+
     should "have a job listed with the language tag 'en'" do
       assert_equal("unknown", rdf_property(homer_resource, "<http://xmlns.com/foaf/0.1/job>", "en", false))
     end
