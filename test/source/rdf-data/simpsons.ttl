@@ -5,6 +5,7 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix fam: <http://www.ifi.uio.no/INF3580/family#> .
 @prefix sim: <http://www.ifi.uio.no/INF3580/simpsons#> .
+@prefix simc: <http://www.ifi.uio.no/INF3580/simpson-collection#> .
 @prefix base: <http://www.ifi.uio.no/INF3580/>.
 
 @prefix dtp16: <http://pcai042.informatik.uni-leipzig.de/~dtp16/#> .
@@ -123,3 +124,14 @@ dtp16:TestPersonMagrid rdf:type dtp16:MagridsSpecialClass.         #test purpose
 dtp16:TestPersonIra rdf:type foaf:Person,
                              dtp16:SimpsonPerson.
 <http://www.ifi.uio.no/INF3580> rdf:type foaf:Person.
+simc:Collection a rdf:List.
+simc:Collection rdf:first sim:Homer.
+simc:Collection rdf:rest simc:c1.
+simc:c1 rdf:first sim:Marge.
+simc:c1 rdf:rest simc:c2.
+simc:c2 rdf:first sim:Bart.
+simc:c2 rdf:rest simc:c3.
+simc:c3 rdf:first sim:Maggie.
+simc:c3 rdf:rest simc:c4.
+simc:c4 rdf:first sim:Lisa.
+simc:c4 rdf:rest rdf:nil.
