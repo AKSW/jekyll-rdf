@@ -41,8 +41,8 @@ class TestRdfPageData < Test::Unit::TestCase
       assert_equal page.data['rdf'].statements[5].object.literal, "unbekannt"
     end
 
-    should "have 16 rdf statements" do
-      assert_equal 16, page.data['rdf'].statements.count
+    should "have 17 rdf statements" do
+      assert_equal 17, page.data['rdf'].statements.count
     end
 
     should "have ambigious ambigious template mapping for PersonClass" do  #PersonClass originates from simpsons.ttl
