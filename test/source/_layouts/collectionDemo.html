@@ -1,0 +1,12 @@
+---
+---
+<html>
+  <head>
+  </head>
+  <body>
+    {% assign array = page.rdf | rdf_collection %}
+    {% for ele in array %}
+      <h1>{{ele.iri}}</h1>
+    {% endfor %}
+  </body>
+</html>

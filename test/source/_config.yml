@@ -40,3 +40,4 @@ jekyll_rdf:
     "http://www.ifi.uio.no/INF3580/simpsons#Abraham" : "abraham.html"
     "http://www.ifi.uio.no/INF3580/simpsons#Homer" : "homer.html"
     "http://www.ifi.uio.no/INF3580/simpsons" : "family.html"
+    "http://www.ifi.uio.no/INF3580/simpson-collection#Collection" : "collectionDemo.html"

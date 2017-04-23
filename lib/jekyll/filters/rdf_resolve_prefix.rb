@@ -22,27 +22,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-##
-# JekyllRdf converts RDF data into static websites
-#
-#
-require 'jekyll'
-require 'linkeddata'
-require 'sparql'
-require 'set'
 
-require 'jekyll/drops/rdf_term'
-require 'jekyll/drops/rdf_statement'
-require 'jekyll/drops/rdf_literal'
-require 'jekyll/drops/rdf_resource'
-require 'jekyll/drops/rdf_resource_class'
-require 'jekyll/exceptions/NoPrefixMapped'
-require 'jekyll/exceptions/NoPrefixesDefined'
-require 'jekyll/exceptions/UnMarkedUri'
-require 'jekyll/filters/rdf_resolve_prefix'
-require 'jekyll/filters/rdf_sparql_query'
-require 'jekyll/filters/rdf_property'
-require 'jekyll/filters/rdf_collection'
-require 'jekyll/rdf_main_generator'
-require 'jekyll/rdf_page_data'
-require 'jekyll/rdf_template_mapper'
+module Jekyll
+  module RdfPrefixResolver
+    private
+    def rdf_resolve_prefix(input, predicate)
+      if(predicate[0] == "<" && predicate[-1] == ">")
+        return predicate[1..-2]
+      end
+      arr=predicate.split(":",2)  #bad regex, would also devide 'http://example....' into 'http' and '//example....',even though it is already a complete URI; if 'PREFIX http: <http://...> is defined, 'http' in 'http://example....' could be mistaken for a prefix
+      if((arr[1].include? (":")) || (arr[1][0..1].eql?("//")))
+        raise UnMarkedUri.new(predicate, input.page.data['template'])
+      end
+      if(!input.page.data["rdf_prefixes"].nil?)
+        if(!input.page.data["rdf_prefix_map"][arr[0]].nil?)
+          return arr[1].prepend(input.page.data["rdf_prefix_map"][arr[0]])
+        else
+          raise NoPrefixMapped.new(predicate, input.page.data['template'], arr[0])
+        end
+      else
+        raise NoPrefixesDefined.new(predicate, input.page.data['template'])
+      end
+    end
+  end
+end
