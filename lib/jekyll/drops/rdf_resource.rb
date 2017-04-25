@@ -131,38 +131,43 @@ module Jekyll #:nodoc:
       # * +domain_name+
       #
       def generate_file_name(domain_name, baseurl)
-        begin
-          uri = URI::split(term.to_s)
-          file_name = "rdfsites/" # in this directory all external RDF sites are stored
-          if (uri[2] == domain_name)
-            file_name = ""
-            uri[0] = nil
-            uri[2] = nil
-            if(uri[5].length > baseurl.length)
-              if(uri[5][0..(baseurl.length)].eql? (baseurl + "/"))
-                uri[5] = uri[5][(baseurl.length)..-1]
-              end
-            elsif(uri[5].eql?(baseurl))
-              uri[5] = nil
-            end
-          end
-          (0..8).each do |i|
-            if !(uri[i].nil?)
-              case i
-              when 5
-                file_name += "#{uri[i][1..-1]}/"
-              when 8
-                file_name += "#/#{uri[i]}"
-              else
-               file_name += "#{uri[i]}/"
-              end
-            end
-          end
-          unless file_name[-1] == '/'
-            file_name += '/'
-          end
-        rescue URI::InvalidURIError #unclean coding: blanknodes are recognized through errors
+        if(term.to_s[0..1].eql? "_:")
           file_name = "rdfsites/blanknode/#{term.to_s}/"
+        else
+          begin
+            uri = URI::split(term.to_s)
+            file_name = "rdfsites/" # in this directory all external RDF sites are stored
+            if (uri[2] == domain_name)
+              file_name = ""
+              uri[0] = nil
+              uri[2] = nil
+              if(uri[5].length > baseurl.length)
+                if(uri[5][0..(baseurl.length)].eql? (baseurl + "/"))
+                  uri[5] = uri[5][(baseurl.length)..-1]
+                end
+              elsif(uri[5].eql?(baseurl))
+                uri[5] = nil
+              end
+            end
+            (0..8).each do |i|
+              if !(uri[i].nil?)
+                case i
+                when 5
+                  file_name += "#{uri[i][1..-1]}/"
+                when 8
+                  file_name += "#/#{uri[i]}"
+                else
+                  file_name += "#{uri[i]}/"
+                end
+              end
+            end
+            unless file_name[-1] == '/'
+              file_name += '/'
+            end
+          rescue URI::InvalidURIError #unclean coding: blanknodes are recognized through errors
+            file_name = "invalids/#{term.to_s}"
+            Jekyll.logger.error("Invalid resource found: #{term.to_s} is not a proper uri")
+          end
         end
         file_name = file_name.gsub('_','_u')
         file_name = file_name.gsub('//','/') # needs a better regex to include /// ////...
