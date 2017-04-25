@@ -135,8 +135,8 @@ We implemented a liquid filter `sparql_query` to run custom SPARQL queries. Each
 </table>
 ```
 ### Defining Prefixes for RDF
-It is possible to pre define a set of prefixes for the use in `rdf_property` and `sparql_query`, shortening the amount of text required for each filter. Just define your prefixes in a separate file and include the key `rdf_prefix_path` together with a relative path in the yaml-frontmatter of every layout you want to use your prefixes for. The path gets resolved to /your/jekyll-directory/`rdf-data`/rdf_prefix_path. The format of this prefix file should correspond to the ttl-format.
-It is also adviced to always enclose complete (without prefixes) URIs in `<` and `>` before passing them to `rdf_property` or `sparql_query`, otherwise they don't always get recognized.
+It is possible to pre define a set of prefixes for the use in `rdf_property` and `sparql_query`, shortening the amount of text required for each filter. Just define your prefixes in a separate file and include the key `rdf_prefix_path` together with a relative path in the yaml-frontmatter of every layout you want to use your prefixes for. The path gets resolved to `/your/jekyll-directory/rdf-data/rdf_prefix_path`. The format of this prefix file should correspond to the ttl-format.
+It is also adviced to always enclose complete (without prefixes) URIs in `<` and `>` before passing them to `rdf_property` or `sparql_query`, otherwise an exception (UnMarkedUri) will be thrown.
 
 ## Configuration
 ### Set default template and map templates to resources
