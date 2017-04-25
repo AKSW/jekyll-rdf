@@ -38,30 +38,49 @@ module Jekyll
     # * +list+ - (optional) decides the format of the return value. If set to true it returns an array, otherwise it returns a singleton String containing a URI.
     #
     def rdf_property(input, predicate, lang = nil, list = false)
+      return map_predicate(input, predicate, lang, list)
+    end
+
+    def rdf_inverse_property(input, predicate, lang = nil, list = false)
+      return map_predicate(input, predicate, lang, list, true)
+    end
+
+    private
+    def map_predicate(input, predicate, lang = nil, list = false, inverse = false)
       return input unless input.is_a?(Jekyll::Drops::RdfResource)
-      begin
-        predicate = rdf_resolve_prefix(input, predicate)
-        result = input.statements_as_subject.select{ |s| s.predicate.term.to_s == predicate }
-        if lang != nil
-          if lang == 'cfg'
-            lang = input.site.config['jekyll_rdf']['language']
-          end
-          result = result.select{ |s|
-            if(s.object.term.is_a?(RDF::Literal))
-              s.object.term.language == lang.to_sym
-            else
-              false
-            end
-          }
-        end
-        return unless !result.empty?
-        if(list)
-          return result.map{|p|
-            p.object.to_s
-          }
-        else
-          return (result.first.object).to_s
-        end
+      predicate = rdf_resolve_prefix(input, predicate)
+      result = filter_statements(input, predicate, inverse, lang)
+      return unless !result.empty?
+      if(list)
+        return result
+      else
+        return result.first
+      end
+    end
+
+    private
+    def filter_statements(input, predicate, inverse = false, lang = nil)
+      if lang.eql? 'cfg'
+        lang = input.site.config['jekyll_rdf']['language']
+      end
+
+      if(inverse)
+        result = input.statements_as_object.select{ |s| (s.predicate.term.to_s == predicate)&&(check_language(s.subject)) }.map{|o| o.subject.term.to_s}
+      else
+        result = input.statements_as_subject.select{ |s| (s.predicate.term.to_s == predicate)&&(check_language(s.object, lang)) }.map{|s| s.object.term.to_s}
+      end
+      return result
+    end
+
+    private
+    def check_language(s, lang = nil)
+      if(lang.nil?)
+        return true
+      end
+      if(s.term.is_a?(RDF::Literal))
+        return (s.term.language == lang.to_sym)
+      else
+        return false
       end
     end
 
