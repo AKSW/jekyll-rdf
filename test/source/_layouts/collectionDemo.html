@@ -9,5 +9,6 @@
     {% for ele in array %}
       <h1>{{ele.iri}}</h1>
     {% endfor %}
+    {% assign failarray = page.rdf | rdf_container %}
   </body>
 </html>
