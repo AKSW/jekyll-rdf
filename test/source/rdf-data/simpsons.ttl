@@ -6,6 +6,7 @@
 @prefix fam: <http://www.ifi.uio.no/INF3580/family#> .
 @prefix sim: <http://www.ifi.uio.no/INF3580/simpsons#> .
 @prefix simc: <http://www.ifi.uio.no/INF3580/simpson-collection#> .
+@prefix simcon: <http://www.ifi.uio.no/INF3580/simpson-container#> .
 @prefix base: <http://www.ifi.uio.no/INF3580/>.
 
 @prefix dtp16: <http://pcai042.informatik.uni-leipzig.de/~dtp16/#> .
@@ -135,3 +136,10 @@ simc:c3 rdf:first sim:Maggie.
 simc:c3 rdf:rest simc:c4.
 simc:c4 rdf:first sim:Lisa.
 simc:c4 rdf:rest rdf:nil.
+simcon:Container a rdf:Seq.
+simcon:Container rdf:_1 sim:Homer.
+simcon:Container rdf:_2 sim:Marge.
+simcon:Container rdf:_3 sim:Bart.
+simcon:Container rdf:_4 sim:Lisa.
+simcon:Container rdf:_5 sim:Maggie.
+dtp16:SparqlClient a plh:object.
