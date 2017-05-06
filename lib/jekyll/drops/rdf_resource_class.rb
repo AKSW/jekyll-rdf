@@ -39,8 +39,8 @@ module Jekyll #:nodoc:
       attr_accessor :subClasses
       attr_accessor :subClassHierarchyValue
 
-      def initialize(term, graph)
-        super(term, graph)
+      def initialize(term, sparql)
+        super(term, sparql)
         @subClasses = []
         @lock = -1
         @subClassHierarchyValue = 0

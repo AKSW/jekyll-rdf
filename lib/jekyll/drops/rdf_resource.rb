@@ -120,9 +120,53 @@ module Jekyll #:nodoc:
       #     Return a list of Jekyll::Drops::RdfStatements whose object is the RDF resource represented by the receiver
       #
       def statements_as(role)
-        graph.query(role.to_sym => term).map do |statement|
-          RdfStatement.new(statement, graph, site)
+        case role
+          when :subject
+            query = "SELECT ?p ?o ?dt ?lit ?lang WHERE{ <#{term.to_s}> ?p ?o BIND(datatype(?o) AS ?dt) BIND(isLiteral(?o) AS ?lit) BIND(lang(?o) AS ?lang)}"
+            sparql.query(query).map do |solution|
+              check = checkSolution(solution)
+              createStatement(term.to_s, solution.p, solution.o, solution.lit, check[:lang], check[:dataType])
+            end
+          when :predicate
+            query = "SELECT ?s ?o ?dt ?lit ?lang WHERE{ ?s <#{term.to_s}> ?o BIND(datatype(?o) AS ?dt) BIND(isLiteral(?o) AS ?lit) BIND(lang(?o) AS ?lang)}"
+            sparql.query(query).map do |solution|
+              check = checkSolution(solution)
+              createStatement(solution.s, term.to_s, solution.o, solution.lit, check[:lang], check[:dataType])
+            end
+          when :object
+            query = "SELECT ?s ?p WHERE{ ?s ?p <#{term.to_s}>}"
+            sparql.query(query).map do |solution|
+              createStatement( solution.s, solution.p, term.to_s)
+            end
+          else
+            Jekyll.logger.error "Not existing role found in #{term.to_s}"
+            return
         end
+      end
+
+      #checks if a query solution contains a language or type tag and returns those in a hash
+      private
+      def checkSolution(solution)
+        result = {:lang => nil, :dataType => nil}
+        if((solution.bound?(:lang)) && (!solution.lang.to_s.eql?("")))
+          result[:lang] = solution.lang.to_s.to_sym
+        end
+        if(solution.bound? :dt)
+          result[:dataType] = solution.dt
+        end
+        return result
+      end
+
+      private
+      def createStatement(subjectString, predicateString, objectString, isLit = nil, lang = nil, dataType = nil)
+        subject = RDF::URI.new(subjectString)
+        predicate = RDF::URI.new(predicateString)
+        if(isLit)
+          object = RDF::Literal.new(objectString, language: lang, datatype: RDF::URI.new(dataType))
+        else
+          object = RDF::URI.new(objectString)
+        end
+        return RdfStatement.new(RDF::Statement( subject, predicate, object), @sparql, @site)
       end
 
       private

@@ -64,7 +64,7 @@ module Jekyll
       sparql = SPARQL::Client.new(graph)
 
       # restrict RDF graph with restriction
-      resources = extract_resources(config['restriction'], config['include_blank'], graph, sparql)
+      resources = extract_resources(config['restriction'], config['include_blank'], sparql)
 
       site.data['sparql'] = sparql
       site.data['resources'] = []
@@ -73,7 +73,7 @@ module Jekyll
       pageResources={};
       blanknodes=[]
       resources.each do |uri|
-        resource = Jekyll::Drops::RdfResource.new(uri, graph)
+        resource = Jekyll::Drops::RdfResource.new(uri, sparql)
         if(uri.instance_of? RDF::URI)
           uriString = uri.to_s
           if((uriString.include? "#") && (uriString.index("#") < (uriString.length - 1)))   #sorting in uris with a #
@@ -93,7 +93,7 @@ module Jekyll
         end
       end
 
-      mapper = Jekyll::RdfTemplateMapper.new(config['instance_template_mappings'], config['class_template_mappings'], config['default_template'], graph, sparql)
+      mapper = Jekyll::RdfTemplateMapper.new(config['instance_template_mappings'], config['class_template_mappings'], config['default_template'], sparql)
 
       # create RDF pages for each URI
       pageResources.each{|uri, entry|
@@ -116,7 +116,7 @@ module Jekyll
     end
 
     ##
-    # #extract_resources returns resources from an RDF graph.
+    # #extract_resources returns resources from an RDF Sparql endpoint.
     #
     # Literals are omitted.
     # Blank nodes are only returned if +include_blank+ is true.
@@ -134,27 +134,27 @@ module Jekyll
     #   Otherwise ::
     #     consider +selection+ to be a SPARQL query and return answer set to this SPARQL query
     # * +include_blank+ - If true, blank nodes are also returned, otherwise blank nodes are omitted
-    # * +graph+ - The RDF graph to restrict
     # * +sparql+ - The SPARQL client to run queries against
     #
-    def extract_resources(selection, include_blank, graph, sparql)
+    def extract_resources(selection, include_blank, sparql)
 
       case selection
       when nil  # Config parameter not present
-        object_resources    = extract_resources("objects",    include_blank, graph, sparql)
-        subject_resources   = extract_resources("subjects",   include_blank, graph, sparql)
-        predicate_resources = extract_resources("predicates", include_blank, graph, sparql)
+        object_resources    = extract_resources("objects",    include_blank, sparql)
+        subject_resources   = extract_resources("subjects",   include_blank, sparql)
+        predicate_resources = extract_resources("predicates", include_blank, sparql)
         return object_resources.concat(subject_resources).concat(predicate_resources).uniq
       when "objects"
-        graph.objects
+        query = "SELECT ?resourceUri WHERE{?s ?p ?resourceUri}"
       when "subjects"
-        graph.subjects
+        query = "SELECT ?resourceUri WHERE{?resourceUri ?p ?o}"
       when "predicates"
-        graph.predicates
+        query = "SELECT ?resourceUri WHERE{?s ?resourceUri ?o}"
       else
         # Custom query
-        sparql.query(selection).map{ |sol| sol[:resourceUri] }
-      end.reject do |s|  # Reject literals
+        query = selection
+      end
+      sparql.query(query).map{ |sol| sol[:resourceUri] }.reject do |s|  # Reject literals
         s.class <= RDF::Literal
       end.select do |s|  # Select URIs and blank nodes in case of include_blank
         include_blank || s.class == RDF::URI

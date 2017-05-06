@@ -49,7 +49,7 @@ module Jekyll
     #
     # * +resources_to_templates+ - A Hash mapping a type resource to a template name
     # * +default_template+ - Default template name
-    def initialize(resources_to_templates, classes_to_templates, default_template, graph, sparql)
+    def initialize(resources_to_templates, classes_to_templates, default_template, sparql)
       @resources_to_templates = resources_to_templates
       @default_template = default_template
       @classes_to_templates = classes_to_templates
@@ -63,7 +63,7 @@ module Jekyll
       end
 
 	  classSearchResults.each do |uri|
-	    classResources[uri.to_s]=Jekyll::Drops::RdfResourceClass.new(uri, graph)
+	    classResources[uri.to_s]=Jekyll::Drops::RdfResourceClass.new(uri, sparql)
 	  end
 
       classResources.each{|key, value|

@@ -41,24 +41,24 @@ class TestRdfMainGenerator < Test::Unit::TestCase
 
     context "without blank nodes" do
 
-      should "get 56 unique resources" do
-        assert_equal 56, generator.extract_resources(nil, false, graph, sparql).count
+      should "get 57 unique resources" do
+        assert_equal 57, generator.extract_resources(nil, false, sparql).count
       end
 
       should "get 29 subjects" do
-        assert_equal 29, generator.extract_resources("subjects", false, graph, sparql).count
+        assert_equal 29, generator.extract_resources("subjects", false, sparql).count
       end
 
       should "get 26 objects" do
-        assert_equal 26, generator.extract_resources("objects", false, graph, sparql).count
+        assert_equal 26, generator.extract_resources("objects", false, sparql).count
       end
 
-      should "get 20 predicates" do
-        assert_equal 20, generator.extract_resources("predicates", false, graph, sparql).count
+      should "get 21 predicates" do
+        assert_equal 21, generator.extract_resources("predicates", false, sparql).count
       end
 
       should "get 3 children of homer simpson" do
-        assert_equal 3, generator.extract_resources("SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }", false, graph, sparql).count
+        assert_equal 3, generator.extract_resources("SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }", false, sparql).count
       end
 
     end
@@ -66,23 +66,23 @@ class TestRdfMainGenerator < Test::Unit::TestCase
     context "with blank nodes" do
 
       should "get 62 unique resources" do
-        assert_equal 62, generator.extract_resources(nil, true, graph, sparql).count
+        assert_equal 62, generator.extract_resources(nil, true, sparql).count
       end
 
       should "get 34 subjects" do
-        assert_equal 34, generator.extract_resources("subjects", true, graph, sparql).count
+        assert_equal 34, generator.extract_resources("subjects", true, sparql).count
       end
 
       should "get 31 objects" do
-        assert_equal 31, generator.extract_resources("objects", true, graph, sparql).count
+        assert_equal 31, generator.extract_resources("objects", true, sparql).count
       end
 
       should "get 21 predicates" do
-        assert_equal 21, generator.extract_resources("predicates", true, graph, sparql).count
+        assert_equal 21, generator.extract_resources("predicates", true, sparql).count
       end
 
       should "get 3 children of homer simpson" do
-        assert_equal 3, generator.extract_resources("SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }", true, graph, sparql).count
+        assert_equal 3, generator.extract_resources("SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }", true, sparql).count
       end
 
     end

@@ -9,21 +9,21 @@ class TestRdfPageData < Test::Unit::TestCase
     site.data['resources'] = []
     graph = RDF::Graph.load(config['jekyll_rdf']['path'])
     sparql = SPARQL::Client.new(graph)
-    mapper = Jekyll::RdfTemplateMapper.new(config['jekyll_rdf']['instance_template_mappings'], config['jekyll_rdf']['class_template_mappings'], config['jekyll_rdf']['default_template'], graph, sparql)
+    mapper = Jekyll::RdfTemplateMapper.new(config['jekyll_rdf']['instance_template_mappings'], config['jekyll_rdf']['class_template_mappings'], config['jekyll_rdf']['default_template'], sparql)
     test_uri = RDF::URI.new("http://www.ifi.uio.no/INF3580/simpsons#Homer")
-    page = Jekyll::RdfPageData.new(site, site.source, Jekyll::Drops::RdfResource.new(test_uri, graph), mapper, config)
+    page = Jekyll::RdfPageData.new(site, site.source, Jekyll::Drops::RdfResource.new(test_uri, sparql), mapper, config)
 
     # for testing exceptions
     error_uri = RDF::URI.new("http://error.causing/uri#error")
-    exceptionMapper = Jekyll::RdfTemplateMapper.new(config['jekyll_rdf']['instance_template_mappings'].merge({"http://error.causing/uri#error" => "testExceptions.html"}), config['jekyll_rdf']['class_template_mappings'], config['jekyll_rdf']['default_template'], graph, sparql)
-    page2 = Jekyll::RdfPageData.new(site, site.source, Jekyll::Drops::RdfResource.new(error_uri, graph), exceptionMapper, config)
+    exceptionMapper = Jekyll::RdfTemplateMapper.new(config['jekyll_rdf']['instance_template_mappings'].merge({"http://error.causing/uri#error" => "testExceptions.html"}), config['jekyll_rdf']['class_template_mappings'], config['jekyll_rdf']['default_template'], sparql)
+    page2 = Jekyll::RdfPageData.new(site, site.source, Jekyll::Drops::RdfResource.new(error_uri, sparql), exceptionMapper, config)
 
     special_path_uri = RDF::URI.new("http://www.ifi.uio.no/INF3580/simpsons#")
-    testPathResource = Jekyll::Drops::RdfResource.new(special_path_uri, graph)
+    testPathResource = Jekyll::Drops::RdfResource.new(special_path_uri, sparql)
 
     missing_template_uri = RDF::URI.new("http://this.uri/has/no/template")
-    no_template_mapper = Jekyll::RdfTemplateMapper.new(config['jekyll_rdf']['instance_template_mappings'], config['jekyll_rdf']['class_template_mappings'], nil, graph, sparql)
-    missing_template_page = Jekyll::RdfPageData.new(site, site.source, Jekyll::Drops::RdfResource.new(missing_template_uri, graph), exceptionMapper, config)
+    no_template_mapper = Jekyll::RdfTemplateMapper.new(config['jekyll_rdf']['instance_template_mappings'], config['jekyll_rdf']['class_template_mappings'], nil, sparql)
+    missing_template_page = Jekyll::RdfPageData.new(site, site.source, Jekyll::Drops::RdfResource.new(missing_template_uri, sparql), exceptionMapper, config)
 
     should "recognize templateless pages and resources" do
       assert(missing_template_page.complete)
@@ -67,7 +67,8 @@ class TestRdfPageData < Test::Unit::TestCase
   context "Invalid uris" do
     config = Jekyll.configuration(TestHelper::TEST_OPTIONS)
     graph = RDF::Graph.load(config['jekyll_rdf']['path'])
-    invalidResource = Jekyll::Drops::RdfResource.new("ahfkas/aljöfa,sldf/slf", graph)
+    sparql = SPARQL::Client.new(graph)
+    invalidResource = Jekyll::Drops::RdfResource.new("ahfkas/aljöfa,sldf/slf", sparql)
     invalidResource.filename("site","base")
     should "be recognized by rdf_resource.rb" do
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /\s*Invalid resource found: .* is not a proper uri\s*/)}
