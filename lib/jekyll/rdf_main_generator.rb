@@ -40,81 +40,93 @@ module Jekyll
     #
     def generate(site)
 
-      begin
-        config = site.config.fetch('jekyll_rdf')
-      rescue Exception
-        Jekyll.logger.error("You've included Jekyll-RDF, but it is not configured. Aborting the jekyll-rdf plugin.")
-        return
+      if(!load_config(site))
+        return #in case of error, exit routine
       end
-
-      global_config = Jekyll.configuration({})
-
-      #small fix because global_config doesn't work in a test enviorment
-      if(!global_config.key? "url")
-        global_config["url"] = site.config["url"]
-        global_config["baseurl"] = site.config["baseurl"]
-      end
-
-      if(config.key? "template_mapping")
+      if(@config.key? "template_mapping")
         Jekyll.logger.error("Outdated format in _config.yml:\n  'template_mapping' detected but the following keys must be used now instead:\n    instance_template_mappings -> maps single resources to single layouts\n    class_template_mappings -> maps entire classes of resources to layouts\nJekyll-RDF wont render any pages for #{site.source}")
         return
       end
 
-      graph = RDF::Graph.load(config['path'])
+      graph = RDF::Graph.load(@config['path'])
       sparql = SPARQL::Client.new(graph)
 
       # restrict RDF graph with restriction
-      resources = extract_resources(config['restriction'], config['include_blank'], sparql)
+      resources = extract_resources(@config['restriction'], @config['include_blank'], sparql)
 
       site.data['sparql'] = sparql
       site.data['resources'] = []
 
-      #parse resources
-      pageResources={};
-      blanknodes=[]
+      parse_resources(resources, sparql)
+
+      mapper = Jekyll::RdfTemplateMapper.new(@config['instance_template_mappings'], @config['class_template_mappings'], @config['default_template'], sparql)
+
+      prepare_pages(site, mapper)
+
+    end
+
+    def prepare_pages (site, mapper)
+      @pageResources.each{|uri, entry|
+        if(entry['./'].nil?)
+          if(@config['render_orphaned_uris'])
+            entry.each{|name, resource|
+              createPage(site, resource, mapper, @global_config)
+            }
+          end
+        else
+          resource = entry.delete('./')
+          resource.subResources = entry
+          createPage(site, resource, mapper, @global_config)
+        end
+      }
+
+      @blanknodes.each{|resource|
+        createPage(site, resource, mapper, @global_config)
+      }
+    end
+
+    def parse_resources (resources, sparql)
+      @pageResources={};
+      @blanknodes=[]
       resources.each do |uri|
         resource = Jekyll::Drops::RdfResource.new(uri, sparql)
         if(uri.instance_of? RDF::URI)
           uriString = uri.to_s
           if((uriString.include? "#") && (uriString.index("#") < (uriString.length - 1)))   #sorting in uris with a #
             preSufUri = uriString.split("#")
-            if(!pageResources.key? preSufUri[0])
-              pageResources[preSufUri[0]] = {}
+            if(!@pageResources.key? preSufUri[0])
+              @pageResources[preSufUri[0]] = {}
             end
-            pageResources[preSufUri[0]][preSufUri[1]] = resource
+            @pageResources[preSufUri[0]][preSufUri[1]] = resource
           elsif                                  #sorting in uris without a #
-            if(!pageResources.key? uriString)
-              pageResources[uriString]={}
+            if(!@pageResources.key? uriString)
+              @pageResources[uriString]={}
             end
-            pageResources[uriString]['./'] = resource
+            @pageResources[uriString]['./'] = resource
           end
         elsif(uri.instance_of? RDF::Node)
-          blanknodes << resource
+          @blanknodes << resource
         end
       end
-
-      mapper = Jekyll::RdfTemplateMapper.new(config['instance_template_mappings'], config['class_template_mappings'], config['default_template'], sparql)
-
-      # create RDF pages for each URI
-      pageResources.each{|uri, entry|
-        if(entry['./'].nil?)
-          if(config['render_orphaned_uris'])
-            entry.each{|name, resource|
-              createPage(site, resource, mapper, global_config)
-            }
-          end
-        else
-          resource = entry.delete('./')
-          resource.subResources = entry
-          createPage(site, resource, mapper, global_config)
-        end
-      }
-
-      blanknodes.each{|resource|
-        createPage(site, resource, mapper, global_config)
-      }
     end
 
+    def load_config (site)
+      begin
+       @config = site.config.fetch('jekyll_rdf')
+      rescue Exception
+        Jekyll.logger.error("You've included Jekyll-RDF, but it is not configured. Aborting the jekyll-rdf plugin.")
+        return false
+      end
+
+      @global_config = Jekyll.configuration({})
+
+      #small fix because global_config doesn't work in a test enviorment
+      if(!@global_config.key? "url")
+        @global_config["url"] = site.config["url"]
+        @global_config["baseurl"] = site.config["baseurl"]
+      end
+      return true
+    end
     ##
     # #extract_resources returns resources from an RDF Sparql endpoint.
     #
