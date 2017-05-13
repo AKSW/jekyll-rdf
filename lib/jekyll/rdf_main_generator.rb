@@ -177,8 +177,6 @@ module Jekyll
       page = RdfPageData.new(site, site.source, resource, mapper, global_config)
       if(page.complete)
         site.pages << page
-      else
-        Jekyll.logger.warn("Resource #{resource} not rendered: No fitting template or default template found.")
       end
     end
 
