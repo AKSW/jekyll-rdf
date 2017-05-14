@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class TestRdfPageData < Test::Unit::TestCase
-
+  include Jekyll::RdfProperty
   context "RdfPage" do
 
     config = Jekyll.configuration(TestHelper::TEST_OPTIONS)
@@ -34,11 +34,13 @@ class TestRdfPageData < Test::Unit::TestCase
     end
 
     should "have correct job" do
-      assert_equal page.data['rdf'].statements[4].object.literal, "unknown"
+      jobString = rdf_property(page.data['rdf'], '<http://xmlns.com/foaf/0.1/job>', 'en')
+      assert (("unknown".eql? jobString) || ("unknown Job 2".eql? jobString))
     end
 
     should "have correct translated job" do
-      assert_equal page.data['rdf'].statements[5].object.literal, "unbekannt"
+      jobString = rdf_property(page.data['rdf'], '<http://xmlns.com/foaf/0.1/job>', 'de')
+      assert (("unbekannt".eql? jobString) || ("unbekannter Job 2".eql? jobString))
     end
 
     should "have 18 rdf statements" do

@@ -2,7 +2,6 @@ require 'test_helper'
 
 class TestJekyllRdf < Test::Unit::TestCase
   include RSpec::Matchers
-
   config = Jekyll.configuration(TestHelper::TEST_OPTIONS)
   site = Jekyll::Site.new(config)
   site.process
@@ -10,7 +9,6 @@ class TestJekyllRdf < Test::Unit::TestCase
     p.name == "simpsons/index.html".gsub(TestHelper::BASE_URL, '')
   } # creates an array
   simpson_page = pagearray[0] # select first entry of selection
-
   context "Generating a site with RDF data" do
     should "create a file which mentions 'Lisa Simpson'" do
       s = File.read("#{TestHelper::DEST_DIR}/INF3580/simpsons/index.html") # read static file
@@ -56,7 +54,8 @@ class TestJekyllRdf < Test::Unit::TestCase
     end
 
     should "have a job listed with the language tag 'en'" do
-      assert_equal("unknown", rdf_property(homer_resource, "<http://xmlns.com/foaf/0.1/job>", "en", false))
+      jobString = rdf_property(homer_resource, "<http://xmlns.com/foaf/0.1/job>", "en", false)
+      assert ("unknown".eql?(jobString) || "unknown Job 2".eql?(jobString))
     end
   end
 

@@ -53,7 +53,6 @@ module Jekyll
 
       # restrict RDF graph with restriction
       resources = extract_resources(@config['restriction'], @config['include_blank'], sparql)
-
       site.data['sparql'] = sparql
       site.data['resources'] = []
 
@@ -98,7 +97,7 @@ module Jekyll
               @pageResources[preSufUri[0]] = {}
             end
             @pageResources[preSufUri[0]][preSufUri[1]] = resource
-          elsif                                  #sorting in uris without a #
+          else                                  #sorting in uris without a #
             if(!@pageResources.key? uriString)
               @pageResources[uriString]={}
             end
