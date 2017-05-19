@@ -126,6 +126,7 @@ dtp16:TestPersonIra rdf:type foaf:Person,
                              dtp16:SimpsonPerson.
 <http://www.ifi.uio.no/INF3580> rdf:type foaf:Person.
 simc:Collection a rdf:List.
+simc:Pointer foaf:knows simc:Collection.
 simc:Collection rdf:first sim:Homer.
 simc:Collection rdf:rest simc:c1.
 simc:c1 rdf:first sim:Marge.

@@ -1,0 +1,15 @@
+<http://example.org/Sebastian>
+    a <http://xmlns.com/foaf/0.1/Agent>, <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/firstName> "Sebastian" ;
+    <http://xmlns.com/foaf/0.1/gender> "male" ;
+    _:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "shinobu" .
+_:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:genid5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "Ruby" .
+_:genid5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid4 .
+_:genid6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "Jekyll-RDF" .
+_:genid6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid5 .
+_:genid7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "Informatik" .
+_:genid7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid6 .
+<http://example.org/knows> <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "BSV" .
+<http://example.org/knows> <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid7 .
+<http://example.org/Sebastian> <http://xmlns.com/foaf/0.1/knows> <http://example.org/knows> .

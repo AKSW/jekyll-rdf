@@ -66,9 +66,9 @@ module Jekyll
       end
 
       if(inverse)
-        result = input.statements_as_object.select{ |s| (s.predicate.term.to_s == predicate)&&(check_language(s.subject)) }.map{|o| o.subject.term.to_s}
+        result = input.statements_as_object.select{ |s| (s.predicate.term.to_s == predicate)&&(check_language(s.subject)) }.map{|o| Jekyll::Drops::RdfTerm.build_term_drop(o.subject.term, input.graph, input.site)}
       else
-        result = input.statements_as_subject.select{ |s| (s.predicate.term.to_s == predicate)&&(check_language(s.object, lang)) }.map{|s| s.object.term.to_s}
+        result = input.statements_as_subject.select{ |s| (s.predicate.term.to_s == predicate)&&(check_language(s.object, lang)) }.map{|s| Jekyll::Drops::RdfTerm.build_term_drop(s.object.term, input.graph, input.site)}
       end
       return result
     end

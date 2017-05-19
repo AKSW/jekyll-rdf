@@ -1,0 +1,16 @@
+---
+---
+<html>
+  <head>
+  </head>
+  <body>
+    <h1>This is a collection:</h1>
+    {% assign coll = page.rdf | rdf_property: '<http://xmlns.com/foaf/0.1/knows>' %}
+    {% assign array = coll | rdf_collection %}
+    <h1>It contains</h1>
+    {% for ele in array %}
+      <p>{{ele.iri}}</p>
+    {% endfor %}
+  </body>
+</html>
+
