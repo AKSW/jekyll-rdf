@@ -51,12 +51,11 @@ class TestJekyllRdf < Test::Unit::TestCase
     end
 
     should "be part of the Simpsons family" do
-      puts "test inverse properties " + rdf_inverse_property(homer_resource, "<http://www.ifi.uio.no/INF3580/family#hasFamilyMember>", nil, false)
-      assert_equal(rdf_inverse_property(homer_resource, "<http://www.ifi.uio.no/INF3580/family#hasFamilyMember>", nil, false), "http://www.ifi.uio.no/INF3580/simpsons#TheSimpsons")
+      assert_equal(rdf_inverse_property(homer_resource, "<http://www.ifi.uio.no/INF3580/family#hasFamilyMember>", nil, false).to_s, "http://www.ifi.uio.no/INF3580/simpsons#TheSimpsons")
     end
 
     should "have a job listed with the language tag 'en'" do
-      assert_equal("unknown", rdf_property(homer_resource, "<http://xmlns.com/foaf/0.1/job>", "en", false))
+      assert_equal("unknown", rdf_property(homer_resource, "<http://xmlns.com/foaf/0.1/job>", "en", false).to_s)
     end
   end
 
@@ -99,7 +98,7 @@ class TestJekyllRdf < Test::Unit::TestCase
       result = sparql_query(homer_resource, query)
       assert result.length == 3
       assert result.any? {|s|
-        rdf_property(s["s"], '<http://xmlns.com/foaf/0.1/name>') == "Bart Simpson"
+        rdf_property(s["s"], '<http://xmlns.com/foaf/0.1/name>').to_s.eql? "Bart Simpson"
       }
     end
 

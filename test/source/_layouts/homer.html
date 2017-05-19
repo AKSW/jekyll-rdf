@@ -11,7 +11,7 @@ rdf_prefix_path: simpsons.pref
     <tbody>
       <tr>
         <td>Age</td>
-        <td>{{ page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/age' }} </td>
+        <td>{{ page.rdf | rdf_property: '<http://xmlns.com/foaf/0.1/age>' }} </td>
       </tr>
       <tr>
         <td>Sisters</td>
@@ -25,7 +25,7 @@ rdf_prefix_path: simpsons.pref
       <tr>
         <td>Jobs english</td>
         <td>
-          {% assign resultset = page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/job', 'en', true %}
+          {% assign resultset = page.rdf | rdf_property: '<http://xmlns.com/foaf/0.1/job>', 'en', true %}
           {% for result in resultset %}
             <ul>{{ result }}</ul>
           {% endfor %}
@@ -34,7 +34,7 @@ rdf_prefix_path: simpsons.pref
       <tr>
         <td>Jobs german</td>
         <td>
-          {% assign resultset = page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/job', 'de', true %}
+          {% assign resultset = page.rdf | rdf_property: '<http://xmlns.com/foaf/0.1/job>', 'de', true %}
           {% for result in resultset %}
             <ul>{{ result }}</ul>
           {% endfor %}
@@ -43,7 +43,7 @@ rdf_prefix_path: simpsons.pref
       <tr>
         <td>Jobs with configured language</td>
         <td>
-          {% assign resultset = page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/job', 'cfg', true %}
+          {% assign resultset = page.rdf | rdf_property: '<http://xmlns.com/foaf/0.1/job>', 'cfg', true %}
           {% for result in resultset %}
             <ul>{{ result }}</ul>
           {% endfor %}
@@ -52,7 +52,7 @@ rdf_prefix_path: simpsons.pref
       <tr>
         <td>all jobs</td>
         <td>
-          {% assign resultset = page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/job', nil, true %}
+          {% assign resultset = page.rdf | rdf_property: '<http://xmlns.com/foaf/0.1/job>', nil, true %}
           {% for result in resultset %}
             <ul>{{ result }}</ul>
           {% endfor %}

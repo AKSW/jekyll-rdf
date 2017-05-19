@@ -41,20 +41,20 @@ class TestRdfMainGenerator < Test::Unit::TestCase
 
     context "without blank nodes" do
 
-      should "get 39 unique resources" do
-        assert_equal 39, generator.extract_resources(nil, false, graph, sparql).count
+      should "get 58 unique resources" do
+        assert_equal 58, generator.extract_resources(nil, false, graph, sparql).count
       end
 
-      should "get 22 subjects" do
-        assert_equal 22, generator.extract_resources("subjects", false, graph, sparql).count
+      should "get 30 subjects" do
+        assert_equal 30, generator.extract_resources("subjects", false, graph, sparql).count
       end
 
-      should "get 19 objects" do
-        assert_equal 19, generator.extract_resources("objects", false, graph, sparql).count
+      should "get 27 objects" do
+        assert_equal 27, generator.extract_resources("objects", false, graph, sparql).count
       end
 
-      should "get 13 predicates" do
-        assert_equal 13, generator.extract_resources("predicates", false, graph, sparql).count
+      should "get 21 predicates" do
+        assert_equal 21, generator.extract_resources("predicates", false, graph, sparql).count
       end
 
       should "get 3 children of homer simpson" do
@@ -65,20 +65,20 @@ class TestRdfMainGenerator < Test::Unit::TestCase
 
     context "with blank nodes" do
 
-      should "get 45 unique resources" do
-        assert_equal 45, generator.extract_resources(nil, true, graph, sparql).count
+      should "get 64 unique resources" do
+        assert_equal 64, generator.extract_resources(nil, true, graph, sparql).count
       end
 
-      should "get 27 subjects" do
-        assert_equal 27, generator.extract_resources("subjects", true, graph, sparql).count
+      should "get 35 subjects" do
+        assert_equal 35, generator.extract_resources("subjects", true, graph, sparql).count
       end
 
-      should "get 24 objects" do
-        assert_equal 24, generator.extract_resources("objects", true, graph, sparql).count
+      should "get 32 objects" do
+        assert_equal 32, generator.extract_resources("objects", true, graph, sparql).count
       end
 
-      should "get 14 predicates" do
-        assert_equal 14, generator.extract_resources("predicates", true, graph, sparql).count
+      should "get 22 predicates" do
+        assert_equal 22, generator.extract_resources("predicates", true, graph, sparql).count
       end
 
       should "get 3 children of homer simpson" do
