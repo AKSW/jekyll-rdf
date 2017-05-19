@@ -34,12 +34,12 @@ class TestRdfPageData < Test::Unit::TestCase
     end
 
     should "have correct job" do
-      jobString = rdf_property(page.data['rdf'], '<http://xmlns.com/foaf/0.1/job>', 'en')
+      jobString = rdf_property(page.data['rdf'], '<http://xmlns.com/foaf/0.1/job>', 'en').to_s
       assert (("unknown".eql? jobString) || ("unknown Job 2".eql? jobString))
     end
 
     should "have correct translated job" do
-      jobString = rdf_property(page.data['rdf'], '<http://xmlns.com/foaf/0.1/job>', 'de')
+      jobString = rdf_property(page.data['rdf'], '<http://xmlns.com/foaf/0.1/job>', 'de').to_s
       assert (("unbekannt".eql? jobString) || ("unbekannter Job 2".eql? jobString))
     end
 

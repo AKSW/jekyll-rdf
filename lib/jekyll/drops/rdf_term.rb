@@ -53,6 +53,20 @@ module Jekyll
       end
 
       ##
+      # Funktion stub with no funktionality. Its purpose is to keep RdfResource compatible.
+      #
+      def addNecessities (site, page)
+        return self
+      end
+
+      ##
+      # Funktion stub with no funktionality. Its purpose is to keep RdfResource compatible.
+      #
+      def ready?
+        return true;
+      end
+
+      ##
       # Convert this RdfTerm into a string
       # This should be:
       # - for resoruces: the IRI
@@ -72,10 +86,7 @@ module Jekyll
       def self.build_term_drop(term, sparql, site)
         case term
         when RDF::URI, RDF::Node
-          if site
-            resource = site.data['resources'].find{ |r| r.term == term }
-          end
-          resource ? resource : RdfResource.new(term, sparql)
+          return RdfResource.new(term, sparql)
         when RDF::Literal
           return RdfLiteral.new(term, sparql)
         else

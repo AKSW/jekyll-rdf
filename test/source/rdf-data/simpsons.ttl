@@ -143,3 +143,5 @@ simcon:Container rdf:_3 sim:Bart.
 simcon:Container rdf:_4 sim:Lisa.
 simcon:Container rdf:_5 sim:Maggie.
 dtp16:SparqlClient a plh:object.
+plh:object1 plh:predicate2 plh:object2.
+plh:subject1 plh:predicate1 plh:object1.

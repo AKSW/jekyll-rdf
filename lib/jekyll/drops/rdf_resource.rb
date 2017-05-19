@@ -52,6 +52,31 @@ module Jekyll #:nodoc:
       attr_accessor :subResources
 
       ##
+      #
+      #
+      def initialize(term, sparql, site = nil, page = nil)
+        super(term, sparql)
+        if(site.is_a?(Jekyll::Site))
+          @site = site
+        end
+        if(page.is_a?(Jekyll::Page))
+          @page = page
+        end
+      end
+
+      def addNecessities(site, page)
+        if(site.is_a?(Jekyll::Site))
+          @site ||= site
+        end
+        if(page.is_a?(Jekyll::Page))
+          @page ||= page
+        end
+        return self
+      end
+      def ready?
+        return (@site.is_a?(Jekyll::Site)||@page.is_a?(Jekyll::Page))
+      end
+      ##
       # Return a list of Jekyll::Drops::RdfStatements whose subject, predicate or object is the RDF resource represented by the receiver
       #
       def statements
@@ -169,7 +194,7 @@ module Jekyll #:nodoc:
       def createStatement(subjectString, predicateString, objectString, isLit = nil, lang = nil, dataType = nil)
         subject = RDF::URI(subjectString)
         predicate = RDF::URI(predicateString)
-        if(isLit)
+        if(!isLit.nil?&&isLit.true?)
           object = RDF::Literal(objectString, language: lang, datatype: RDF::URI(dataType))
         else
           object = RDF::URI(objectString)

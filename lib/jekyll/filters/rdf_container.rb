@@ -35,7 +35,7 @@ module Jekyll
       query = "SELECT ?p ?o WHERE{ <#{input.iri}> ?p ?o }"
       solutions = sparqlClient.query(query).each_with_object([]) {|solution, array|
         if((solution.p.to_s[0..43].eql? "http://www.w3.org/1999/02/22-rdf-syntax-ns#_") && (solution.p.to_s[44..-1] !~ /\D/))
-          array << Jekyll::Drops::RdfTerm.build_term_drop(solution.o, input.sparql, input.site)
+          array << Jekyll::Drops::RdfTerm.build_term_drop(solution.o, input.sparql, input.site).addNecessities(input.site, input.page)
         end
       }
       return solutions
