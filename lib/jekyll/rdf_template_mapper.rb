@@ -53,29 +53,29 @@ module Jekyll
       @resources_to_templates = resources_to_templates
       @default_template = default_template
       @classes_to_templates = classes_to_templates
-
       @classResources = {}
+
       classRecognitionQuery = "SELECT DISTINCT ?resourceUri WHERE{ {?resourceUri <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?o} UNION{ ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?resourceUri} UNION{ ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?resourceUri}}"
       classSearchResults = sparql.query(classRecognitionQuery).map{ |sol| sol[:resourceUri] }.reject do |s|  # Reject literals
         s.class <= RDF::Literal
       end.select do |s|  # Select URIs and blank nodes in case of include_blank
-        true || s.class == RDF::URI
+        s.class <=RDF::Node || s.class <= RDF::URI
       end
 
-	  classSearchResults.each do |uri|
-	    classResources[uri.to_s]=Jekyll::Drops::RdfResourceClass.new(uri, sparql)
-	  end
+	    classSearchResults.each do |uri|
+	      @classResources[uri.to_s]=Jekyll::Drops::RdfResourceClass.new(uri, sparql)
+	    end
 
-      classResources.each{|key, value|
+      @classResources.each{|key, value|
         value.findDirectSubClasses.each{|s|
-          value.addSubClass(classResources[s.subject.term.to_s])
+          value.addSubClass(@classResources[s])
         }
       }
 
       if(classes_to_templates.is_a?(Hash))
         classes_to_templates.each{|key, value|
-          classResources[key].propagateTemplate(value,0)
-          classResources[key].traverseHierarchyValue(0);
+          @classResources[key].propagateTemplate(value,0)
+          @classResources[key].traverseHierarchyValue(0);
         }
       end
     end
