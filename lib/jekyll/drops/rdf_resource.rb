@@ -73,9 +73,11 @@ module Jekyll #:nodoc:
         end
         return self
       end
+
       def ready?
         return (@site.is_a?(Jekyll::Site)||@page.is_a?(Jekyll::Page))
       end
+
       ##
       # Return a list of Jekyll::Drops::RdfStatements whose subject, predicate or object is the RDF resource represented by the receiver
       #

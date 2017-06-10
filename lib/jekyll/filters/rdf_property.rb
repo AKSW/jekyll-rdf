@@ -61,28 +61,66 @@ module Jekyll
 
     private
     def filter_statements(input, predicate, inverse = false, lang = nil)
+      client = input.sparql
+      query = ""
       if lang.eql? 'cfg'
         lang = input.site.config['jekyll_rdf']['language']
+      elsif lang.nil?
+        lang_query = ""
+      else
+        lang_query = "FILTER(lang(?o) = '#{lang}')"
+      end
+
+      if(!input.to_s[0..1].eql? "_:")
+        input_uri = "<#{input.to_s}>"
+      else
+        input_uri = input.to_s
       end
 
       if(inverse)
-        result = input.statements_as_object.select{ |s| (s.predicate.term.to_s == predicate)&&(check_language(s.subject)) }.map{|o| Jekyll::Drops::RdfResource.new(o.subject.term, input.sparql, input.site, input.page)}
+        query = "SELECT ?s WHERE{ ?s <#{predicate}> #{input_uri} }"
+        result = client.query(query).map do |solution|
+          subject = RDF::URI(solution.s)
+          Jekyll::Drops::RdfResource.new(subject, input.sparql, input.site, input.page)
+        end
       else
-        result = input.statements_as_subject.select{ |s| (s.predicate.term.to_s == predicate)&&(check_language(s.object, lang)) }.map{|s| Jekyll::Drops::RdfTerm.build_term_drop(s.object.term, input.sparql, input.site).addNecessities(input.site, input.page)}
+        query = "SELECT ?o ?dt ?lit ?lang WHERE{ #{input_uri} <#{predicate}> ?o BIND(datatype(?o) AS ?dt) BIND(isLiteral(?o) AS ?lit) BIND(lang(?o) AS ?lang) #{lang_query} }"
+        result = client.query(query).map do |solution|
+          dist_literal_resource(input, solution)
+        end
       end
       return result
     end
 
+    ##
+    # Distinguishes the solution between an Literal and a Resource
+    #
     private
-    def check_language(s, lang = nil)
-      if(lang.nil?)
-        return true
-      end
-      if(s.term.is_a?(RDF::Literal))
-        return (s.term.language == lang.to_sym)
+    def dist_literal_resource(input, solution)
+      if solution.lit.true?
+        check = check_solution(solution)
+        object = RDF::Literal(solution.o, language: check[:lang], datatype: RDF::URI(check[:dataType]))
+        result = Jekyll::Drops::RdfLiteral.new(object, input.sparql)
       else
-        return false
+        object = RDF::URI(solution.o)
+        result = Jekyll::Drops::RdfResource.new(object, input.sparql, input.site, input.page)
       end
+      return result
+    end
+
+    ##
+    # check what language and datatype the passed literal has
+    #
+    private
+    def check_solution(solution)
+        result = {:lang => nil, :dataType => nil}
+        if((solution.bound?(:lang)) && (!solution.lang.to_s.eql?("")))
+          result[:lang] = solution.lang.to_s.to_sym
+        end
+        if(solution.bound? :dt)
+          result[:dataType] = solution.dt
+        end
+        return result
     end
   end
 end
