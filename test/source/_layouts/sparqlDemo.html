@@ -5,10 +5,10 @@
   </head>
   <body>
     <h1>This is a Sparqldemo</h1>
-    {% assign query = "SELECT ?o WHERE{ <http://www.ifi.uio.no/INF3580/simpson-container#Container> ?p ?o. FILTER regex(?p, '^http://www.w3.org/1999/02/22-rdf-syntax-ns#_') }" %}
+    {% assign query = "SELECT ?o WHERE{ <http://www.ifi.uio.no/INF3580/simpson-container#Container> ?p ?o }" %}
     {% assign result = page.rdf | sparql_query: query %}
     {% for res in result %}
-      <h4> {{res.x}}</h4>
+      <h4> {{res.o}}</h4>
     {% endfor %}
   </body>
 </html>

@@ -27,7 +27,7 @@ module Jekyll
   module RdfContainer
     include Jekyll::RdfPrefixResolver
     def rdf_container(input, type = nil)
-      sparqlClient = input.site.data['sparql']
+      sparqlClient = input.sparql
       if(!(validContainer?(input, sparqlClient, type)))
         Jekyll.logger.error "<#{input.iri}> is not recognized as a container"
         return []

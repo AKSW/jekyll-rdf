@@ -106,30 +106,6 @@ class TestJekyllRdf < Test::Unit::TestCase
     fake_sparql_client = homer_resource.site.data["sparql"].clone
     new_homer_resource.site.data["sparql"] = fake_sparql_client
 
-    should "handle a Sparql::Client::Error" do
-      def fake_sparql_client.query query
-        raise SPARQL::Client::ClientError
-      end
-      sparql_query(new_homer_resource,"Query")
-      assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)}
-    end
-
-    should "handle a SPARQL::MalformedQuery Error" do
-      def fake_sparql_client.query query
-        raise SPARQL::MalformedQuery
-      end
-      sparql_query(new_homer_resource,"Query")
-      assert Jekyll.logger.messages.any? {|message| !!(message =~ /malformed query found:.*/)}
-    end
-
-    should "handle Exceptions" do
-      def fake_sparql_client.query query
-        raise Exception
-      end
-      sparql_query(new_homer_resource,"Query")
-      assert Jekyll.logger.messages.any? {|message| !!(message =~ /unknown Exception of class:.*/)}
-    end
-
     should "return an empty array in case of an Exception" do
       def fake_sparql_client.query query
         raise Exception

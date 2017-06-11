@@ -63,8 +63,8 @@ module Jekyll
     def filter_statements(input, predicate, inverse = false, lang = nil)
       client = input.sparql
       query = ""
-      if lang.eql? 'cfg'
-        lang = input.site.config['jekyll_rdf']['language']
+      if (lang.eql? 'cfg')
+        lang_query = "FILTER(lang(?o) = '#{input.site.config['jekyll_rdf']['language']}')"
       elsif lang.nil?
         lang_query = ""
       else

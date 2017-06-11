@@ -4,6 +4,8 @@ require 'shoulda-context'
 require 'rspec/expectations'
 require 'pry'
 require 'coveralls'
+require 'ResourceHelper'
+require_relative '../lib/jekyll-rdf'
 Coveralls.wear!
 
 class TestHelper

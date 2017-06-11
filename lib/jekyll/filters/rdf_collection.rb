@@ -33,7 +33,7 @@ module Jekyll
         nodeSequence = [input.iri]
         nextSequence = []
         results = []
-        sparqlClient = input.site.data['sparql']
+        sparqlClient = input.sparql
         while(!nodeSequence.empty?)
           currentContainer = nodeSequence.pop
           query = "SELECT ?f ?r WHERE{ <#{currentContainer}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> ?r. <#{currentContainer}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?f}"
