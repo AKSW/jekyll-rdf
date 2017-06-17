@@ -1,80 +1,129 @@
 require 'test_helper'
 
-class TestRdfPageData < Test::Unit::TestCase
-  include Jekyll::RdfProperty
-  context "RdfPage" do
+class TestRdfTemplateMapper < Test::Unit::TestCase
+  include Jekyll::RdfPageHelper
+  graph = RDF::Graph.load(TestHelper::TEST_OPTIONS['jekyll_rdf']['path'])
+  sparql = SPARQL::Client.new(graph)
+  res_helper = ResourceHelper.new(sparql)
 
-    config = Jekyll.configuration(TestHelper::TEST_OPTIONS)
-    site = Jekyll::Site.new(config)
-    site.data['resources'] = []
-    graph = RDF::Graph.load(config['jekyll_rdf']['path'])
-    sparql = SPARQL::Client.new(graph)
-    mapper = Jekyll::RdfTemplateMapper.new(config['jekyll_rdf']['instance_template_mappings'], config['jekyll_rdf']['class_template_mappings'], config['jekyll_rdf']['default_template'], sparql)
-    test_uri = RDF::URI.new("http://www.ifi.uio.no/INF3580/simpsons#Homer")
-    page = Jekyll::RdfPageData.new(site, site.source, Jekyll::Drops::RdfResource.new(test_uri, sparql), mapper, config)
-
-    # for testing exceptions
-    error_uri = RDF::URI.new("http://error.causing/uri#error")
-    exceptionMapper = Jekyll::RdfTemplateMapper.new(config['jekyll_rdf']['instance_template_mappings'].merge({"http://error.causing/uri#error" => "testExceptions.html"}), config['jekyll_rdf']['class_template_mappings'], config['jekyll_rdf']['default_template'], sparql)
-    page2 = Jekyll::RdfPageData.new(site, site.source, Jekyll::Drops::RdfResource.new(error_uri, sparql), exceptionMapper, config)
-
-    special_path_uri = RDF::URI.new("http://www.ifi.uio.no/INF3580/simpsons#")
-    testPathResource = Jekyll::Drops::RdfResource.new(special_path_uri, sparql)
-
-    missing_template_uri = RDF::URI.new("http://this.uri/has/no/template")
-    no_template_mapper = Jekyll::RdfTemplateMapper.new(config['jekyll_rdf']['instance_template_mappings'], config['jekyll_rdf']['class_template_mappings'], nil, sparql)
-    missing_template_page = Jekyll::RdfPageData.new(site, site.source, Jekyll::Drops::RdfResource.new(missing_template_uri, sparql), exceptionMapper, config)
-
-    should "recognize templateless pages and resources" do
-      assert(missing_template_page.complete)
+  context "template mapper from RdfPageData" do
+    setup do
+      @resources_to_templates = {
+        "http://www.ifi.uio.no/INF3580/simpsons#Lisa" => "Lisa",
+        "http://placeholder.host.plh/placeholder#Placeholder" => "Placeholder"
+        }
+      @classes_to_templates = {
+        "http://xmlns.com/foaf/0.1/Person" => "Person",
+        "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson" => "SpecialPerson",
+        "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson" => "AnotherSpecialPerson"
+      }
+      @default_template = "default"
     end
 
-    should "have correct title" do
-      assert_equal page.data['title'], "http://www.ifi.uio.no/INF3580/simpsons#Homer"
+    should "return the correct template to a passed resource" do
+      @mapper = Jekyll::RdfTemplateMapper.new(@resources_to_templates, @classes_to_templates, @default_template, sparql)
+      resource = res_helper.basic_resource("http://www.ifi.uio.no/INF3580/simpsons#Lisa")
+      resource2 = res_helper.basic_resource("http://www.ifi.uio.no/INF3580/simpsons#Maggie")
+      map_template(resource, @mapper)
+      assert_equal("Lisa", @template)
+      map_template(resource2, @mapper)
+      assert_equal("Person", @template) #No more extensive testing since that is covered by test_rdf_template_mapper
     end
 
-    should "have correct job" do
-      jobString = rdf_property(page.data['rdf'], '<http://xmlns.com/foaf/0.1/job>', 'en').to_s
-      assert (("unknown".eql? jobString) || ("unknown Job 2".eql? jobString))
-    end
-
-    should "have correct translated job" do
-      jobString = rdf_property(page.data['rdf'], '<http://xmlns.com/foaf/0.1/job>', 'de').to_s
-      assert (("unbekannt".eql? jobString) || ("unbekannter Job 2".eql? jobString))
-    end
-
-    should "have 18 rdf statements" do
-      assert_equal 18, page.data['rdf'].statements.count
-    end
-
-    should "have ambigious ambigious template mapping for PersonClass" do  #PersonClass originates from simpsons.ttl
-      assert mapper.classResources["http://pcai042.informatik.uni-leipzig.de/~dtp16/#PersonClass"].multipleTemplates?
-    end
-
-    should "identify to each resource the place the resource should be rendered to" do
-      path = testPathResource.filename( TestHelper::DOMAIN_NAME, TestHelper::BASE_URL)
-      assert path.eql? "rdfsites/http/www.ifi.uio.no/INF3580/simpsons/index.html"
-    end
-
-  end
-
-  context "Jekyll.logger " do
-
-    should "contain a prefix-file not found message" do
-      assert Jekyll.logger.messages.any? {|message| !!(message =~ /context: .*  template: .*  file not found: (\/|.)*\.pref/)}
-    end
-
-  end
-
-  context "Invalid uris" do
-    config = Jekyll.configuration(TestHelper::TEST_OPTIONS)
-    graph = RDF::Graph.load(config['jekyll_rdf']['path'])
-    sparql = SPARQL::Client.new(graph)
-    invalidResource = Jekyll::Drops::RdfResource.new("ahfkas/aljöfa,sldf/slf", sparql)
-    invalidResource.filename("site","base")
-    should "be recognized by rdf_resource.rb" do
-      assert Jekyll.logger.messages.any? {|message| !!(message =~ /\s*Invalid resource found: .* is not a proper uri\s*/)}
+    should "set a flag if it fails to map a template" do
+      @mapper = Jekyll::RdfTemplateMapper.new(@resources_to_templates, @classes_to_templates, nil, sparql)
+      resource = res_helper.basic_resource("htt://dasfhlösa")
+      map_template(resource, @mapper)
+      assert_equal(false, @complete)
     end
   end
 
+  context "load_data form RdfPageData" do
+    should "load data correctly into the file" do
+      res_helper.monkey_patch_page_data(self)
+      subresources = ["http://subres1", "http://subres2", "http://subres3"]
+      @base = SOURCE_DIR = File.join(File.dirname(__FILE__), "source")
+      @resource = res_helper.resource_with_subresources("http://www.ifi.uio.no/INF3580/simpsons#Homer", subresources)
+      @template = "homer.html"
+      load_data(nil)
+
+      assert_equal("http://www.ifi.uio.no/INF3580/simpsons#Homer", self.data["title"])
+      assert_equal("http://www.ifi.uio.no/INF3580/simpsons#Homer", self.data["rdf"].to_s)
+      assert_equal("Jekyll::Drops::RdfResource", self.data["rdf"].class.to_s)
+      assert_equal("homer.html", self.data["template"])
+      assert self.data['sub_rdf'].any?{|res| res.to_s.eql? "http://subres1"}
+      assert self.data['sub_rdf'].any?{|res| res.to_s.eql? "http://subres2"}
+      assert self.data['sub_rdf'].any?{|res| res.to_s.eql? "http://subres3"}
+    end
+  end
+
+  context "load_prefixes form RdfPageData" do
+    setup do
+      subresources = ["http://subres1", "http://subres2", "http://subres3"]
+      @resource = res_helper.resource_with_subresources("http://www.ifi.uio.no/INF3580/simpsons#Homer", subresources)
+      @base = SOURCE_DIR = File.join(File.dirname(__FILE__), "source")
+    end
+
+    should "should map prefixes from the file given through rdf_prefix_path in target templates frontmatter" do
+      res_helper.monkey_patch_page_data(self)
+      self.read_yaml "arg1", "arg2"
+      load_prefixes
+      assert_equal "http://www.w3.org/1999/02/22-rdf-syntax-ns#", self.data["rdf_prefix_map"]["rdf"]
+      assert_equal "http://www.w3.org/2000/01/rdf-schema#", self.data["rdf_prefix_map"]["rdfs"]
+      assert_equal "http://www.w3.org/2001/XMLSchema#", self.data["rdf_prefix_map"]["xsd"]
+      assert_equal "http://xmlns.com/foaf/0.1/", self.data["rdf_prefix_map"]["foaf"]
+      assert_equal "http://www.ifi.uio.no/INF3580/family#", self.data["rdf_prefix_map"]["fam"]
+      assert_equal "http://www.ifi.uio.no/INF3580/simpsons#", self.data["rdf_prefix_map"]["sim"]
+      assert_equal "http://pcai042.informatik.uni-leipzig.de/~dtp16#", self.data["rdf_prefix_map"]["dtp16"]
+    end
+
+    should "raise an error if the given prefixfile is not accessible" do
+      res_helper.monkey_patch_wrong_page_data(self)
+      self.read_yaml "arg1", "arg2"
+      load_prefixes
+      assert Jekyll.logger.messages.any?{|message| !!(message=~ /\s*context: .*  template: .* file not found: .*\s*/)}
+    end
+  end
+
+  context "RdfPageData" do
+    setup do
+      @resources_to_templates = {
+        "http://www.ifi.uio.no/INF3580/simpsons#Homer" => "homer.html",
+        "http://placeholder.host.plh/placeholder#Placeholder" => "Placeholder"
+        }
+      @classes_to_templates = {
+        "http://xmlns.com/foaf/0.1/Person" => "person.html",
+        "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson" => "SpecialPerson",
+        "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson" => "AnotherSpecialPerson"
+      }
+      @default_template = "default.html"
+      res_helper.global_site = true
+      @resource1 = res_helper.basic_resource("http://www.ifi.uio.no/INF3580/simpsons#Homer")
+      @resource2 = res_helper.basic_resource("http://www.ifi.uio.no/INF3580/simpsons#Maggie")
+      @resource3 = res_helper.basic_resource("http://resource3")
+      res_helper.global_site = false
+      @mapper = Jekyll::RdfTemplateMapper.new(@resources_to_templates, @classes_to_templates, @default_template, sparql)
+    end
+
+    should "create complete Page" do
+      #config = res_helper.basic_config("http://www.ifi.uio.no", "/INF3580")
+      config = Jekyll.configuration(TestHelper::TEST_OPTIONS)
+      site = Jekyll::Site.new(config)
+      site.data['resources'] = []
+      page1 = Jekyll::RdfPageData.new(site, File.join(File.dirname(__FILE__), "source"), @resource1, @mapper, config)
+      page2 = Jekyll::RdfPageData.new(site, File.join(File.dirname(__FILE__), "source"), @resource2, @mapper, config)
+      page3 = Jekyll::RdfPageData.new(site, File.join(File.dirname(__FILE__), "source"), @resource3, @mapper, config)
+      assert_equal "http://www.ifi.uio.no/INF3580/simpsons#Homer", @resource1.site.data['resources'][0].to_s
+      assert_equal "http://www.ifi.uio.no/INF3580/simpsons#Maggie",  @resource1.site.data['resources'][1].to_s
+      assert_equal "http://resource3", @resource1.site.data['resources'][2].to_s
+    end
+
+    should "exit early if no base is provided" do
+      config = Jekyll.configuration(TestHelper::TEST_OPTIONS)
+      site = Jekyll::Site.new(config)
+      site.data['resources'] = []
+      page1 = Jekyll::RdfPageData.new(site, nil, @resource1, @mapper, config)
+      assert !page1.complete
+    end
+  end
 end

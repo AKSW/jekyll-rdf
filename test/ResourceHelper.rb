@@ -1,13 +1,19 @@
 require 'pp'
 
 class ResourceHelper
+  attr_accessor :global_site
   def initialize(sparql)
+    @global_site = false
     @sparql = sparql
   end
 
   def basic_resource(uri)
     resource = Jekyll::Drops::RdfResource.new(RDF::URI.new(uri), @sparql)
-    attach_site(resource, create_fake_site())
+    if(@global_site)
+      attach_site(resource, use_global_site())
+    else
+      attach_site(resource, create_fake_site())
+    end
     attach_page(resource, create_fake_page())
     return resource
   end
@@ -17,10 +23,31 @@ class ResourceHelper
     return literal
   end
 
+  def basic_config(url, baseurl)
+    config = {}
+    config['url'] = url
+    config['baseurl'] = baseurl
+    return config
+  end
+
   def resource_with_prefixes_config(uri, prefixHash)
     resource = basic_resource(uri)
     attach_prefixes(resource, prefixHash)
     attach_config(resource, create_config_language('en'))
+    return resource
+  end
+
+  def resource_with_subresources(uri, subres)
+    resource = basic_resource(uri)
+    def resource.subResources
+      if @subResources.nil?
+        @subResources = {}
+      end
+      return @subResources
+    end
+    subres.each {|suburi|
+      resource.subResources[suburi] = basic_resource(suburi)
+    }
     return resource
   end
 
@@ -45,6 +72,8 @@ class ResourceHelper
     attach_page(resource, create_fake_page())
     return resource
   end
+
+  ######################################################
 
   def attach_site(resource, site)
     if(!resource.respond_to?(:site))
@@ -93,6 +122,13 @@ class ResourceHelper
     return fake_page
   end
 
+  def use_global_site()
+    if @site.nil?
+      @site = create_fake_site
+    end
+    return @site
+  end
+
   def create_fake_site()
     fake_site = Object.new
     def fake_site.config
@@ -101,6 +137,15 @@ class ResourceHelper
       end
       return @config
     end
+
+    def fake_site.data
+      if(@data.nil?)
+        @data = {}
+      end
+      @data['resources'] = []
+      return @data
+    end
+
     return fake_site
   end
 
@@ -113,4 +158,31 @@ class ResourceHelper
     return config
   end
 
+  def monkey_patch_page_data(obj)
+    def obj.data
+      if @data.nil?
+        @data = {}
+      end
+      return @data
+    end
+    obj.data
+    def obj.read_yaml(path, template)
+      @data["rdf_prefix_path"] = "simpsons.pref"
+      return true
+    end
+  end
+
+  def monkey_patch_wrong_page_data(obj)
+    def obj.data
+      if @data.nil?
+        @data = {}
+      end
+      return @data
+    end
+    obj.data
+    def obj.read_yaml(path, template)
+      @data["rdf_prefix_path"] = "simpsssssssons.pref"
+      return true
+    end
+  end
 end
