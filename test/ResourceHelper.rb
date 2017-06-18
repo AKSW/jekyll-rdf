@@ -30,6 +30,10 @@ class ResourceHelper
     return config
   end
 
+  def primitve_site_bad_config
+    site = create_fake_site()
+  end
+
   def resource_with_prefixes_config(uri, prefixHash)
     resource = basic_resource(uri)
     attach_prefixes(resource, prefixHash)
@@ -71,6 +75,25 @@ class ResourceHelper
     attach_site(resource, create_fake_site())
     attach_page(resource, create_fake_page())
     return resource
+  end
+
+  def create_bad_fetch_site()
+    config = Object.new
+    def config.fetch x
+      raise KeyError
+    end
+    site = Object.new
+
+    def site.config= x
+      @config = x
+    end
+
+    def site.config
+      @config
+    end
+
+    site.config = config
+    return site
   end
 
   ######################################################
