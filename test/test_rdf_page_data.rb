@@ -51,9 +51,9 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       assert_equal("http://www.ifi.uio.no/INF3580/simpsons#Homer", self.data["rdf"].to_s)
       assert_equal("Jekyll::Drops::RdfResource", self.data["rdf"].class.to_s)
       assert_equal("homer.html", self.data["template"])
-      assert self.data['sub_rdf'].any?{|res| res.to_s.eql? "http://subres1"}
-      assert self.data['sub_rdf'].any?{|res| res.to_s.eql? "http://subres2"}
-      assert self.data['sub_rdf'].any?{|res| res.to_s.eql? "http://subres3"}
+      assert self.data['sub_rdf'].any?{|res| res.to_s.eql? "http://subres1"}, "the testpage did not load the resource http://subres1"
+      assert self.data['sub_rdf'].any?{|res| res.to_s.eql? "http://subres2"}, "the testpage did not load the resource http://subres2"
+      assert self.data['sub_rdf'].any?{|res| res.to_s.eql? "http://subres3"}, "the testpage did not load the resource http://subres3"
     end
   end
 
@@ -81,7 +81,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       res_helper.monkey_patch_wrong_page_data(self)
       self.read_yaml "arg1", "arg2"
       load_prefixes
-      assert Jekyll.logger.messages.any?{|message| !!(message=~ /\s*context: .*  template: .* file not found: .*\s*/)}
+      assert Jekyll.logger.messages.any?{|message| !!(message=~ /\s*context: .*  template: .* file not found: .*\s*/)}, "missing error message: context: ****  template: **** file not found: ****"
     end
   end
 
@@ -123,7 +123,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       site = Jekyll::Site.new(config)
       site.data['resources'] = []
       page1 = Jekyll::RdfPageData.new(site, nil, @resource1, @mapper, config)
-      assert !page1.complete
+      assert !page1.complete, "exit parameter was expected to be false, but it is true"
     end
   end
 end

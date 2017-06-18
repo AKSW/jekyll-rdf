@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'pp'
 
 class TestRdfTemplateMapper < Test::Unit::TestCase
   include Jekyll::RdfGeneratorHelper
@@ -18,8 +17,8 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
 
     should "fail if jekyll-rdf is included but not configured" do
       @site = res_helper.create_bad_fetch_site()
-      assert !load_config(@site)
-      assert Jekyll.logger.messages.any? {|message| !!(message =~ /You've included Jekyll-RDF, but it is not configured. Aborting the jekyll-rdf plugin./)}
+      assert !load_config(@site), "load_config does not return false"
+      assert Jekyll.logger.messages.any? {|message| !!(message =~ /You've included Jekyll-RDF, but it is not configured. Aborting the jekyll-rdf plugin./)}, "missing error message:\nYou've included Jekyll-RDF, but it is not configured. Aborting the jekyll-rdf plugin."
     end
   end
 
@@ -115,13 +114,13 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       @mapper = Jekyll::RdfTemplateMapper.new(@resources_to_templates, @classes_to_templates, @default_template, sparql)
       prepare_pages(site, @mapper)
       index = site.pages.find_index {|page| page.data['title'] == "http://www.ifi.uio.no/INF3580/simpsons"}
-      assert !index.nil?
+      assert !index.nil?, "page http://www.ifi.uio.no/INF3580/simpsons not found"
       assert_equal "page.html", site.pages[index].data['template']
       index = site.pages.find_index {|page| page.data['title'] == "http://www.ifi.uio.no/INF3580/family/Max"}
-      assert !index.nil?
+      assert !index.nil?, "page http://www.ifi.uio.no/INF3580/family/Max not found"
       assert_equal "default.html", site.pages[index].data['template']
       index = site.pages.find_index {|page| page.data['title'] == "http://www.ifi.uio.no/INF3580/family/Jeanne"}
-      assert !index.nil?
+      assert !index.nil?, "page http://www.ifi.uio.no/INF3580/family/Jeanne not found"
       assert_equal "default.html", site.pages[index].data['template']
       assert_equal 5, site.pages.size
     end

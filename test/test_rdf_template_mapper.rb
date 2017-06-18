@@ -8,12 +8,12 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
   context "the class extraction" do
     should "extract classes from the given source" do
       answer = search_for_classes(sparql)
-      assert answer.any? { |class_res| class_res.to_s.eql? "http://xmlns.com/foaf/0.1/Person"}
-      assert answer.any? { |class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson"}
-      assert answer.any? { |class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson"}
-      assert !(answer.any? { |class_res| class_res.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"})
-      assert !(answer.any? { |class_res| class_res.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"})
-      assert !(answer.any? { |class_res| class_res.to_s.eql? "http://placeholder.host.plh/placeholder#Placeholder"})
+      assert answer.any? { |class_res| class_res.to_s.eql? "http://xmlns.com/foaf/0.1/Person"},"http://xmlns.com/foaf/0.1/Person should be found as a class"
+      assert answer.any? { |class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson"},"http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson should be found as a class"
+      assert answer.any? { |class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson"}, "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson should be found as a class"
+      assert !(answer.any? { |class_res| class_res.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"}), "http://www.ifi.uio.no/INF3580/simpsons#Homer should not be found as a class"
+      assert !(answer.any? { |class_res| class_res.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"}), "http://www.ifi.uio.no/INF3580/simpsons#Lisa should not be found as a class"
+      assert !(answer.any? { |class_res| class_res.to_s.eql? "http://placeholder.host.plh/placeholder#Placeholder"}), "http://placeholder.host.plh/placeholder#Placeholder should not be found as a class"
     end
   end
 
@@ -24,32 +24,32 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     end
 
     should "only create instances of RdfResourceClass" do
-      assert @classResources.all? {|class_hash, class_res| class_res.is_a?(Jekyll::Drops::RdfResourceClass)}
+      assert @classResources.all? {|class_hash, class_res| class_res.is_a?(Jekyll::Drops::RdfResourceClass)}, "not all resources are instances of RdfResourceClass"
     end
 
     should "create certain classes from the source" do
-      assert @classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://xmlns.com/foaf/0.1/Person"}
-      assert @classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson"}
-      assert @classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson"}
-      assert !(@classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"})
-      assert !(@classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"})
-      assert !(@classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://placeholder.host.plh/placeholder#Placeholder"})
+      assert @classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://xmlns.com/foaf/0.1/Person"}, "http://xmlns.com/foaf/0.1/Person should be created as a class"
+      assert @classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson"}, "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson should be created as a class"
+      assert @classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson"}, "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson should be created as a class"
+      assert !(@classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"}), "http://www.ifi.uio.no/INF3580/simpsons#Homer should not be created as a class"
+      assert !(@classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"}), "http://www.ifi.uio.no/INF3580/simpsons#Lisa should not be created as a class"
+      assert !(@classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://placeholder.host.plh/placeholder#Placeholder"}), "http://placeholder.host.plh/placeholder#Placeholder should not be created as a class"
     end
 
     should "hash each class resource to its uri" do
-      assert @classResources.any? {|class_hash, class_res| class_hash.eql? class_res.to_s}
+      assert @classResources.all? {|class_hash, class_res| class_hash.eql? class_res.to_s}, "not all classes are rightly matched"
     end
 
     should "keep subclass relations between class resources" do
       assert (@classResources["http://xmlns.com/foaf/0.1/Person"].subClasses.any?{|class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson"}&&
-          @classResources["http://xmlns.com/foaf/0.1/Person"].subClasses.any?{|class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson"})
-      assert @classResources["http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson"].subClasses.any?{|class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson"}
+          @classResources["http://xmlns.com/foaf/0.1/Person"].subClasses.any?{|class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson"}), "http://xmlns.com/foaf/0.1/Person should have http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson and http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson as subclass"
+      assert @classResources["http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson"].subClasses.any?{|class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson"},"http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson should have http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson as subclass"
     end
 
     should "not create any empty subclass relations" do
       assert !@classResources.any?{|class_hash, class_res|
         class_res.subClasses.any?{|class_res2| class_res2.nil?}
-      }
+      }, "a resource has a nil object in its subclass list"
     end
   end
 

@@ -27,36 +27,36 @@ class TestRdfFilter < Test::Unit::TestCase
 
     should "return a list of properties when 'list' parameter is set" do
       answer = rdf_property(@testResource, "foaf:job", nil, true)
-      assert(answer.is_a?(Array))
-      assert(answer.any? {|resource| resource.to_s.eql? "unknown"})
-      assert(answer.any? {|resource| resource.to_s.eql? "unbekannt"})
-      assert(answer.any? {|resource| resource.to_s.eql? "unbekannter Job 2"})
-      assert(answer.any? {|resource| resource.to_s.eql? "unknown Job 2"})
+      assert(answer.is_a?(Array), "return value is not an array")
+      assert(answer.any? {|resource| resource.to_s.eql? "unknown"}, "answerset does not contain 'unknown'")
+      assert(answer.any? {|resource| resource.to_s.eql? "unbekannt"}, "answerset does not contain 'unbekannt'")
+      assert(answer.any? {|resource| resource.to_s.eql? "unbekannter Job 2"}, "answerset does not contain 'unbekannter Job 2'")
+      assert(answer.any? {|resource| resource.to_s.eql? "unknown Job 2"}, "answerset does not contain 'unknown Job 2'")
     end
 
     should "return a list of properties from specified language" do
       answer = rdf_property(@testResource, "foaf:job", 'en', true)
       assert(answer.is_a?(Array))
-      assert(answer.any? {|resource| resource.to_s.eql? "unknown"})
-      assert(!answer.any? {|resource| resource.to_s.eql? "unbekannt"})
-      assert(!answer.any? {|resource| resource.to_s.eql? "unbekannter Job 2"})
-      assert(answer.any? {|resource| resource.to_s.eql? "unknown Job 2"})
+      assert(answer.any? {|resource| resource.to_s.eql? "unknown"}, "answerset does not contain 'unknown'")
+      assert(!answer.any? {|resource| resource.to_s.eql? "unbekannt"}, "answerset contains 'unbekannt'")
+      assert(!answer.any? {|resource| resource.to_s.eql? "unbekannter Job 2"}, "answerset contains 'unbekannter Job 2'")
+      assert(answer.any? {|resource| resource.to_s.eql? "unknown Job 2"}, "answerset does not contain 'unknown Job 2'")
     end
 
     should "return a list of properties from in a config specified language" do
       answer = rdf_property(@testResource, "foaf:job", 'cfg', true)
       assert(answer.is_a?(Array))
-      assert(answer.any? {|resource| resource.to_s.eql? "unknown"})
-      assert(!answer.any? {|resource| resource.to_s.eql? "unbekannt"})
-      assert(!answer.any? {|resource| resource.to_s.eql? "unbekannter Job 2"})
-      assert(answer.any? {|resource| resource.to_s.eql? "unknown Job 2"})
+      assert(answer.any? {|resource| resource.to_s.eql? "unknown"}, "answerset does not contain 'unknown'")
+      assert(!answer.any? {|resource| resource.to_s.eql? "unbekannt"}, "answerset contains 'unbekannt'")
+      assert(!answer.any? {|resource| resource.to_s.eql? "unbekannter Job 2"}, "answerset contains 'unbekannter Job 2'")
+      assert(answer.any? {|resource| resource.to_s.eql? "unknown Job 2"}, "answerset does not contain 'unknown Job 2'")
     end
 
     should "be reversable with all specifications" do
       answer = rdf_inverse_property(@testResource, "fam:hasFather", nil, true)
-      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Bart"})
-      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"})
-      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Maggie"})
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Bart"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Bart")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Lisa")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Maggie"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Maggie")
     end
   end
 
@@ -69,24 +69,24 @@ class TestRdfFilter < Test::Unit::TestCase
     should "return an array of solutions to one query" do
       query = "SELECT ?x ?y WHERE{ ?x <http://www.ifi.uio.no/INF3580/family#hasFather> ?y}"
       answer = sparql_query(@testResource, query)
-      assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Bart') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')})
-      assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Lisa') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')})
-      assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Maggie') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')})
+      assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Bart') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')}, "answerset does not contain the pair http://www.ifi.uio.no/INF3580/simpsons#Bart and http://www.ifi.uio.no/INF3580/simpsons#Homer")
+      assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Lisa') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')}, "answerset does not contain the pair http://www.ifi.uio.no/INF3580/simpsons#Lisa and http://www.ifi.uio.no/INF3580/simpsons#Homer")
+      assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Maggie') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')}, "answerset does not contain the pair http://www.ifi.uio.no/INF3580/simpsons#Maggie and http://www.ifi.uio.no/INF3580/simpsons#Homer")
     end
 
     should "return an array of solutions to one query with prefixes" do
       query = "SELECT ?x ?y WHERE{ ?x fam:hasFather ?y}"
       answer = sparql_query(@testResource, query)
-      assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Bart') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')})
-      assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Lisa') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')})
-      assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Maggie') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')})
+      assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Bart') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')}, "answerset does not contain the pair http://www.ifi.uio.no/INF3580/simpsons#Bart and http://www.ifi.uio.no/INF3580/simpsons#Homer")
+      assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Lisa') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')}, "answerset does not contain the pair http://www.ifi.uio.no/INF3580/simpsons#Lisa and http://www.ifi.uio.no/INF3580/simpsons#Homer")
+      assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Maggie') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')}, "answerset does not contain the pair http://www.ifi.uio.no/INF3580/simpsons#Maggie and http://www.ifi.uio.no/INF3580/simpsons#Homer")
     end
 
     should "return the literal if a literal was passed as first argument" do
       literal = res_helper.basic_literal("basic")
       query = "TEST"
       answer = sparql_query(literal, query)
-      assert(literal.to_s.eql? answer.to_s)
+      assert((literal.to_s.eql? answer.to_s), "the literal string does not correspond to the answer string")
     end
 
     # These 3 tests are prune to errors if rdf_resource changes to use sparql in its setup process
@@ -94,21 +94,21 @@ class TestRdfFilter < Test::Unit::TestCase
       resource = res_helper.resource_faulty_sparql("http://www.ifi.uio.no/INF3580/simpsons#Homer", :ClientError)
       query = "SELECT ?x ?y WHERE{ ?x <http://www.ifi.uio.no/INF3580/family#hasFather> ?y}"
       sparql_query(resource, query)
-      assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)}
+      assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)} , "missing error message: client error experienced: ****"
     end
 
     should "log a SPARQL::MalformedQuery Exception" do
       resource = res_helper.resource_faulty_sparql("http://www.ifi.uio.no/INF3580/simpsons#Homer", :MalformedQuery)
       query = "SELECT ?x ?y WHERE{ ?x <http://www.ifi.uio.no/INF3580/family#hasFather> ?y}"
       sparql_query(resource, query)
-      assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)}
+      assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)}, "missing error message: client error experienced: ****"
     end
 
     should "log a basic Exception if an unknown exception occurs" do
       resource = res_helper.resource_faulty_sparql("http://www.ifi.uio.no/INF3580/simpsons#Homer", :Exception)
       query = "SELECT ?x ?y WHERE{ ?x <http://www.ifi.uio.no/INF3580/family#hasFather> ?y}"
       sparql_query(resource, query)
-      assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)}
+      assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)}, "missing error message: client error experienced: ****"
     end
   end
 
@@ -156,11 +156,11 @@ class TestRdfFilter < Test::Unit::TestCase
 
     should "return a set of resources stashed in the passed collection" do
       answer = rdf_collection(@testResource)
-      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"})
-      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Marge"})
-      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Bart"})
-      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"})
-      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Maggie"})
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Homer")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Marge"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Marge")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Bart"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Bart")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Lisa")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Maggie"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Maggie")
     end
   end
 
@@ -172,20 +172,20 @@ class TestRdfFilter < Test::Unit::TestCase
 
     should "return a set of resources stashed in the passed collection" do
       answer = rdf_container(@testResource)
-      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"})
-      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Marge"})
-      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Bart"})
-      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"})
-      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Maggie"})
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Homer")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Marge"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Marge")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Bart"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Bart")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Lisa")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Maggie"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Maggie")
     end
 
     should "use a container validator that recognizes container" do
-      assert validContainer?(@testResource, @testResource.sparql)
+      assert validContainer?(@testResource, @testResource.sparql), "validContainer? returned false"
     end
 
     should "use a container validator that recognizes non container" do
       resource = res_helper.basic_resource("http://Test")
-      assert !(validContainer?(resource, resource.sparql))
+      assert !(validContainer?(resource, resource.sparql)), "validContainer? returned true"
     end
   end
 end
