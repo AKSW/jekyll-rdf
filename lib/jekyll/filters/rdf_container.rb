@@ -28,7 +28,7 @@ module Jekyll
     include Jekyll::RdfPrefixResolver
     def rdf_container(input, type = nil)
       sparqlClient = input.site.data['sparql']
-      if(!validContainer?(input, sparqlClient, type))
+      if(!(validContainer?(input, sparqlClient, type)))
         Jekyll.logger.error "<#{input.iri}> is not recognized as a container"
         return []
       end
@@ -42,7 +42,7 @@ module Jekyll
     end
     def validContainer?(input, sparqlClient, type = nil)
       askQuery1 = "ASK WHERE {VALUES ?o {<http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>} <#{input.iri}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o}"
-      askQuery2 = "ASK WHERE {<#{input.iri}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o. o? <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Container>}"
+      askQuery2 = "ASK WHERE {<#{input.iri}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o. ?o <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Container>}"
       return (sparqlClient.query(askQuery1).true?) || (sparqlClient.query(askQuery2).true?)
     end
   end
