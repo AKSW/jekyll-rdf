@@ -39,8 +39,8 @@ module Jekyll #:nodoc:
       attr_accessor :subClasses
       attr_accessor :subClassHierarchyValue
 
-      def initialize(term, graph)
-        super(term, graph)
+      def initialize(term, sparql)
+        super(term, sparql)
         @subClasses = []
         @lock = -1
         @subClassHierarchyValue = 0
@@ -52,7 +52,13 @@ module Jekyll #:nodoc:
       end
 
       def findDirectSubClasses
-        selection = statements_as(:object).select{ |s| s.predicate.term.to_s=="http://www.w3.org/2000/01/rdf-schema#subClassOf" }
+        if(!@term.to_s[0..1].eql? "_:")
+          term_uri = "<#{@term.to_s}>"
+        else
+          term_uri = @term.to_s
+        end
+        query = "SELECT ?s WHERE{ ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> #{term_uri}}"
+        selection = @sparql.query(query).map{ |solution| solution.s.to_s}
         return selection
       end
 

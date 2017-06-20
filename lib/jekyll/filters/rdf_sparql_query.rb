@@ -44,10 +44,9 @@ module Jekyll
         query = query.prepend(" ").prepend(input.page.data["rdf_prefixes"])
       end
       begin
-        input.site.data['sparql']
-        result = input.site.data['sparql'].query(query).map do |solution|
-          hsh = solution.to_hash
-          hsh.update(hsh){ |k,v| Jekyll::Drops::RdfTerm.build_term_drop(v, input.graph, input.site) }
+        result = input.sparql.query(query).map do |solution|
+          hsh = solution.to_h
+          hsh.update(hsh){ |k,v| Jekyll::Drops::RdfTerm.build_term_drop(v, input.sparql, input.site).addNecessities(input.site, input.page)}
           hsh.collect{|k,v| [k.to_s, v]}.to_h
         end
         return result
@@ -56,7 +55,7 @@ module Jekyll
       rescue SPARQL::MalformedQuery => mq
         Jekyll.logger.error("malformed query found: \n #{query} \n Error Message: #{mq.message}")
       rescue Exception => e
-        Jekyll.logger.error("unknown Exception of class: #{e.class} in sparql_query \n Query: #{query} \nMessage: #{e.message}")
+        Jekyll.logger.error("unknown Exception of class: #{e.class} in sparql_query \n Query: #{query} \nMessage: #{e.message} \nTrace #{e.backtrace.drop(1).map{|s| "\t#{s}"}.join("\n")}")
       end
       return []
     end

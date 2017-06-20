@@ -1,0 +1,14 @@
+---
+---
+<html>
+  <head>
+  </head>
+  <body>
+    <h1>These are collections:</h1>
+    {% assign array = page.rdf | rdf_collection %}
+    {% for ele in array %}
+      <h1>{{ele.iri}}</h1>
+    {% endfor %}
+    {% assign failarray = page.rdf | rdf_container %}
+  </body>
+</html>

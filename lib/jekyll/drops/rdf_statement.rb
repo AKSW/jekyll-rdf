@@ -50,12 +50,12 @@ module Jekyll
       # Create a new Jekyll::Drops::RdfStatement
       #
       # * +statement+ - The statement to be represented
-      # * +graph+ - The RDF::Graph which contains the +statement+
+      # * +sparql+ - The SPARQL::Client which contains the +statement+
       # * +site+ - The Jekyll::Site to be enriched
-      def initialize(statement, graph, site)
-        @subject ||= Jekyll::Drops::RdfTerm.build_term_drop(statement.subject, graph, site)
-        @predicate ||= Jekyll::Drops::RdfTerm.build_term_drop(statement.predicate, graph, site)
-        @object ||= Jekyll::Drops::RdfTerm.build_term_drop(statement.object, graph, site)
+      def initialize(statement, sparql, site)
+        @subject ||= Jekyll::Drops::RdfTerm.build_term_drop(statement.subject, sparql, site)
+        @predicate ||= Jekyll::Drops::RdfTerm.build_term_drop(statement.predicate, sparql, site)
+        @object ||= Jekyll::Drops::RdfTerm.build_term_drop(statement.object, sparql, site)
       end
     end
   end

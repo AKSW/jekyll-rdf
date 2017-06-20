@@ -52,6 +52,33 @@ module Jekyll #:nodoc:
       attr_accessor :subResources
 
       ##
+      #
+      #
+      def initialize(term, sparql, site = nil, page = nil)
+        super(term, sparql)
+        if(site.is_a?(Jekyll::Site))
+          @site = site
+        end
+        if(page.is_a?(Jekyll::Page))
+          @page = page
+        end
+      end
+
+      def addNecessities(site, page)
+        if(site.is_a?(Jekyll::Site))
+          @site ||= site
+        end
+        if(page.is_a?(Jekyll::Page))
+          @page ||= page
+        end
+        return self
+      end
+
+      def ready?
+        return (@site.is_a?(Jekyll::Site)||@page.is_a?(Jekyll::Page))
+      end
+
+      ##
       # Return a list of Jekyll::Drops::RdfStatements whose subject, predicate or object is the RDF resource represented by the receiver
       #
       def statements
@@ -120,9 +147,61 @@ module Jekyll #:nodoc:
       #     Return a list of Jekyll::Drops::RdfStatements whose object is the RDF resource represented by the receiver
       #
       def statements_as(role)
-        graph.query(role.to_sym => term).map do |statement|
-          RdfStatement.new(statement, graph, site)
+        if(!term.to_s[0..1].eql? "_:")
+          inputURI = "<#{term.to_s}>"
+        elsif(:predicate.eql? role)
+          return []
+        else
+          inputURI = term.to_s
         end
+
+        case role
+          when :subject
+            query = "SELECT ?p ?o ?dt ?lit ?lang WHERE{ #{inputURI} ?p ?o BIND(datatype(?o) AS ?dt) BIND(isLiteral(?o) AS ?lit) BIND(lang(?o) AS ?lang)}"
+            sparql.query(query).map do |solution|
+              check = checkSolution(solution)
+              createStatement(term.to_s, solution.p, solution.o, solution.lit, check[:lang], check[:dataType])
+            end
+          when :predicate
+            query = "SELECT ?s ?o ?dt ?lit ?lang WHERE{ ?s #{inputURI} ?o BIND(datatype(?o) AS ?dt) BIND(isLiteral(?o) AS ?lit) BIND(lang(?o) AS ?lang)}"
+            sparql.query(query).map do |solution|
+              check = checkSolution(solution)
+              createStatement(solution.s, term.to_s, solution.o, solution.lit, check[:lang], check[:dataType])
+            end
+          when :object
+            query = "SELECT ?s ?p WHERE{ ?s ?p #{inputURI}}"
+            sparql.query(query).map do |solution|
+              createStatement( solution.s, solution.p, term.to_s)
+            end
+          else
+            Jekyll.logger.error "Not existing role found in #{term.to_s}"
+            return
+        end
+      end
+
+      #checks if a query solution contains a language or type tag and returns those in a hash
+      private
+      def checkSolution(solution)
+        result = {:lang => nil, :dataType => nil}
+        if((solution.bound?(:lang)) && (!solution.lang.to_s.eql?("")))
+          result[:lang] = solution.lang.to_s.to_sym
+        end
+        if(solution.bound? :dt)
+          result[:dataType] = solution.dt
+        end
+        return result
+      end
+
+      private
+      def createStatement(subjectString, predicateString, objectString, isLit = nil, lang = nil, dataType = nil)
+        subject = RDF::URI(subjectString)
+        predicate = RDF::URI(predicateString)
+        if(!isLit.nil?&&isLit.true?)
+          object = RDF::Literal(objectString, language: lang, datatype: RDF::URI(dataType))
+        else
+          object = RDF::URI(objectString)
+        end
+        return RdfStatement.new(RDF::Statement( subject, predicate, object), @sparql, @site)
       end
 
       private
