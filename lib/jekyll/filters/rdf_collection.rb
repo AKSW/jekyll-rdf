@@ -30,16 +30,17 @@ module Jekyll
         statement.predicate.to_s.eql? "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest"
       })
         finalizedContainer = Set.new #avoid loops
-        nodeSequence = [input.iri]
+        nodeSequence = [input]
         nextSequence = []
         results = []
         sparqlClient = input.sparql
         while(!nodeSequence.empty?)
           currentContainer = nodeSequence.pop
-          query = "SELECT ?f ?r WHERE{ <#{currentContainer}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> ?r. <#{currentContainer}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?f}"
+
+          query = "SELECT ?f ?r WHERE{ #{currentContainer.term.to_nquads} <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> ?r. #{currentContainer.term.to_nquads} <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?f}"
           solutions = sparqlClient.query(query).each { |solution|
             if((!solution.r.to_s.eql? "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil") && (finalizedContainer.add? solution.r))
-              nextSequence.push solution.r.to_s
+              nextSequence.push Jekyll::Drops::RdfTerm.build_term_drop(solution.r, input.sparql, input.site).addNecessities(input.site, input.page)
             end
             results.push Jekyll::Drops::RdfTerm.build_term_drop(solution.f, input.sparql, input.site).addNecessities(input.site, input.page)
             if(nodeSequence.empty?)
