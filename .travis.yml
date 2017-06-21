@@ -5,6 +5,14 @@ rvm:
 - ruby-head
 matrix:
   allow_failures:
-    - rvm: ruby-head
+  - rvm: ruby-head
 script:
 - bundle exec rake test
+deploy:
+  provider: rubygems
+  api_key:
+    secure: D8rx4lfdlvWFjXPrHTOXudIrUpjBHu++4ebWzNcXNdk8ccNtRbkWCqK7vOp7BAXu8NXGQOT/XoHmcwuzOpaLMiPL6B+eNTPWnC2wqeQUlZcZak6btFXwMivKXRT5oyIP/UjciucLDN9jq+54fdr5M7+nJ+3D7upUA2P3ymb+69U0l0bXl9WA+c92LRi/wXXeyxdpImHym8PxBagS6GPiHswcHoeRRq5vNEmo/E9RYV5F0Kzyj8vOchO/83cDeqeQEPX969AtO0AKZczWfNx2qOBgcYcUmxfOdAooOnFYjw3A9QZgI3B/T7LC1137mCLQCcb/e0cFPiwQYxDXS8SEEd1t4t/4Tw/zUh+TFuSAbCPJz1tG91KYhcVBDzsvQh1dU0WY7TDXRrasvNU7HJ+TMGIq7nC+QvSRJ1SyKsI89aLKA8fAO06DwI/7LodG+G/0MAxFO5XLu1EBJ8k+mxdkbSqoZxSdtvvWkAUkdjWXtOtGNUhYtuVTJrzjrWUOM2YuhmnGAwJg8UgUKzDvjNCQ0Zm2q5TiYZT5nsv8FwE6zjSK7ETnp+ofW/RwxbZs7DNTDTShKAyoy2NEKrPfFvkFkoUSP3yR+e8hJpRo2hJFC/3GxgnTr4bdI814Y5UOBfGjVXUKsodMhtk0uhJCIQMm8Jri1o5600szSW+lG20KSkg=
+  gem: jekyll-rdf
+  on:
+    tags: true
+    branch: develop
