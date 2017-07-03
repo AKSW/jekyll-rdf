@@ -26,30 +26,13 @@
 module Jekyll
   module RdfCollection
     def rdf_collection(input)
-      if(input.statements_as_subject.any?{ |statement|
-        statement.predicate.to_s.eql? "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest"
-      })
-        finalizedContainer = Set.new #avoid loops
-        nodeSequence = [input.iri]
-        nextSequence = []
-        results = []
-        sparqlClient = input.sparql
-        while(!nodeSequence.empty?)
-          currentContainer = nodeSequence.pop
-          query = "SELECT ?f ?r WHERE{ <#{currentContainer}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> ?r. <#{currentContainer}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?f}"
-          solutions = sparqlClient.query(query).each { |solution|
-            if((!solution.r.to_s.eql? "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil") && (finalizedContainer.add? solution.r))
-              nextSequence.push solution.r.to_s
-            end
-            results.push Jekyll::Drops::RdfTerm.build_term_drop(solution.f, input.sparql, input.site).add_necessities(input.site, input.page)
-            if(nodeSequence.empty?)
-              nodeSequence = nextSequence
-              nextSequence = []
-            end
-          }
-          end
-        return results
-      end
+      sparql_query = input.sparql
+      query = "SELECT ?f WHERE{ #{input.term.to_ntriples} <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest>* ?r. ?r <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?f}"
+      results = []
+      sparql_query.query(query).each{ |solution|
+        results.push Jekyll::Drops::RdfTerm.build_term_drop(solution.f, input.sparql, input.site).add_necessities(input.site, input.page)
+      }
+      return results
     end
   end
 end
