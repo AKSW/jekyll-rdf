@@ -1,6 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'jekyll-rdf'
   s.version     = '2.1.0'
+  s.version     = "#{s.version}.alpha-#{ENV['TRAVIS_BUILD_NUMBER']}" if ENV['TRAVIS']
   s.summary     = 'Hypertext Publication System for Templated Resource Rendering'
   s.description = 'Generate static sites with Jekyll based on RDF data'
   s.authors     = ['Elias Saalmann', 'Christian Frommert', 'Simon Jakobi', 'Arne Jonas Präger', 'Maxi Bornmann', 'Georg Hackel', 'Eric Füg', 'Sebastian Zänker', 'Natanael Arndt']
