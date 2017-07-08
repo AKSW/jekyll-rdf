@@ -22,7 +22,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     end
   end
 
-  context "createPage from rdf_main_generator" do
+  context "create_page from rdf_main_generator" do
     should "create a page with the right title" do
       @resources_to_templates = {
         "http://www.ifi.uio.no/INF3580/simpsons#Homer" => "homer.html",
@@ -43,9 +43,9 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       config = Jekyll.configuration(TestHelper::TEST_OPTIONS)
       site = Jekyll::Site.new(config)
       site.data['resources'] = []
-      createPage(site, @resource1, @mapper, config)
-      createPage(site, @resource2, @mapper, config)
-      createPage(site, @resource3, @mapper, config)
+      create_page(site, @resource1, @mapper, config)
+      create_page(site, @resource2, @mapper, config)
+      create_page(site, @resource3, @mapper, config)
       assert_equal "http://www.ifi.uio.no/INF3580/simpsons#Homer", site.pages[0].data['title']
       assert_equal "http://www.ifi.uio.no/INF3580/simpsons#Maggie", site.pages[1].data['title']
       assert_equal "http://resource3", site.pages[2].data['title']

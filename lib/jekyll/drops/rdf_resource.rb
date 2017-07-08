@@ -64,7 +64,7 @@ module Jekyll #:nodoc:
         end
       end
 
-      def addNecessities(site, page)
+      def add_necessities(site, page)
         if(site.is_a?(Jekyll::Site))
           @site ||= site
         end
@@ -113,8 +113,8 @@ module Jekyll #:nodoc:
         @filename ||= generate_file_name(domain_name, baseurl)
       end
 
-      def directClasses
-        @directClasses ||= begin
+      def direct_classes
+        @direct_classes ||= begin
           classes=[]
           selection = statements_as(:subject).select{ |s| s.predicate.term.to_s=="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" }
           unless selection.empty?
@@ -148,30 +148,30 @@ module Jekyll #:nodoc:
       #
       def statements_as(role)
         if(!term.to_s[0..1].eql? "_:")
-          inputURI = "<#{term.to_s}>"
+          input_uri = "<#{term.to_s}>"
         elsif(:predicate.eql? role)
           return []
         else
-          inputURI = term.to_s
+          input_uri = term.to_s
         end
 
         case role
           when :subject
-            query = "SELECT ?p ?o ?dt ?lit ?lang WHERE{ #{inputURI} ?p ?o BIND(datatype(?o) AS ?dt) BIND(isLiteral(?o) AS ?lit) BIND(lang(?o) AS ?lang)}"
+            query = "SELECT ?p ?o ?dt ?lit ?lang WHERE{ #{input_uri} ?p ?o BIND(datatype(?o) AS ?dt) BIND(isLiteral(?o) AS ?lit) BIND(lang(?o) AS ?lang)}"
             sparql.query(query).map do |solution|
-              check = checkSolution(solution)
-              createStatement(term.to_s, solution.p, solution.o, solution.lit, check[:lang], check[:dataType])
+              check = check_solution(solution)
+              create_statement(term.to_s, solution.p, solution.o, solution.lit, check[:lang], check[:data_type])
             end
           when :predicate
-            query = "SELECT ?s ?o ?dt ?lit ?lang WHERE{ ?s #{inputURI} ?o BIND(datatype(?o) AS ?dt) BIND(isLiteral(?o) AS ?lit) BIND(lang(?o) AS ?lang)}"
+            query = "SELECT ?s ?o ?dt ?lit ?lang WHERE{ ?s #{input_uri} ?o BIND(datatype(?o) AS ?dt) BIND(isLiteral(?o) AS ?lit) BIND(lang(?o) AS ?lang)}"
             sparql.query(query).map do |solution|
-              check = checkSolution(solution)
-              createStatement(solution.s, term.to_s, solution.o, solution.lit, check[:lang], check[:dataType])
+              check = check_solution(solution)
+              create_statement(solution.s, term.to_s, solution.o, solution.lit, check[:lang], check[:data_type])
             end
           when :object
-            query = "SELECT ?s ?p WHERE{ ?s ?p #{inputURI}}"
+            query = "SELECT ?s ?p WHERE{ ?s ?p #{input_uri}}"
             sparql.query(query).map do |solution|
-              createStatement( solution.s, solution.p, term.to_s)
+              create_statement( solution.s, solution.p, term.to_s)
             end
           else
             Jekyll.logger.error "Not existing role found in #{term.to_s}"
@@ -181,25 +181,25 @@ module Jekyll #:nodoc:
 
       #checks if a query solution contains a language or type tag and returns those in a hash
       private
-      def checkSolution(solution)
-        result = {:lang => nil, :dataType => nil}
+      def check_solution(solution)
+        result = {:lang => nil, :data_type => nil}
         if((solution.bound?(:lang)) && (!solution.lang.to_s.eql?("")))
           result[:lang] = solution.lang.to_s.to_sym
         end
         if(solution.bound? :dt)
-          result[:dataType] = solution.dt
+          result[:data_type] = solution.dt
         end
         return result
       end
 
       private
-      def createStatement(subjectString, predicateString, objectString, isLit = nil, lang = nil, dataType = nil)
-        subject = RDF::URI(subjectString)
-        predicate = RDF::URI(predicateString)
-        if(!isLit.nil?&&isLit.true?)
-          object = RDF::Literal(objectString, language: lang, datatype: RDF::URI(dataType))
+      def create_statement(subject_string, predicate_string, object_string, is_lit = nil, lang = nil, data_type = nil)
+        subject = RDF::URI(subject_string)
+        predicate = RDF::URI(predicate_string)
+        if(!is_lit.nil?&&is_lit.true?)
+          object = RDF::Literal(object_string, language: lang, datatype: RDF::URI(data_type))
         else
-          object = RDF::URI(objectString)
+          object = RDF::URI(object_string)
         end
         return RdfStatement.new(RDF::Statement( subject, predicate, object), @sparql, @site)
       end

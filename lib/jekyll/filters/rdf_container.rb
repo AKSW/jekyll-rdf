@@ -27,23 +27,23 @@ module Jekyll
   module RdfContainer
     include Jekyll::RdfPrefixResolver
     def rdf_container(input, type = nil)
-      sparqlClient = input.sparql
-      if(!(validContainer?(input, sparqlClient, type)))
+      sparql_client = input.sparql
+      if(!(valid_container?(input, sparql_client, type)))
         Jekyll.logger.error "<#{input.iri}> is not recognized as a container"
         return []
       end
       query = "SELECT ?p ?o WHERE{ <#{input.iri}> ?p ?o }"
-      solutions = sparqlClient.query(query).each_with_object([]) {|solution, array|
+      solutions = sparql_client.query(query).each_with_object([]) {|solution, array|
         if((solution.p.to_s[0..43].eql? "http://www.w3.org/1999/02/22-rdf-syntax-ns#_") && (solution.p.to_s[44..-1] !~ /\D/))
-          array << Jekyll::Drops::RdfTerm.build_term_drop(solution.o, input.sparql, input.site).addNecessities(input.site, input.page)
+          array << Jekyll::Drops::RdfTerm.build_term_drop(solution.o, input.sparql, input.site).add_necessities(input.site, input.page)
         end
       }
       return solutions
     end
-    def validContainer?(input, sparqlClient, type = nil)
-      askQuery1 = "ASK WHERE {VALUES ?o {<http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>} <#{input.iri}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o}"
-      askQuery2 = "ASK WHERE {<#{input.iri}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o. ?o <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Container>}"
-      return (sparqlClient.query(askQuery1).true?) || (sparqlClient.query(askQuery2).true?)
+    def valid_container?(input, sparql_client, type = nil)
+      ask_query_1 = "ASK WHERE {VALUES ?o {<http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>} <#{input.iri}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o}"
+      ask_query_2 = "ASK WHERE {<#{input.iri}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o. ?o <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Container>}"
+      return (sparql_client.query(ask_query_1).true?) || (sparql_client.query(ask_query_2).true?)
     end
   end
 end

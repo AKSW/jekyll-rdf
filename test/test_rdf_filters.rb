@@ -180,12 +180,12 @@ class TestRdfFilter < Test::Unit::TestCase
     end
 
     should "use a container validator that recognizes container" do
-      assert validContainer?(@testResource, @testResource.sparql), "validContainer? returned false"
+      assert valid_container?(@testResource, @testResource.sparql), "validContainer? returned false"
     end
 
     should "use a container validator that recognizes non container" do
       resource = res_helper.basic_resource("http://Test")
-      assert !(validContainer?(resource, resource.sparql)), "validContainer? returned true"
+      assert !(valid_container?(resource, resource.sparql)), "validContainer? returned true"
     end
   end
 end

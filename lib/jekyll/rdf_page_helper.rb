@@ -38,9 +38,9 @@ module Jekyll
       def load_prefixes
         if !self.data["rdf_prefix_path"].nil?
           begin
-            prefixFile=File.new(File.join(@base, 'rdf-data', self.data["rdf_prefix_path"].strip)).readlines
-            self.data["rdf_prefixes"] = prefixFile.join(" ")
-            self.data["rdf_prefix_map"] = Hash[ *(prefixFile.collect { |v|
+            prefix_file=File.new(File.join(@base, 'rdf-data', self.data["rdf_prefix_path"].strip)).readlines
+            self.data["rdf_prefixes"] = prefix_file.join(" ")
+            self.data["rdf_prefix_map"] = Hash[ *(prefix_file.collect { |v|
               arr = v.split(":",2)
               [arr[0][7..-1].strip, arr[1].strip[1..-2]]
             }.flatten)]

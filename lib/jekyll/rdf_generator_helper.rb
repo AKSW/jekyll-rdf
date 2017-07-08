@@ -6,18 +6,18 @@ module Jekyll
           if(entry['./'].nil?)
             if(@config['render_orphaned_uris'])
               entry.each{|name, resource|
-                createPage(site, resource, mapper, @global_config)
+                create_page(site, resource, mapper, @global_config)
               }
             end
           else
             resource = entry.delete('./')
             resource.subResources = entry
-            createPage(site, resource, mapper, @global_config)
+            create_page(site, resource, mapper, @global_config)
           end
         }
 
         @blanknodes.each{|resource|
-          createPage(site, resource, mapper, @global_config)
+          create_page(site, resource, mapper, @global_config)
         }
       end
 
@@ -109,7 +109,7 @@ module Jekyll
         end.uniq
       end
 
-      def createPage(site, resource, mapper, global_config)
+      def create_page(site, resource, mapper, global_config)
         page = RdfPageData.new(site, site.source, resource, mapper, global_config)
         if(page.complete)
           site.pages << page
