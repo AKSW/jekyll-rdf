@@ -145,3 +145,5 @@ simcon:Container rdf:_5 sim:Maggie.
 dtp16:SparqlClient a plh:object.
 plh:object1 plh:predicate2 plh:object2.
 plh:subject1 plh:predicate1 plh:object1.
+
+<http://example.org/Sören> rdf:type foaf:Person.    #testing öüä
