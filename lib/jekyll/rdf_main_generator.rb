@@ -48,8 +48,14 @@ module Jekyll
         Jekyll.logger.error("Outdated format in _config.yml:\n  'template_mapping' detected but the following keys must be used now instead:\n    instance_template_mappings -> maps single resources to single layouts\n    class_template_mappings -> maps entire classes of resources to layouts\nJekyll-RDF wont render any pages for #{site.source}")
         return false
       end
-
-      graph = RDF::Graph.load( File.join( site.config['source'], @config['path']))
+      if(!@config['remote'].nil?)
+        graph = @config['remote']
+      elsif(!@config['path'].nil?)
+        graph = RDF::Graph.load( File.join( site.config['source'], @config['path']))
+      else
+        Jekyll.logger.error("No sparql endpoint defined. Jumping out of jekyll-rdf processing.")
+        return false
+      end
       sparql = SPARQL::Client.new(graph)
 
       Jekyll::JekyllRdf::Helper::RdfHelper::sparql = sparql

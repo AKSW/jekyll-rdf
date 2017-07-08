@@ -222,7 +222,9 @@ module Jekyll #:nodoc:
         def create_statement(subject_string, predicate_string, object_string, is_lit = nil, lang = nil, data_type = nil)
           subject = RDF::URI(subject_string)
           predicate = RDF::URI(predicate_string)
-          if(!is_lit.nil?&&is_lit.true?)
+          if((!is_lit.nil? && (is_lit.class <= RDF::Literal::Integer) ) && is_lit.nonzero?)
+            object = RDF::Literal(object_string, language: lang, datatype: RDF::URI(data_type))
+          elsif((!is_lit.nil? && (is_lit.class <= RDF::Literal::Boolean)) && is_lit.true?)  #some endpoints return isLit as integer, some as boolean
             object = RDF::Literal(object_string, language: lang, datatype: RDF::URI(data_type))
           else
             object = RDF::URI(object_string)
