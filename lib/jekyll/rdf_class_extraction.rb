@@ -17,8 +17,8 @@ module Jekyll
 	      end
 
         @classResources.each{|key, value|
-          value.findDirectSubClasses.each{|s|
-            value.addSubClass(@classResources[s])
+          value.find_direct_subclasses.each{|s|
+            value.add_subclass(@classResources[s])
           }
         }
       end
@@ -26,8 +26,8 @@ module Jekyll
       def assign_class_templates(classes_to_templates)
         if(classes_to_templates.is_a?(Hash))
           classes_to_templates.each{|key, value|
-            @classResources[key].propagateTemplate(value,0)
-            @classResources[key].traverseHierarchyValue(0);
+            @classResources[key].propagate_template(value,0)
+            @classResources[key].traverse_hierarchy_value(0);
           }
         end
       end

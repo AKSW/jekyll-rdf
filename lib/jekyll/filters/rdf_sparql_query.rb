@@ -46,7 +46,7 @@ module Jekyll
       begin
         result = input.sparql.query(query).map do |solution|
           hsh = solution.to_h
-          hsh.update(hsh){ |k,v| Jekyll::Drops::RdfTerm.build_term_drop(v, input.sparql, input.site).addNecessities(input.site, input.page)}
+          hsh.update(hsh){ |k,v| Jekyll::Drops::RdfTerm.build_term_drop(v, input.sparql, input.site).add_necessities(input.site, input.page)}
           hsh.collect{|k,v| [k.to_s, v]}.to_h
         end
         return result

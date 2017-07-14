@@ -47,11 +47,11 @@ module Jekyll #:nodoc:
         @alternativeTemplates = []
       end
 
-      def multipleTemplates?
+      def multiple_templates?
         !@alternativeTemplates.empty?
       end
 
-      def findDirectSubClasses
+      def find_direct_subclasses
         if(!@term.to_s[0..1].eql? "_:")
           term_uri = "<#{@term.to_s}>"
         else
@@ -62,26 +62,26 @@ module Jekyll #:nodoc:
         return selection
       end
 
-      def addSubClass(resource)
+      def add_subclass(resource)
         @subClasses << resource
       end
 
-      def propagateTemplate(template, lock)
+      def propagate_template(template, lock)
         if(@lock>lock||@lock==-1)
           @lock=lock
           @template=template
           @alternativeTemplates.clear()
-          subClasses.each{|sub| sub.propagateTemplate(template ,lock+1)}
+          subClasses.each{|sub| sub.propagate_template(template ,lock+1)}
         elsif(@lock==lock)
           @alternativeTemplates.push(template)
-          subClasses.each{|sub| sub.propagateTemplate(template ,lock+1)}
+          subClasses.each{|sub| sub.propagate_template(template ,lock+1)}
         end
       end
 
-      def traverseHierarchyValue(predecessorHierarchyValue)
+      def traverse_hierarchy_value(predecessorHierarchyValue)
         if(@subClassHierarchyValue + 1 >= predecessorHierarchyValue)  #avoid loops
           @subClassHierarchyValue += 1
-          subClasses.each{|sub| sub.traverseHierarchyValue(@subClassHierarchyValue)}
+          subClasses.each{|sub| sub.traverse_hierarchy_value(@subClassHierarchyValue)}
         end
       end
     end

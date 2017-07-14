@@ -68,10 +68,10 @@ module Jekyll
       tmpl = resources_to_templates ? resources_to_templates[resource.term.to_s] : nil
       lock = -1
       hier = -1
-      warnMultTempl = false
-      duplicateLevelTempl = []
+      warn_mult_templ = false
+      duplicate_level_templ = []
       if(tmpl.nil?)
-        resource.directClasses.each do |classUri|
+        resource.direct_classes.each do |classUri|
           classRes = classResources[classUri]
           if((classRes.lock <= lock || lock == -1) && !classRes.template.nil?)
             if(classRes.subClassHierarchyValue > hier)
@@ -79,20 +79,20 @@ module Jekyll
               lock = classRes.lock
               tmpl = classRes.template
               hier = classRes.subClassHierarchyValue
-              warnMultTempl = false
-              duplicateLevelTempl.clear.push(tmpl)
-              if(classRes.multipleTemplates?)
-                warnMultTempl = true
-                duplicateLevelTempl.concat(classRes.alternativeTemplates)
+              warn_mult_templ = false
+              duplicate_level_templ.clear.push(tmpl)
+              if(classRes.multiple_templates?)
+                warn_mult_templ = true
+                duplicate_level_templ.concat(classRes.alternativeTemplates)
               end
             elsif(classRes.subClassHierarchyValue == hier)
-              warnMultTempl = true
-              duplicateLevelTempl.push(classRes.template)
+              warn_mult_templ = true
+              duplicate_level_templ.push(classRes.template)
             end
           end unless classRes.nil?
         end
-        if(warnMultTempl)
-          Jekyll.logger.warn("Warning: multiple possible templates for #{resource.term.to_s}: #{duplicateLevelTempl.uniq.join(', ')}")
+        if(warn_mult_templ)
+          Jekyll.logger.warn("Warning: multiple possible templates for #{resource.term.to_s}: #{duplicate_level_templ.uniq.join(', ')}")
         end
       end
       return tmpl unless tmpl.nil?
