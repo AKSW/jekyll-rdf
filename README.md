@@ -146,20 +146,25 @@ For the prefixes the same rules apply as for other variables defined in the YAML
 This is especially relevant if you are using prefixes in includes.
 
 ## Configuration
-### Set default template and map templates to resources
-It is possible to map to a specific ressource, type or superclass
+
+### Map resources to templates
+It is possible to map a specific class (resp. RDF-type) or individual resources to a template.
 ```yaml
-  'default_template' => 'rdf_index.html',
-  'class_template_mappings' => {
-    'http://xmlns.com/foaf/0.1/Person' => 'person.html'
-  },
-  'instance_template_mappings' => {
-    'http://www.ifi.uio.no/INF3580/simpsons#Abraham' => 'abraham.html'
-  }
+  class_template_mappings:
+      "http://xmlns.com/foaf/0.1/Person": "person.html"
+  instance_template_mappings:
+      "http://aksw.org/Team": "team.html"
 ```
+
 A template mapped to a class will be used to render each instance of that class and its subclasses.
 Each instance is rendered with its most specific class mapped to a template.
-If the mapping is ambigiuous for one resource, a warning will be output to your command window, so watch out!
+If the mapping is ambiguous for a resource, a warning will be output to your command window, so watch out!
+
+It is also possible to define a default template, which is used for all resources, which are not covered by the `class_template_mappings` or `instance_template_mappings`.
+
+```yaml
+  default_template: "default.html"
+```
 
 ### Host different resources through a single Host page
 If the URI of a resource contains a fragment identifier the resource can be hosted together with other resources with the same URI on a single page. To activate this feature `use_hash_gathering` has to be set to true in the `_config.yml` file.
