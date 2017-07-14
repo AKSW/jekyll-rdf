@@ -135,8 +135,15 @@ We implemented a liquid filter `sparql_query` to run custom SPARQL queries. Each
 </table>
 ```
 ### Defining Prefixes for RDF
-It is possible to pre define a set of prefixes for the use in `rdf_property` and `sparql_query`, shortening the amount of text required for each filter. Just define your prefixes in a separate file and include the key `rdf_prefix_path` together with a relative path in the yaml-frontmatter of every layout you want to use your prefixes for. The path gets resolved to `/your/jekyll-directory/rdf-data/rdf_prefix_path`. The format of this prefix file should correspond to the ttl-format.
-It is also adviced to always enclose complete (without prefixes) URIs in `<` and `>` before passing them to `rdf_property` or `sparql_query`, otherwise an exception (UnMarkedUri) will be thrown.
+It is possible to declare a set of prefixes which can be used in the `rdf_property` and `sparql_query` liquid-filters.
+This allows to shorten the amount of text required for each liquid-filter.
+The syntax of the prefix declarations the same as for [SPARQL 1.1](https://www.w3.org/TR/2013/REC-sparql11-query-20130321/).
+Just put your prefixes in a separate file and include the key `rdf_prefix_path` together with a relative path in the [YAML Front Matter](https://jekyllrb.com/docs/frontmatter/) of a file where your prefixes should be used.
+The path gets resolved to `<your jekyll-directory>/rdf-data/<rdf_prefix_path>`.
+
+For the prefixes the same rules apply as for other variables defined in the YAML Front Matter.
+“These variables will then be available to you to access using Liquid tags both further down in the file and also in any layouts or includes that the page or post in question relies on.” (source: [YAML Front Matter](https://jekyllrb.com/docs/frontmatter/)).
+This is especially relevant if you are using prefixes in includes.
 
 ## Configuration
 ### Set default template and map templates to resources
