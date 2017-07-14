@@ -89,19 +89,19 @@ Returns the IRI of the currently rendered resource.
 To access objects which are connected to the current subject via a predicate you can use our custom liquid filters. For single objects or lists of objects use the `rdf_property`-filter (see [1](#single-objects) and [2](#multiple-objects)).
 ### Single Objects
 To access one object which is connected to the current subject through a given predicate please filter `page.rdf` data with the `rdf_property`-filter. Example:
-```html
-Age: {{ page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/age' }}
+```
+Age: {{ page.rdf | rdf_property: '<http://xmlns.com/foaf/0.1/age>' }}
 ```
 ### Optional Language Selection
 To select a specific language please add a a second parameter to the filter:
-```html
-Age: {{ page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/job','en' }}
+```
+Age: {{ page.rdf | rdf_property: '<http://xmlns.com/foaf/0.1/job>','en' }}
 ```
 ### Multiple Objects
 To get more than one object connected to the current subject through a given predicate please use the filter `rdf_property` in conjunction with a third argument set to `true` (the second argument for the language can be omitted by setting it to `nil`):
 ```html
 Sisters: <br />
-{% assign resultset = page.rdf | rdf_property: 'http://www.ifi.uio.no/INF3580/family#hasSister', nil, true %}
+{% assign resultset = page.rdf | rdf_property: '<http://www.ifi.uio.no/INF3580/family#hasSister>', nil, true %}
 <ul>
 {% for result in resultset %}
     <li>{{ result }}</li>
@@ -112,7 +112,7 @@ Sisters: <br />
 To select a specific language please add a second parameter to the filter:
 ```html
 Book titles: <br />
-{% assign resultset = page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/currentProject','de' %}
+{% assign resultset = page.rdf | rdf_property: '<http://xmlns.com/foaf/0.1/currentProject>','de' %}
 <ul>
 {% for result in resultset %}
     <li>{{ result }}</li>
