@@ -155,11 +155,10 @@ Each instance is rendered with its most specific class mapped to a template.
 If the mapping is ambigiuous for one resource, a warning will be output to your command window, so watch out!
 
 ### Host different resources through a single Host page
-If the URI of a resource contains a fragment identifier the resource can be hosted together with other resources with the same URI on a single page. To activate this feature `use_hash_gathering` has to be set to true in the `_config.yml` file.
+If the URI of a resource contains a fragment identifier the resource can be hosted together with other resources with the same URI on a single page.
 ```yaml
-  'instance_uri_template_mappings' => {
-    'http://www.ifi.uio.no/INF3580/simpsons#' => 'family.html'
-  }
+  'instance_template_mappings' :
+    'http://www.ifi.uio.no/INF3580/simpsons' : 'family.html'
 ```
 
 ```html
@@ -167,7 +166,7 @@ If the URI of a resource contains a fragment identifier the resource can be host
     {% include simPerson.html person = member%}
   {% endfor %}
 ```
-The example above uses the template `family.html` to render a single page containing every resource whose URI begins with `http://www.ifi.uio.no/INF3580/simpsons#`. Jekyll-rdf collects all resources with a fragment indetifier in their URI (from here on called `subResources`) and passes them through `page.sub_rdf` into the templates of its superResource (resources whose URIs are equal to its subResources, but do not contain a fragment identifier).
+The example above uses the template `family.html` to render a single page containing every resource whose URI begins with `http://www.ifi.uio.no/INF3580/simpsons#`. Jekyll-rdf collects all resources with a fragment identifier in their URI (from here on called `subResources`) and passes them through `page.sub_rdf` into the templates of its superResource (resources whose URIs are equal to its subResources, but do not contain a fragment identifier).
 To render resources with a fragment identifier without a rendered superResource, set `render_orphaned_uris` to `true`.
 
 ### Restrict resource selection
