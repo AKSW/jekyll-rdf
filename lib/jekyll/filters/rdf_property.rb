@@ -89,7 +89,7 @@ module Jekyll
       # Distinguishes the solution between an Literal and a Resource
       #
       def dist_literal_resource(solution)
-        if solution.lit.true?
+        if((solution.lit.instance_of?(RDF::Literal::Boolean) && solution.lit.true? )|| (solution.lit.instance_of?(RDF::Literal::Integer) && solution.lit.nonzero?))#TODO compatibility (to Virtuoso) shouldn't be done inline but in an external file
           check = check_solution(solution)
           object = RDF::Literal(solution.o, language: check[:lang], datatype: RDF::URI(check[:dataType]))
           result = Jekyll::JekyllRdf::Drops::RdfLiteral.new(object)
