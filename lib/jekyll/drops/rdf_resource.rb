@@ -127,10 +127,10 @@ module Jekyll #:nodoc:
         def direct_classes
           @direct_classes ||= begin
             classes=[]
-            selection = statements_as(:subject).select{ |s| s.predicate.term.to_s=="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" }
-            unless selection.empty?
-              selection.each{|s| classes << s.object.term.to_s}
-            end
+            query = "SELECT ?d_class WHERE { #{term.to_ntriples} <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?d_class}"
+            sparql.query(query).each{|solution|
+              classes << solution.d_class.to_s
+            }
             classes.uniq!
             classes
           end
@@ -169,29 +169,22 @@ module Jekyll #:nodoc:
         #     Return a list of Jekyll::JekyllRdf::Drops::RdfStatements whose object is the RDF resource represented by the receiver
         #
         def statements_as(role)
-          if(!term.to_s[0..1].eql? "_:")
-            input_uri = "<#{term.to_s}>"
-          elsif(:predicate.eql? role)
-            return []
-          else
-            input_uri = term.to_s
-          end
-
+          return [] if (term.instance_of? RDF::Node)
           case role
           when :subject
-            query = "SELECT ?p ?o ?dt ?lit ?lang WHERE{ #{input_uri} ?p ?o BIND(datatype(?o) AS ?dt) BIND(isLiteral(?o) AS ?lit) BIND(lang(?o) AS ?lang)}"
+            query = "SELECT ?p ?o ?dt ?lit ?lang WHERE{ #{term.to_ntriples} ?p ?o BIND(datatype(?o) AS ?dt) BIND(isLiteral(?o) AS ?lit) BIND(lang(?o) AS ?lang)}"
             Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(query).map do |solution|
               check = check_solution(solution)
               create_statement(term.to_s, solution.p, solution.o, solution.lit, check[:lang], check[:data_type])
             end
           when :predicate
-            query = "SELECT ?s ?o ?dt ?lit ?lang WHERE{ ?s #{input_uri} ?o BIND(datatype(?o) AS ?dt) BIND(isLiteral(?o) AS ?lit) BIND(lang(?o) AS ?lang)}"
+            query = "SELECT ?s ?o ?dt ?lit ?lang WHERE{ ?s #{term.to_ntriples} ?o BIND(datatype(?o) AS ?dt) BIND(isLiteral(?o) AS ?lit) BIND(lang(?o) AS ?lang)}"
             Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(query).map do |solution|
               check = check_solution(solution)
               create_statement(solution.s, term.to_s, solution.o, solution.lit, check[:lang], check[:data_type])
             end
           when :object
-            query = "SELECT ?s ?p WHERE{ ?s ?p #{input_uri}}"
+            query = "SELECT ?s ?p WHERE{ ?s ?p #{term.to_ntriples}}"
             Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(query).map do |solution|
               create_statement( solution.s, solution.p, term.to_s)
             end
