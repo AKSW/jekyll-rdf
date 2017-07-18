@@ -154,21 +154,27 @@ A template mapped to a class will be used to render each instance of that class 
 Each instance is rendered with its most specific class mapped to a template.
 If the mapping is ambigiuous for one resource, a warning will be output to your command window, so watch out!
 
-### Host different resources through a single Host page
-If the URI of a resource contains a fragment identifier the resource can be hosted together with other resources with the same URI on a single page. To activate this feature `use_hash_gathering` has to be set to true in the `_config.yml` file.
+### Dealing with Fragment Identifiers
+If the URI of a resource contains a [fragment identifier (`#…`)](https://en.wikipedia.org/wiki/Fragment_identifier) the resource can be hosted together with other resources with the same base URI up to the fragment identifier on a single page.
+The page will by accessible through the base URI, while in the template the individual URIs with a fragment identifier are accessible through the collection `page.sub_rdf`.
+
+**Example**
+
+In the `_config.yml`:
 ```yaml
-  'instance_uri_template_mappings' => {
-    'http://www.ifi.uio.no/INF3580/simpsons#' => 'family.html'
-  }
+  'instance_template_mappings' :
+    'http://www.ifi.uio.no/INF3580/simpsons' : 'family.html'
 ```
 
+In `_layouts/family.html`:
 ```html
   {% for member in page.sub_rdf%}
     {% include simPerson.html person = member%}
   {% endfor %}
 ```
-The example above uses the template `family.html` to render a single page containing every resource whose URI begins with `http://www.ifi.uio.no/INF3580/simpsons#`. Jekyll-rdf collects all resources with a fragment indetifier in their URI (from here on called `subResources`) and passes them through `page.sub_rdf` into the templates of its superResource (resources whose URIs are equal to its subResources, but do not contain a fragment identifier).
-To render resources with a fragment identifier without a rendered superResource, set `render_orphaned_uris` to `true`.
+
+The example uses the template `family.html` to render a single page containing every resource whose URI begins with `http://www.ifi.uio.no/INF3580/simpsons#`, was well as the resource `http://www.ifi.uio.no/INF3580/simpsons` itself.
+Jekyll-rdf collects all resources with a fragment identifier in their URI (from here on called `subResources`) and passes them through `page.sub_rdf` into the templates of its `superResource` (resources whose base URI is the same as of its `subResources` except for the fragment identifier).
 
 ### Restrict resource selection
 Additionally, you can restrict the overall resource selection by adding a SPARQL query as `restriction` parameter to `_config.yml`. Please use ?resourceUri as the placeholder for the resulting literal:
