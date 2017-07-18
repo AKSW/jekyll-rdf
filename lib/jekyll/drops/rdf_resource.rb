@@ -214,38 +214,40 @@ module Jekyll #:nodoc:
           file_name = "rdfsites/blanknode/#{term.to_s}/"
         else
           begin
-            uri = URI::split(term.to_s)
+            uri = Addressable::URI.parse(term.to_s).to_hash
             file_name = "rdfsites/" # in this directory all external RDF sites are stored
-            if (uri[2] == domain_name)
+            if (uri[:host] == domain_name)
               file_name = ""
-              uri[0] = nil
-              uri[2] = nil
-              if(uri[5].length > baseurl.length)
-                if(uri[5][0..(baseurl.length)].eql? (baseurl + "/"))
-                  uri[5] = uri[5][(baseurl.length)..-1]
+              uri[:scheme] = nil
+              uri[:host] = nil
+              if(uri[:path].length > baseurl.length)
+                if(uri[:path][0..(baseurl.length)].eql? (baseurl + "/"))
+                  uri[:path] = uri[:path][(baseurl.length)..-1]
                 end
-              elsif(uri[5].eql?(baseurl))
-                uri[5] = nil
+              elsif(uri[:path].eql?(baseurl))
+                uri[:path] = nil
               end
             end
-            (0..8).each do |i|
-              if !(uri[i].nil?)
-                case i
-                when 5
-                  file_name += "#{uri[i][1..-1]}/"
-                when 8
-                  file_name += "#/#{uri[i]}"
+            key_field = [:scheme, :userinfo, :host, :port, :registry, :path, :opaque, :query, :fragment]
+            key_field.each do |index|
+              if !(uri[index].nil?)
+                case index
+                when :path
+                  file_name += "#{uri[index][1..-1]}/"
+                when :fragment
+                  file_name += "#/#{uri[index]}"
                 else
-                  file_name += "#{uri[i]}/"
+                  file_name += "#{uri[index]}/"
                 end
               end
             end
             unless file_name[-1] == '/'
               file_name += '/'
             end
-          rescue URI::InvalidURIError #unclean coding: blanknodes are recognized through errors
+          rescue URI::InvalidURIError => x #unclean coding: blanknodes are recognized through errors
             file_name = "invalids/#{term.to_s}"
             Jekyll.logger.error("Invalid resource found: #{term.to_s} is not a proper uri")
+            Jekyll.logger.error("URI parser exited with message: #{x.message}")
           end
         end
         file_name = file_name.gsub('_','_u')
@@ -259,7 +261,6 @@ module Jekyll #:nodoc:
         @render_path = file_name
         file_name
       end
-
     end
   end
 end

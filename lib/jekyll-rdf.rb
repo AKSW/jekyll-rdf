@@ -30,6 +30,8 @@ require 'jekyll'
 require 'linkeddata'
 require 'sparql'
 require 'set'
+require 'addressable/uri'
+require 'pp'
 
 require 'jekyll/drops/rdf_term'
 require 'jekyll/drops/rdf_statement'
