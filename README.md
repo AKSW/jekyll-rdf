@@ -89,19 +89,19 @@ Returns the IRI of the currently rendered resource.
 To access objects which are connected to the current subject via a predicate you can use our custom liquid filters. For single objects or lists of objects use the `rdf_property`-filter (see [1](#single-objects) and [2](#multiple-objects)).
 ### Single Objects
 To access one object which is connected to the current subject through a given predicate please filter `page.rdf` data with the `rdf_property`-filter. Example:
-```html
-Age: {{ page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/age' }}
+```
+Age: {{ page.rdf | rdf_property: '<http://xmlns.com/foaf/0.1/age>' }}
 ```
 ### Optional Language Selection
 To select a specific language please add a a second parameter to the filter:
-```html
-Age: {{ page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/job','en' }}
+```
+Age: {{ page.rdf | rdf_property: '<http://xmlns.com/foaf/0.1/job>','en' }}
 ```
 ### Multiple Objects
 To get more than one object connected to the current subject through a given predicate please use the filter `rdf_property` in conjunction with a third argument set to `true` (the second argument for the language can be omitted by setting it to `nil`):
 ```html
 Sisters: <br />
-{% assign resultset = page.rdf | rdf_property: 'http://www.ifi.uio.no/INF3580/family#hasSister', nil, true %}
+{% assign resultset = page.rdf | rdf_property: '<http://www.ifi.uio.no/INF3580/family#hasSister>', nil, true %}
 <ul>
 {% for result in resultset %}
     <li>{{ result }}</li>
@@ -112,7 +112,7 @@ Sisters: <br />
 To select a specific language please add a second parameter to the filter:
 ```html
 Book titles: <br />
-{% assign resultset = page.rdf | rdf_property: 'http://xmlns.com/foaf/0.1/currentProject','de' %}
+{% assign resultset = page.rdf | rdf_property: '<http://xmlns.com/foaf/0.1/currentProject>','de' %}
 <ul>
 {% for result in resultset %}
     <li>{{ result }}</li>
@@ -135,24 +135,36 @@ We implemented a liquid filter `sparql_query` to run custom SPARQL queries. Each
 </table>
 ```
 ### Defining Prefixes for RDF
-It is possible to pre define a set of prefixes for the use in `rdf_property` and `sparql_query`, shortening the amount of text required for each filter. Just define your prefixes in a separate file and include the key `rdf_prefix_path` together with a relative path in the yaml-frontmatter of every layout you want to use your prefixes for. The path gets resolved to `/your/jekyll-directory/rdf-data/rdf_prefix_path`. The format of this prefix file should correspond to the ttl-format.
-It is also adviced to always enclose complete (without prefixes) URIs in `<` and `>` before passing them to `rdf_property` or `sparql_query`, otherwise an exception (UnMarkedUri) will be thrown.
+It is possible to declare a set of prefixes which can be used in the `rdf_property` and `sparql_query` liquid-filters.
+This allows to shorten the amount of text required for each liquid-filter.
+The syntax of the prefix declarations the same as for [SPARQL 1.1](https://www.w3.org/TR/2013/REC-sparql11-query-20130321/).
+Just put your prefixes in a separate file and include the key `rdf_prefix_path` together with a relative path in the [YAML Front Matter](https://jekyllrb.com/docs/frontmatter/) of a file where your prefixes should be used.
+The path gets resolved to `<your jekyll-directory>/rdf-data/<rdf_prefix_path>`.
+
+For the prefixes the same rules apply as for other variables defined in the YAML Front Matter.
+“These variables will then be available to you to access using Liquid tags both further down in the file and also in any layouts or includes that the page or post in question relies on.” (source: [YAML Front Matter](https://jekyllrb.com/docs/frontmatter/)).
+This is especially relevant if you are using prefixes in includes.
 
 ## Configuration
-### Set default template and map templates to resources
-It is possible to map to a specific ressource, type or superclass
+
+### Map resources to templates
+It is possible to map a specific class (resp. RDF-type) or individual resources to a template.
 ```yaml
-  'default_template' => 'rdf_index.html',
-  'class_template_mappings' => {
-    'http://xmlns.com/foaf/0.1/Person' => 'person.html'
-  },
-  'instance_template_mappings' => {
-    'http://www.ifi.uio.no/INF3580/simpsons#Abraham' => 'abraham.html'
-  }
+  class_template_mappings:
+      "http://xmlns.com/foaf/0.1/Person": "person.html"
+  instance_template_mappings:
+      "http://aksw.org/Team": "team.html"
 ```
+
 A template mapped to a class will be used to render each instance of that class and its subclasses.
 Each instance is rendered with its most specific class mapped to a template.
-If the mapping is ambigiuous for one resource, a warning will be output to your command window, so watch out!
+If the mapping is ambiguous for a resource, a warning will be output to your command window, so watch out!
+
+It is also possible to define a default template, which is used for all resources, which are not covered by the `class_template_mappings` or `instance_template_mappings`.
+
+```yaml
+  default_template: "default.html"
+```
 
 ### Dealing with Fragment Identifiers
 If the URI of a resource contains a [fragment identifier (`#…`)](https://en.wikipedia.org/wiki/Fragment_identifier) the resource can be hosted together with other resources with the same base URI up to the fragment identifier on a single page.
