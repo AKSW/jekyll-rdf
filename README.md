@@ -12,9 +12,9 @@ The API Documentation is available at [RubyDoc.info](http://www.rubydoc.info/gem
 
 1. [Installation](#installation)
 2. [Usage](#usage)
-  1. [Integrate with Jekyll](#integrate-with-jekyll)
-  2. [Make use of RDF data](make-use-of-rdf-data)
-  3. [Configuration](#configuration)
+    1. [Integrate with Jekyll](#integrate-with-jekyll)
+    2. [Make use of RDF data](#make-use-of-rdf-data)
+    3. [Configuration](#configuration)
 3. [Parameters and configuration options at a glance](#parameters-and-configuration-options-at-a-glance)
 4. [Development](#development)
 5. [License](#license)
