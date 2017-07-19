@@ -20,6 +20,7 @@ The API Documentation is available at [RubyDoc.info](http://www.rubydoc.info/gem
 5. [License](#license)
 
 # Installation
+
 ## Installation as a gem
 The easiest and fastest way to install our project is the installation as a gem. The following command automatically installs the project and all required components such as Jekyll and the RDF-library
 ```
@@ -37,6 +38,7 @@ cd jekyll-rdf
 gem build jekyll-rdf.gemspec
 gem install jekyll-rdf -*.gem
 ```
+
 # Usage
 ## Integrate with Jekyll
 First, you need a jekyll page. In order to create one, just do:
@@ -65,6 +67,7 @@ url: "http://www.ifi.uio.no"
 ## Make use of RDF data
 ### Templates
 Now, create one or more files (e.g `rdf_index.html` or `person.html`) in the `_layouts`-directory to edit the temaplate for rdf-pages. For each resource a page will be rendered. See example below:
+
 ```html
 ---
 layout: default
@@ -85,6 +88,7 @@ layout: default
   </p>
 </div>
 ```
+
 ### Template Examples
 We included some template examples at
 * `test/source/_layouts/rdf_index.html`
@@ -102,16 +106,19 @@ Returns the IRI of the currently rendered resource.
 
 ### Liquid Filters
 To access objects which are connected to the current subject via a predicate you can use our custom liquid filters. For single objects or lists of objects use the `rdf_property`-filter (see [1](#single-objects) and [2](#multiple-objects)).
+
 ### Single Objects
 To access one object which is connected to the current subject through a given predicate please filter `page.rdf` data with the `rdf_property`-filter. Example:
 ```
 Age: {{ page.rdf | rdf_property: '<http://xmlns.com/foaf/0.1/age>' }}
 ```
+
 ### Optional Language Selection
 To select a specific language please add a a second parameter to the filter:
 ```
 Age: {{ page.rdf | rdf_property: '<http://xmlns.com/foaf/0.1/job>','en' }}
 ```
+
 ### Multiple Objects
 To get more than one object connected to the current subject through a given predicate please use the filter `rdf_property` in conjunction with a third argument set to `true` (the second argument for the language can be omitted by setting it to `nil`):
 ```html
@@ -123,6 +130,7 @@ Sisters: <br />
 {% endfor %}
 </ul>
 ```
+
 ### Optional Language Selection
 To select a specific language please add a second parameter to the filter:
 ```html
@@ -134,6 +142,7 @@ Book titles: <br />
 {% endfor %}
 </ul>
 ```
+
 ### Custom SPARQL Query
 We implemented a liquid filter `sparql_query` to run custom SPARQL queries. Each occurence of `?resourceUri` gets replaced with the current URI.
 *Caution:* You have to separate query and resultset variables because of Liquids concepts. Example:
@@ -149,6 +158,7 @@ We implemented a liquid filter `sparql_query` to run custom SPARQL queries. Each
 {% endfor %}
 </table>
 ```
+
 ### Defining Prefixes for RDF
 It is possible to declare a set of prefixes which can be used in the `rdf_property` and `sparql_query` liquid-filters.
 This allows to shorten the amount of text required for each liquid-filter.
@@ -208,6 +218,7 @@ Additionally, you can restrict the overall resource selection by adding a SPARQL
 ```yaml
   restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"
 ```
+
 There are 3 pre-defined keywords for restrictions implemented:
 * `subjects` will load all subject URIs
 * `predicates` will load all predicate URIs
@@ -219,12 +230,14 @@ Furthermore you can decide if you want to render blank nodes or not. You just ne
 jekyll_rdf:
   include_blank: true
 ```
+
 ### Preferred Language
 Finally it is also possible to set a preferred language for the RDF-literals with the option `language`:
 ```yaml
 jekyll_rdf:
   language: "en"
 ```
+
 ### Example configuration
 An example configuration could look like this:
 ```yaml
@@ -239,13 +252,16 @@ jekyll_rdf:
   instance_template_mappings:
     "http://www.ifi.uio.no/INF3580/simpsons#Abraham": "abraham.html"
 ```
+
 # Parameters and configuration options at a glance
+
 ## Liquid Filters
 |Name|Parameter|Optional Parameter|Optional Flag|Description|Example|
 |---	|---	|---    |---	|---	|---	|
 |rdf_property|predicate-URI as String|language-tag as String|true to get a list|Returns a single object or an array with objects which are connected to the current subject through a given predicate|```{{ page.rdf \| rdf_property: '<http://xmlns.com/foaf/0.1/job>','en' }}``` ```{% assign resultset = page.rdf \| rdf_property: '<http://xmlns.com/foaf/0.1/currentproject>','en', true %}{% for result in resultset %}<li>{{ result }}</li>{% endfor %}```|
 |rdf_inverse_property|predicate-URI as String|language-tag as String|true to get a list|The same as rdf_property, but the predicate is used reversed|```{{ page.rdf \| rdf_inverse_property: '<http://www.ifi.uio.no/INF3580/family#hasFather>','en' }} <!--Returns a Son instead of a Father-->```|
 |sparql_query|SPARQL-Query as String|-|-|Runs a SPARQL-Query with the current subject as ?resourceURI|```{% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}{% assign resultset = page.rdf \| sparql_query: query %}<table>{% for result in resultset %}<tr><td>{{ result.sub }}</td><td>{{ result.pre }}</td></tr>{% endfor %}</table>```|
+
 ## Plugin Configuration (\_config.yml)
 |Name|Parameter|Default|Description|Example|
 |---	|---	|---	|---	|---	|
@@ -257,23 +273,29 @@ jekyll_rdf:
 |default_template|Filename of the default RDF-template in _layouts directory|no default|Specifies the template-file you want Jekyll to use to render all RDF resources|```default_template: "rdf_index.html"```|
 |instance_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files for rendering an individual instance|```instance_template_mappings: "http://www.ifi.uio.no/INF3580/simpsons#Abraham": "abraham.html"```|
 |class_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files for rendering all instances of that class|```class_template_mappings: "http://xmlns.com/foaf/0.1/Person": "person.html"```|
+
 # Development
+
 ## Run tests
 ```
 bundle exec rake test
 ```
+
 ## Test page
 Everytime the tests are executed, the Jekyll page inside of `test/source` gets processed. Start a slim web server to watch the results in web browser, e.g. Pythons `SimpleHTTPServer` (Python 2, for Python 3 it's `http.server`):
 ```
 cd test/source/_site
 python -m SimpleHTTPServer 8000
 ```
+
 ## Build API Doc
 To generate the API Doc please navigate to `jekyll-rdf/lib` directory and run
 ```
 gem install yard
 yardoc *
 ```
+
 The generated documentation is placed into `jekyll-rdf/lib/doc` directory.
+
 # License
 jekyll-rdf is licensed under the [MIT license](https://github.com/DTP16/jekyll-rdf/tree/master/LICENSE).
