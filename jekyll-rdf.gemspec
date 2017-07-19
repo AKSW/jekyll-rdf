@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/white-gecko/jekyll-rdf'
   s.license     = 'MIT'
   s.add_runtime_dependency 'linkeddata',          '~> 2.0'
-  s.add_runtime_dependency 'sparql',              '~> 2.2'
+  s.add_runtime_dependency 'sparql',              '~> 2.2', '>= 2.2.1'
   s.add_runtime_dependency 'jekyll',              '~> 3.1'
   s.add_development_dependency 'rake',            '~> 10.4'
   s.add_development_dependency 'coveralls',       '~> 0.8'

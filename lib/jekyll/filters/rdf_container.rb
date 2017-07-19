@@ -29,21 +29,22 @@ module Jekyll
     def rdf_container(input, type = nil)
       sparql_client = input.sparql
       if(!(valid_container?(input, sparql_client, type)))
-        Jekyll.logger.error "<#{input.iri}> is not recognized as a container"
+        Jekyll.logger.error "#{input.term.to_ntriples} is not recognized as a container"
         return []
       end
-      query = "SELECT ?p ?o WHERE{ <#{input.iri}> ?p ?o }"
+      query = "SELECT ?p ?o WHERE{ #{input.term.to_ntriples} ?p ?o }"
       solutions = sparql_client.query(query).each_with_object([]) {|solution, array|
-        if((solution.p.to_s[0..43].eql? "http://www.w3.org/1999/02/22-rdf-syntax-ns#_") && (solution.p.to_s[44..-1] !~ /\D/))
+        if(/^http:\/\/www\.w3\.org\/1999\/02\/22-rdf-syntax-ns#_\d+$/.match(solution.p.to_s))
           array << Jekyll::Drops::RdfTerm.build_term_drop(solution.o, input.sparql, input.site).add_necessities(input.site, input.page)
         end
       }
       return solutions
     end
+
     def valid_container?(input, sparql_client, type = nil)
-      ask_query_1 = "ASK WHERE {VALUES ?o {<http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>} <#{input.iri}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o}"
-      ask_query_2 = "ASK WHERE {<#{input.iri}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o. ?o <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Container>}"
-      return (sparql_client.query(ask_query_1).true?) || (sparql_client.query(ask_query_2).true?)
+      ask_query1 = "ASK WHERE {VALUES ?o {<http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>} #{input.term.to_ntriples} <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o}"
+      ask_query2 = "ASK WHERE {#{input.term.to_ntriples} <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o. ?o <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Container>}"
+      return (sparql_client.query(ask_query1).true?) || (sparql_client.query(ask_query2).true?)
     end
   end
 end
