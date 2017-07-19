@@ -5,7 +5,7 @@ rdf_prefix_path: simpsons.pref
 
 <div class="home">
 
-  <h1 class="page-heading"><b>Person: {{ page.rdf.foafName}}</b></h1>
+  <h1 class="page-heading"><b>Person: {{ page.rdf | rdf_property: 'foaf:name' }}</b></h1>
 
   <table>
     <tbody>

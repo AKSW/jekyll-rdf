@@ -4,7 +4,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-##[2.0.0] - 2017-03-29
+## [2.1.0] - 2017-07-19
+### Added
+- Automated pre-release builds with travis and rubygems
+- Support for RDF Containers and Collections with the `rdf_container` and `rdf_collection` filters
+- Add `rdf_inverse_property` filter to follow incoming triples
+- README Add documentation for `rdf_container` and `rdf_collection` filters
+- README Add documentation for `rdf_inverse_property` filter
+
+### Changed
+- Dependencies: `linkeddata` ~>1.99 -> ~>2.0, `sparql` ~>1.99 -> ~>2.2, >=2.2.1
+- Move some dependencies to development section
+- README general improvements
+- README: Adjust usage of the `rdf_property` filter
+- README: Add documentation for prefix handling
+- Naming conventions, use underscore instead of camel caps
+- Always write resources and properties in `<…>` to distinguish them from prefixed qnames `rdf_property`
+- A `default_template` in the configuration is not mandatory anymore, there will only be a warning if it is needed
+- Improve prefix handling
+- General code refactoring
+- Some more tests
+- `rdf.foafName` does not exist anymore
+
+### Fixed
+- README: Fix documentation for template mapping
+- README: Fix doucmentation of fragment identifier support
+- Support for umlauts in URLs
+- Fix usage of jekyll `site.url` and `site.baseurl`
+- Fix class and instance template mapping
+- Fix handling of blank nodes for page generation
+- Fix Cangelog formating for 2.0.0 ;-)
+
+## [2.0.0] - 2017-03-29
 ### Added
 - jekyll-rdf now distinguishes between instance resources and class resources
 - jekyll-rdf can now host URIs which differ only in its fragment identifiers on one page

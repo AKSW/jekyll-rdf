@@ -1,0 +1,13 @@
+---
+---
+<html>
+  <head>
+  </head>
+  <body>
+    <h1>This is the container: {{page.rdf}}</h1>
+    {% assign conArray = page.rdf | rdf_container %}
+    {% for ele in conArray%}
+      <h4>{{ele.iri}}</h4>
+    {% endfor %}
+  </body>
+</html>

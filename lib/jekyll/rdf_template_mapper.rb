@@ -44,40 +44,20 @@ module Jekyll
 
     attr_accessor :classResources
 
+    include Jekyll::RdfClassExtraction
+
     ##
     # Create a new Jekyll::RdfTemplateMapper
     #
     # * +resources_to_templates+ - A Hash mapping a type resource to a template name
     # * +default_template+ - Default template name
-    def initialize(resources_to_templates, classes_to_templates, default_template, graph, sparql)
+    def initialize(resources_to_templates, classes_to_templates, default_template, sparql)
       @resources_to_templates = resources_to_templates
       @default_template = default_template
       @classes_to_templates = classes_to_templates
-
       @classResources = {}
-      classRecognitionQuery = "SELECT DISTINCT ?resourceUri WHERE{ {?resourceUri <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?o} UNION{ ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?resourceUri} UNION{ ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?resourceUri}}"
-      classSearchResults = sparql.query(classRecognitionQuery).map{ |sol| sol[:resourceUri] }.reject do |s|  # Reject literals
-        s.class <= RDF::Literal
-      end.select do |s|  # Select URIs and blank nodes in case of include_blank
-        true || s.class == RDF::URI
-      end
-
-	  classSearchResults.each do |uri|
-	    classResources[uri.to_s]=Jekyll::Drops::RdfResourceClass.new(uri, graph)
-	  end
-
-      classResources.each{|key, value|
-        value.findDirectSubClasses.each{|s|
-          value.addSubClass(classResources[s.subject.term.to_s])
-        }
-      }
-
-      if(classes_to_templates.is_a?(Hash))
-        classes_to_templates.each{|key, value|
-          classResources[key].propagateTemplate(value,0)
-          classResources[key].traverseHierarchyValue(0);
-        }
-      end
+      create_resource_class(search_for_classes(sparql), sparql)
+      assign_class_templates(classes_to_templates)
     end
 
     ##
@@ -88,10 +68,10 @@ module Jekyll
       tmpl = resources_to_templates ? resources_to_templates[resource.term.to_s] : nil
       lock = -1
       hier = -1
-      warnMultTempl = false
-      duplicateLevelTempl = []
+      warn_mult_templ = false
+      duplicate_level_templ = []
       if(tmpl.nil?)
-        resource.directClasses.each do |classUri|
+        resource.direct_classes.each do |classUri|
           classRes = classResources[classUri]
           if((classRes.lock <= lock || lock == -1) && !classRes.template.nil?)
             if(classRes.subClassHierarchyValue > hier)
@@ -99,20 +79,20 @@ module Jekyll
               lock = classRes.lock
               tmpl = classRes.template
               hier = classRes.subClassHierarchyValue
-              warnMultTempl = false
-              duplicateLevelTempl.clear.push(tmpl)
-              if(classRes.multipleTemplates?)
-                warnMultTempl = true
-                duplicateLevelTempl.concat(classRes.alternativeTemplates)
+              warn_mult_templ = false
+              duplicate_level_templ.clear.push(tmpl)
+              if(classRes.multiple_templates?)
+                warn_mult_templ = true
+                duplicate_level_templ.concat(classRes.alternativeTemplates)
               end
             elsif(classRes.subClassHierarchyValue == hier)
-              warnMultTempl = true
-              duplicateLevelTempl.push(classRes.template)
+              warn_mult_templ = true
+              duplicate_level_templ.push(classRes.template)
             end
           end unless classRes.nil?
         end
-        if(warnMultTempl)
-          Jekyll.logger.warn("Warning: multiple possible templates for #{resource.term.to_s}: #{duplicateLevelTempl.uniq.join(', ')}")
+        if(warn_mult_templ)
+          Jekyll.logger.warn("Warning: multiple possible templates for #{resource.term.to_s}: #{duplicate_level_templ.uniq.join(', ')}")
         end
       end
       return tmpl unless tmpl.nil?

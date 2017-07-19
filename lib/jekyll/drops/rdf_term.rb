@@ -37,19 +37,33 @@ module Jekyll
       attr_reader :term
 
       ##
-      # The RDF::Graph which contains the represented +term+
+      # The SPARQL::Client which contains the represented +term+
       #
-      attr_reader :graph
+      attr_reader :sparql
 
       ##
       # Create a new Jekyll::Drops::RdfTerm
       #
       # * +term+ - The term to be represented
-      # * +graph+ - The RDF::Graph which contains the represented +term+
+      # * +sparql+ - The SPARQL::Client which contains the represented +term+
       #
-      def initialize(term, graph)
+      def initialize(term, sparql)
         @term  ||= term
-        @graph ||= graph
+        @sparql ||= sparql
+      end
+
+      ##
+      # Funktion stub with no funktionality. Its purpose is to keep RdfResource compatible.
+      #
+      def add_necessities (site, page)
+        return self
+      end
+
+      ##
+      # Funktion stub with no funktionality. Its purpose is to keep RdfResource compatible.
+      #
+      def ready?
+        return true;
       end
 
       ##
@@ -66,18 +80,15 @@ module Jekyll
       # Convert an RDF term into a new Jekyll::Drops::RdfTerm
       #
       # * +term+ - The term to be represented
-      # * +graph+ - The RDF::Graph which contains the represented +term+
+      # * +sparql+ - The SPARQL::Client which contains the represented +term+
       # * +site+ - The Jekyll::Site to be enriched
       #
-      def self.build_term_drop(term, graph, site)
+      def self.build_term_drop(term, sparql, site)
         case term
         when RDF::URI, RDF::Node
-          if site
-            resource = site.data['resources'].find{ |r| r.term == term }
-          end
-          resource ? resource : RdfResource.new(term, graph)
+          return RdfResource.new(term, sparql)
         when RDF::Literal
-          return RdfLiteral.new(term, graph)
+          return RdfLiteral.new(term, sparql)
         else
           return nil
         end

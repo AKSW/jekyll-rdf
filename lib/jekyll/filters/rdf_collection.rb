@@ -22,33 +22,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-##
-# JekyllRdf converts RDF data into static websites
-#
-#
-require 'jekyll'
-require 'linkeddata'
-require 'sparql'
-require 'set'
-require 'addressable/uri'
-require 'pp'
 
-require 'jekyll/drops/rdf_term'
-require 'jekyll/drops/rdf_statement'
-require 'jekyll/drops/rdf_literal'
-require 'jekyll/drops/rdf_resource'
-require 'jekyll/drops/rdf_resource_class'
-require 'jekyll/exceptions/NoPrefixMapped'
-require 'jekyll/exceptions/NoPrefixesDefined'
-require 'jekyll/exceptions/UnMarkedUri'
-require 'jekyll/filters/rdf_resolve_prefix'
-require 'jekyll/filters/rdf_sparql_query'
-require 'jekyll/filters/rdf_property'
-require 'jekyll/filters/rdf_collection'
-require 'jekyll/filters/rdf_container'
-require 'jekyll/rdf_generator_helper'
-require 'jekyll/rdf_main_generator'
-require 'jekyll/rdf_page_helper'
-require 'jekyll/rdf_page_data'
-require 'jekyll/rdf_class_extraction'
-require 'jekyll/rdf_template_mapper'
+module Jekyll
+  module RdfCollection
+    def rdf_collection(input)
+      sparql_query = input.sparql
+      query = "SELECT ?f WHERE{ #{input.term.to_ntriples} <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest>* ?r. ?r <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?f}"
+      results = []
+      sparql_query.query(query).each{ |solution|
+        results.push Jekyll::Drops::RdfTerm.build_term_drop(solution.f, input.sparql, input.site).add_necessities(input.site, input.page)
+      }
+      return results
+    end
+  end
+end
+
+Liquid::Template.register_filter(Jekyll::RdfCollection)

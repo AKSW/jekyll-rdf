@@ -24,44 +24,25 @@
 #
 
 module Jekyll
-
-  ##
-  # JekyllRdf::RdfPageData creates pages for each RDF resource using a given template
-  #
-  class RdfPageData < Jekyll::Page
-    include Jekyll::RdfPageHelper
-    attr_reader :complete
-
-    ##
-    # initialize initializes the page
-    # * +site+ - The Jekyll site we want to enrich with RDF data
-    # * +base+ - The base of the site
-    # * +resource+ - The RDF resource for which the page is rendered
-    # * +mapper+ - The layout-mapping
-    #
-    def initialize(site, base, resource, mapper, config)
-      @site = site
-      @base = base
-      @dir = ""
-      @name = resource.filename(URI::split(config['url'])[2], config['baseurl'])
-      @resource = resource
-      if(base.nil?)
-        Jekyll.logger.warn "Resource #{resource} not rendered: no base url found."
-        @complete = false   #TODO: set a return here and adapt the test for displaying a warning for rendering a page without template
+  module RdfPrefixResolver
+    private
+    def rdf_resolve_prefix(input, predicate)
+      if(predicate[0] == "<" && predicate[-1] == ">")
+        return predicate[1..-2]
+      end
+      arr=predicate.split(":",2)  #bad regex, would also devide 'http://example....' into 'http' and '//example....',even though it is already a complete URI; if 'PREFIX http: <http://...> is defined, 'http' in 'http://example....' could be mistaken for a prefix
+      if((arr[1].include? (":")) || (arr[1][0..1].eql?("//")))
+        raise UnMarkedUri.new(predicate, input.page.data['template'])
+      end
+      if(!input.page.data["rdf_prefixes"].nil?)
+        if(!input.page.data["rdf_prefix_map"][arr[0]].nil?)
+          return arr[1].prepend(input.page.data["rdf_prefix_map"][arr[0]])
+        else
+          raise NoPrefixMapped.new(predicate, input.page.data['template'], arr[0])
+        end
       else
-        @complete = true
+        raise NoPrefixesDefined.new(predicate, input.page.data['template'])
       end
-      self.process(@name)
-      map_template(resource, mapper)
-
-      if(!@complete)
-        return        #return if something went wrong
-      end
-      load_data(site)
-      load_prefixes()
-      resource.page = self
-      resource.site = site
-      site.data['resources'] << resource
     end
   end
 end
