@@ -1,20 +1,35 @@
 # jekyll-rdf
-[![Build Status](https://travis-ci.org/white-gecko/jekyll-rdf.png?branch=develop)](https://travis-ci.org/white-gecko/jekyll-rdf)
-[![Coverage Status](https://coveralls.io/repos/github/white-gecko/jekyll-rdf/badge.png?branch=develop)](https://coveralls.io/github/white-gecko/jekyll-rdf?branch=develop)
+
 A [Jekyll plugin](https://jekyllrb.com/docs/plugins/) for including RDF data in your static site.
 
-The API Documentation is available at [http://www.rubydoc.info/gems/jekyll-rdf/](http://www.rubydoc.info/gems/jekyll-rdf/).<br />
-For additional documentation please have a look at [http://rubygems.org/gems/jekyll-rdf](http://rubygems.org/gems/jekyll-rdf)
+[![Gem Version](https://badge.fury.io/rb/jekyll-rdf.svg)](https://badge.fury.io/rb/jekyll-rdf)
+[![Build Status](https://travis-ci.org/white-gecko/jekyll-rdf.svg?branch=develop)](https://travis-ci.org/white-gecko/jekyll-rdf)
+[![Coverage Status](https://coveralls.io/repos/github/white-gecko/jekyll-rdf/badge.svg?branch=develop)](https://coveralls.io/github/white-gecko/jekyll-rdf?branch=develop)
+
+The API Documentation is available at [RubyDoc.info](http://www.rubydoc.info/gems/jekyll-rdf/).
+
+# Contents
+
+1. [Installation](#installation)
+2. [Usage](#usage)
+  1. [Integrate with Jekyll](#integrate-with-jekyll)
+  2. [Make use of RDF data](make-use-of-rdf-data)
+  3. [Configuration](#configuration)
+3. [Parameters and configuration options at a glance](#parameters-and-configuration-options-at-a-glance)
+4. [Development](#development)
+5. [License](#license)
+
 # Installation
 ## Installation as a gem
 The easiest and fastest way to install our project is the installation as a gem. The following command automatically installs the project and all required components such as Jekyll and the RDF-library
 ```
 gem install jekyll-rdf
 ```
-## Installation with the git-repository
+
+## Installation from source
 To install the project with the git-repository you will need `git` on your system. The first step is just cloning the repository:
 ```
-git clone git@github.com:DTP16/jekyll-rdf.git
+git clone git@github.com:white-gecko/jekyll-rdf.git
 ```
 A folder named `jekyll-rdf` will be automatically generated. You need to switch into this folder and compile the ruby gem to finish the installation:
 ```
