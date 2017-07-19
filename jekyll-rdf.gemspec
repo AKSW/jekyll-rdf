@@ -1,7 +1,13 @@
+VERSION = '2.1.0'
+RELEASE_VERSION = case
+    when ENV['TRAVIS'] && ENV['TRAVIS_BRANCH'].match(/^master$/i) then "#{VERSION}"
+    when ENV['TRAVIS'] && !ENV['TRAVIS_BRANCH'].match(/^master$/i) then "#{VERSION}-#{ENV['TRAVIS_BRANCH']}.#{ENV['TRAVIS_BUILD_NUMBER']}"
+    else "#{VERSION}-local"
+end
+
 Gem::Specification.new do |s|
   s.name        = 'jekyll-rdf'
-  s.version     = '2.1.0'
-  s.version     = "#{s.version}.alpha-#{ENV['TRAVIS_BUILD_NUMBER']}" if ENV['TRAVIS']
+  s.version     = RELEASE_VERSION.to_s
   s.summary     = 'Hypertext Publication System for Templated Resource Rendering'
   s.description = 'Generate static sites with Jekyll based on RDF data'
   s.authors     = ['Elias Saalmann', 'Christian Frommert', 'Simon Jakobi', 'Arne Jonas Präger', 'Maxi Bornmann', 'Georg Hackel', 'Eric Füg', 'Sebastian Zänker', 'Natanael Arndt']
