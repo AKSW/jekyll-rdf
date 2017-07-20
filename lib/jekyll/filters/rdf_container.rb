@@ -42,8 +42,8 @@ module Jekyll
     end
 
     def valid_container?(input, sparql_client, type = nil)
-      ask_query1 = "ASK WHERE {VALUES ?o {<http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>} #{input.term.to_ntriples} <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o}"
-      ask_query2 = "ASK WHERE {#{input.term.to_ntriples} <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o. ?o <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Container>}"
+      ask_query1 = "ASK WHERE {VALUES ?o {<http://www.w3.org/2000/01/rdf-schema#Container> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>} #{input.term.to_ntriples} <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o}"
+      ask_query2 = "ASK WHERE {#{input.term.to_ntriples} <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o. ?o <http://www.w3.org/2000/01/rdf-schema#subClassOf>* <http://www.w3.org/2000/01/rdf-schema#Container>}"
       return (sparql_client.query(ask_query1).true?) || (sparql_client.query(ask_query2).true?)
     end
   end
