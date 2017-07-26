@@ -32,13 +32,17 @@ module Jekyll
         Jekyll.logger.error "#{input.term.to_ntriples} is not recognized as a container"
         return []
       end
-      query = "SELECT ?p ?o WHERE{ #{input.term.to_ntriples} ?p ?o }"
+      query = "SELECT ?p ?o WHERE{ #{input.term.to_ntriples} ?p ?o #{query_additions(input, sparql_client)}"
       solutions = sparql_client.query(query).each_with_object([]) {|solution, array|
         if(/^http:\/\/www\.w3\.org\/1999\/02\/22-rdf-syntax-ns#_\d+$/.match(solution.p.to_s))
           array << Jekyll::Drops::RdfTerm.build_term_drop(solution.o, input.sparql, input.site).add_necessities(input.site, input.page)
         end
       }
       return solutions
+    end
+
+    def query_additions(input, sparql_client)
+      return "BIND((<http://www.w3.org/2001/XMLSchema#integer>(SUBSTR(str(?p), 45))) AS ?order) } ORDER BY ASC(?order)" #ASK WHERE{ {<http://www.ifi.uio.no/INF3580/simpson-container#Container> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq>} UNION {<http://www.ifi.uio.no/INF3580/simpson-container#Container> <http://www.w3.org/2000/01/rdf-schema#subClassOf>* <http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq>}}  wildcard * does not work well
     end
 
     def valid_container?(input, sparql_client, type = nil)
