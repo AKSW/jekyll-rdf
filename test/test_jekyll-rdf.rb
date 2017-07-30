@@ -21,7 +21,7 @@ class TestJekyllRdf < Test::Unit::TestCase
     end
 
     should "create a file for http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestPersonMagrid" do
-      s = File.read("#{TestHelper::DEST_DIR}/INF3580/rdfsites/http/pcai042.informatik.uni-leipzig.de/~dtp16/#/TestPersonMagrid/index.html")
+      s = File.read("#{TestHelper::DEST_DIR}/INF3580/rdfsites/http/pcai042.informatik.uni-leipzig.de/~dtp16/#/TestPersonMagrid.html")
       expect(s).to include "http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestPersonMagrid"
       assert Jekyll.logger.messages.any? {|message| message.strip.eql? "classMapped: http://pcai042.informatik.uni-leipzig.de/~dtp16/#MagridsSpecialClass : http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestPersonMagrid : person.html"}, "missing error message:\n    classMapped: http://pcai042.informatik.uni-leipzig.de/~dtp16/#MagridsSpecialClass : http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestPersonMagrid : person.html"
       assert Jekyll.logger.messages.any? {|message| message.strip.eql? "Warning: multiple possible templates for http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestPersonMagrid: person.html"}, "missing error message:\n    Warning: multiple possible templates for http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestPersonMagrid: person.html"

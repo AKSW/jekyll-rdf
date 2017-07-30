@@ -236,28 +236,23 @@ module Jekyll #:nodoc:
                 uri[:path] = nil
               end
             end
-            key_field = [:scheme, :userinfo, :host, :port, :registry, :path, :opaque, :query, :fragment]
-            key_field.each do |index|
-              if !(uri[index].nil?)
-                case index
-                when :path
-                  file_name += "#{uri[index][1..-1]}/"
-                when :fragment
-                  file_name += "#/#{uri[index]}"
-                else
-                  file_name += "#{uri[index]}/"
-                end
-              end
-            end
-            unless file_name[-1] == '/'
-              file_name += '/'
-            end
-          rescue URI::InvalidURIError => x #unclean coding: blanknodes are recognized through errors
+            #key_field = [:scheme, :userinfo, :host, :port, :registry, :path, :opaque, :query, :fragment]
+            file_name << "#{uri[:scheme]}/" unless uri[:scheme].nil?
+            file_name << "#{uri[:userinfo]}@" unless uri[:userinfo].nil?
+            file_name << "#{uri[:host]}/" unless uri[:host].nil?
+            file_name << "#{uri[:port]}/" unless uri[:port].nil?
+            # registry purpose unknown
+            file_name << "#{uri[:path][1..-1]}" unless uri[:path].nil?
+            # opaque jekyll produces static pages, so we do not dereferencing
+            # query queries do not address resources
+            file_name << "#/#{uri[:fragment]}" unless uri[:fragment].nil?
+          rescue Addressable::URI::InvalidURIError => x #unclean coding: blanknodes are recognized through errors
             file_name = "invalids/#{term.to_s}"
             Jekyll.logger.error("Invalid resource found: #{term.to_s} is not a proper uri")
             Jekyll.logger.error("URI parser exited with message: #{x.message}")
           end
         end
+        # windows compatibility
         file_name = file_name.gsub('_','_u')
         file_name = file_name.gsub('//','/') # needs a better regex to include /// ////...
         file_name = file_name.gsub(':','_D')
@@ -265,7 +260,17 @@ module Jekyll #:nodoc:
         if(file_name[-2..-1] == "#/")
           file_name = file_name[0..-3]
         end
-        file_name += 'index.html'
+        if(file_name[-1] == '/')
+          file_name << "index.html"
+        else
+          last_slash = file_name.rindex('/')
+          if(last_slash.nil?)
+            file_name << "/" unless(file_name.eql? ""||(file_name[-1].eql? "/"))
+            file_name << "index.html"
+          else
+            file_name[file_name.rindex('/')..-1] = "#{file_name[file_name.rindex('/')..-1]}.html"
+          end
+        end
         @render_path = file_name
         @page_url = file_name.chomp('index.html').chomp('.html')
         file_name
