@@ -5,32 +5,35 @@ class TestJekyllRdf < Test::Unit::TestCase
   config = Jekyll.configuration(TestHelper::TEST_OPTIONS)
   site = Jekyll::Site.new(config)
   site.process
-  pagearray = site.pages.select{|p|
-    p.name == "simpsons/index.html".gsub(TestHelper::BASE_URL, '')
-  } # creates an array
-  simpson_page = pagearray[0] # select first entry of selection
+  simpson_page = site.pages.find{|p|
+    p.name == "/simpsons.html".gsub(TestHelper::BASE_URL, '')
+  }
   context "Generating a site with RDF data" do
     should "create a file which mentions 'Lisa Simpson'" do
-      s = File.read("#{TestHelper::DEST_DIR}/INF3580/simpsons/index.html") # read static file
+      s = File.read("#{TestHelper::DEST_DIR}#{TestHelper::BASE_URL}/simpsons.html") # read static file
       expect(s).to include 'http://www.ifi.uio.no/INF3580/simpsons#Lisa'
     end
 
     should "create a file which lists through rdf_property Homers jobs" do
-      s = File.read("#{TestHelper::DEST_DIR}/INF3580/simpsons/index.html") # read static file
+      s = File.read("#{TestHelper::DEST_DIR}#{TestHelper::BASE_URL}/simpsons.html") # read static file
       expect(s).to include "unknown Job 2"
     end
 
-    should "create a file for http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestPersonMagrid" do
-      s = File.read("#{TestHelper::DEST_DIR}/INF3580/rdfsites/http/pcai042.informatik.uni-leipzig.de/~dtp16/#/TestPersonMagrid.html")
-      expect(s).to include "http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestPersonMagrid"
-      assert Jekyll.logger.messages.any? {|message| message.strip.eql? "classMapped: http://pcai042.informatik.uni-leipzig.de/~dtp16/#MagridsSpecialClass : http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestPersonMagrid : person.html"}, "missing error message:\n    classMapped: http://pcai042.informatik.uni-leipzig.de/~dtp16/#MagridsSpecialClass : http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestPersonMagrid : person.html"
-      assert Jekyll.logger.messages.any? {|message| message.strip.eql? "Warning: multiple possible templates for http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestPersonMagrid: person.html"}, "missing error message:\n    Warning: multiple possible templates for http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestPersonMagrid: person.html"
+    should "create a file for http://pcai042.informatik.uni-leipzig.de/~dtp16" do
+      s = File.read("#{TestHelper::DEST_DIR}#{TestHelper::BASE_URL}/rdfsites/http/pcai042.informatik.uni-leipzig.de/~dtp16.html")
+      expect(s).to include "http://pcai042.informatik.uni-leipzig.de/~dtp16"
+      assert true
     end
   end
 
   context "A page generate from RDF data" do
     should "have rdf data" do
       assert_not_nil(simpson_page.data['rdf'])
+    end
+
+    should "have subResources" do
+      assert simpson_page.data["sub_rdf"].any? {|sub| sub.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Abraham"}, "The simpsons page should have http://www.ifi.uio.no/INF3580/simpsons#Abraham as subresource"
+      assert simpson_page.data["sub_rdf"].any? {|sub| sub.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"}, "The simpsons page should have http://www.ifi.uio.no/INF3580/simpsons#Homer as subresource"
     end
   end
 end

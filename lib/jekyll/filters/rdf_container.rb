@@ -37,7 +37,7 @@ module Jekyll
       query = "SELECT ?p ?o WHERE{ #{n_triples} ?p ?o #{query_additions()}"
       solutions = sparql_client.query(query).each_with_object([]) {|solution, array|
         if(/^http:\/\/www\.w3\.org\/1999\/02\/22-rdf-syntax-ns#_\d+$/.match(solution.p.to_s))
-          array << Jekyll::Drops::RdfTerm.build_term_drop(solution.o, Jekyll::RdfHelper::site).add_necessities(Jekyll::RdfHelper::site, Jekyll::RdfHelper::page)
+          array << Jekyll::Drops::RdfTerm.build_term_drop(solution.o, Jekyll::RdfHelper::site, true).add_necessities(Jekyll::RdfHelper::site, Jekyll::RdfHelper::page)
         end
       }
       return solutions

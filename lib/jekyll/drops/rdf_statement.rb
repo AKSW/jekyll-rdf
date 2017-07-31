@@ -53,9 +53,9 @@ module Jekyll
       # * +sparql+ - The SPARQL::Client which contains the +statement+
       # * +site+ - The Jekyll::Site to be enriched
       def initialize(statement, site)
-        @subject ||= Jekyll::Drops::RdfTerm.build_term_drop(statement.subject, site)
-        @predicate ||= Jekyll::Drops::RdfTerm.build_term_drop(statement.predicate, site)
-        @object ||= Jekyll::Drops::RdfTerm.build_term_drop(statement.object, site)
+        @subject ||= Jekyll::Drops::RdfTerm.build_term_drop(statement.subject, site, true)
+        @predicate ||= Jekyll::Drops::RdfTerm.build_term_drop(statement.predicate, site, true)
+        @object ||= Jekyll::Drops::RdfTerm.build_term_drop(statement.object, site, true)
       end
 
       def inspect

@@ -33,10 +33,10 @@ class TestHelper
       },
       'class_template_mappings' => {
         'http://xmlns.com/foaf/0.1/Person' => 'person.html',
-        'http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson' => "person.html",
-        'http://pcai042.informatik.uni-leipzig.de/~dtp16/#ThirdSpecialPerson' => "person.html",
-        'http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson' => "person.html",
-        'http://pcai042.informatik.uni-leipzig.de/~dtp16/#SimpsonPerson'=> "simpsonPerson.html"
+        'http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson' => "person.html",
+        'http://pcai042.informatik.uni-leipzig.de/~dtp16#ThirdSpecialPerson' => "person.html",
+        'http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson' => "person.html",
+        'http://pcai042.informatik.uni-leipzig.de/~dtp16#SimpsonPerson'=> "simpsonPerson.html"
       }
     }
   }

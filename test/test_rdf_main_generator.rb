@@ -30,8 +30,8 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
         }
       @classes_to_templates = {
         "http://xmlns.com/foaf/0.1/Person" => "person.html",
-        "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson" => "SpecialPerson",
-        "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson" => "AnotherSpecialPerson"
+        "http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson" => "SpecialPerson",
+        "http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson" => "AnotherSpecialPerson"
       }
       @default_template = "default.html"
       res_helper.global_site = true
@@ -74,7 +74,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       assert_equal "http://www.ifi.uio.no/INF3580/simpsons#Maggie", @pageResources["http://www.ifi.uio.no/INF3580/simpsons"]["Maggie"].to_s
       assert_equal "http://www.ifi.uio.no/INF3580/family#Max", @pageResources["http://www.ifi.uio.no/INF3580/family"]["Max"].to_s
       assert_equal "http://www.ifi.uio.no/INF3580/family#Jeanne", @pageResources["http://www.ifi.uio.no/INF3580/family"]["Jeanne"].to_s
-      assert_equal nil, @pageResources["http://www.ifi.uio.no/INF3580/family"]["./"]
+      assert_equal false, @pageResources["http://www.ifi.uio.no/INF3580/family"]["./"].covered
       assert_equal 2, @blanknodes.size
     end
   end
@@ -84,12 +84,13 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       @pageResources = {
         "http://www.ifi.uio.no/INF3580/simpsons" => {
           "./" => Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/simpsons", sparql),
-          "Homer" => Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/simpsons/Homer", sparql),
-          "Marge" => Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/simpsons/Marge", sparql)
+          "Homer" => Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/simpsons#Homer", sparql),
+          "Marge" => Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/simpsons#Marge", sparql)
         },
         "http://www.ifi.uio.no/INF3580/family" => {
-          "Max" => Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/family/Max", sparql),
-          "Jeanne" => Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/family/Jeanne", sparql),
+          "./" => Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/family", sparql),
+          "Max" => Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/family#Max", sparql),
+          "Jeanne" => Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/family#Jeanne", sparql),
         }
       }
       @blanknodes = []
@@ -116,13 +117,21 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       index = site.pages.find_index {|page| page.data['title'] == "http://www.ifi.uio.no/INF3580/simpsons"}
       assert !index.nil?, "page http://www.ifi.uio.no/INF3580/simpsons not found"
       assert_equal "page.html", site.pages[index].data['template']
-      index = site.pages.find_index {|page| page.data['title'] == "http://www.ifi.uio.no/INF3580/family/Max"}
-      assert !index.nil?, "page http://www.ifi.uio.no/INF3580/family/Max not found"
+      index = site.pages.find_index {|page|
+        page.data['rdf'].subResources.any?{|key, resource|
+          (key.eql? "Max")&&(resource.to_s.eql? "http://www.ifi.uio.no/INF3580/family#Max")
+        } unless page.data['rdf'].subResources.nil?
+      }
+      assert !index.nil?, "page http://www.ifi.uio.no/INF3580/family#Max not found"
       assert_equal "default.html", site.pages[index].data['template']
-      index = site.pages.find_index {|page| page.data['title'] == "http://www.ifi.uio.no/INF3580/family/Jeanne"}
+      index = site.pages.find_index {|page|
+        page.data['rdf'].subResources.any?{|key, resource|
+          (key.eql? "Jeanne")&&(resource.to_s.eql? "http://www.ifi.uio.no/INF3580/family#Jeanne")
+        }unless page.data['rdf'].subResources.nil?
+      }
       assert !index.nil?, "page http://www.ifi.uio.no/INF3580/family/Jeanne not found"
       assert_equal "default.html", site.pages[index].data['template']
-      assert_equal 5, site.pages.size
+      assert_equal 4, site.pages.size
     end
   end
 

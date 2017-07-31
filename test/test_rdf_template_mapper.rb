@@ -9,8 +9,8 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     should "extract classes from the given source" do
       answer = search_for_classes(sparql)
       assert answer.any? { |class_res| class_res.to_s.eql? "http://xmlns.com/foaf/0.1/Person"},"http://xmlns.com/foaf/0.1/Person should be found as a class"
-      assert answer.any? { |class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson"},"http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson should be found as a class"
-      assert answer.any? { |class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson"}, "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson should be found as a class"
+      assert answer.any? { |class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson"},"http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson should be found as a class"
+      assert answer.any? { |class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson"}, "http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson should be found as a class"
       assert !(answer.any? { |class_res| class_res.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"}), "http://www.ifi.uio.no/INF3580/simpsons#Homer should not be found as a class"
       assert !(answer.any? { |class_res| class_res.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"}), "http://www.ifi.uio.no/INF3580/simpsons#Lisa should not be found as a class"
       assert !(answer.any? { |class_res| class_res.to_s.eql? "http://placeholder.host.plh/placeholder#Placeholder"}), "http://placeholder.host.plh/placeholder#Placeholder should not be found as a class"
@@ -29,8 +29,8 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
 
     should "create certain classes from the source" do
       assert @classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://xmlns.com/foaf/0.1/Person"}, "http://xmlns.com/foaf/0.1/Person should be created as a class"
-      assert @classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson"}, "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson should be created as a class"
-      assert @classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson"}, "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson should be created as a class"
+      assert @classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson"}, "http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson should be created as a class"
+      assert @classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson"}, "http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson should be created as a class"
       assert !(@classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"}), "http://www.ifi.uio.no/INF3580/simpsons#Homer should not be created as a class"
       assert !(@classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"}), "http://www.ifi.uio.no/INF3580/simpsons#Lisa should not be created as a class"
       assert !(@classResources.any? { |class_hash, class_res| class_res.to_s.eql? "http://placeholder.host.plh/placeholder#Placeholder"}), "http://placeholder.host.plh/placeholder#Placeholder should not be created as a class"
@@ -41,9 +41,9 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     end
 
     should "keep subclass relations between class resources" do
-      assert (@classResources["http://xmlns.com/foaf/0.1/Person"].subClasses.any?{|class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson"}&&
-          @classResources["http://xmlns.com/foaf/0.1/Person"].subClasses.any?{|class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson"}), "http://xmlns.com/foaf/0.1/Person should have http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson and http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson as subclass"
-      assert @classResources["http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson"].subClasses.any?{|class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson"},"http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson should have http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson as subclass"
+      assert (@classResources["http://xmlns.com/foaf/0.1/Person"].subClasses.any?{|class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson"}&&
+          @classResources["http://xmlns.com/foaf/0.1/Person"].subClasses.any?{|class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson"}), "http://xmlns.com/foaf/0.1/Person should have http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson and http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson as subclass"
+      assert @classResources["http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson"].subClasses.any?{|class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson"},"http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson should have http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson as subclass"
     end
 
     should "not create any empty subclass relations" do
@@ -57,7 +57,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     setup do
       classes_to_templates = {
         "http://xmlns.com/foaf/0.1/Person" => "Person",
-        "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson" => "AnotherSpecialPerson"
+        "http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson" => "AnotherSpecialPerson"
       }
       @classResources = {}
       create_resource_class(search_for_classes(sparql), sparql)
@@ -66,9 +66,9 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
 
     should "map the right template to the right class in consideration to its super classes" do
       assert_equal "Person", @classResources["http://xmlns.com/foaf/0.1/Person"].template
-      assert_equal "Person", @classResources["http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson"].template #"AnotherSpecialPerson"
-      assert_equal "AnotherSpecialPerson", @classResources["http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson"].template
-      assert_equal "Person", @classResources["http://pcai042.informatik.uni-leipzig.de/~dtp16/#MagridsSpecialClass"].template #"AnotherSpecialPerson"
+      assert_equal "Person", @classResources["http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson"].template #"AnotherSpecialPerson"
+      assert_equal "AnotherSpecialPerson", @classResources["http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson"].template
+      assert_equal "Person", @classResources["http://pcai042.informatik.uni-leipzig.de/~dtp16#MagridsSpecialClass"].template #"AnotherSpecialPerson"
       #subclasshier... used in map -> problem: subclasses do not get the same template | class to class is not influenced by classHier... only instance to class
     end
   end
@@ -81,8 +81,8 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
         }
       classes_to_templates = {
         "http://xmlns.com/foaf/0.1/Person" => "Person",
-        "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson" => "SpecialPerson",
-        "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson" => "AnotherSpecialPerson"
+        "http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson" => "SpecialPerson",
+        "http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson" => "AnotherSpecialPerson"
       }
       default_template = "default"
       @mapper = Jekyll::RdfTemplateMapper.new(resources_to_templates, classes_to_templates, default_template, sparql)
@@ -101,16 +101,16 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       resource = res_helper.basic_resource("http://www.ifi.uio.no/INF3580/simpsons#Marge")
       answer = @mapper.map(resource)
       assert_equal("Person", answer)
-      resource = res_helper.basic_resource("http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestPersonMagrid")
+      resource = res_helper.basic_resource("http://pcai042.informatik.uni-leipzig.de/~dtp16#TestPersonMagrid")
       answer = @mapper.map(resource)
       assert_equal("SpecialPerson", answer)
     end
 
     should "initailize correctly" do
       assert_equal "Person", @mapper.classResources["http://xmlns.com/foaf/0.1/Person"].template
-      assert_equal "SpecialPerson", @mapper.classResources["http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson"].template #"AnotherSpecialPerson"
-      assert_equal "AnotherSpecialPerson", @mapper.classResources["http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson"].template
-      assert_equal "SpecialPerson", @mapper.classResources["http://pcai042.informatik.uni-leipzig.de/~dtp16/#MagridsSpecialClass"].template #"AnotherSpecialPerson"
+      assert_equal "SpecialPerson", @mapper.classResources["http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson"].template #"AnotherSpecialPerson"
+      assert_equal "AnotherSpecialPerson", @mapper.classResources["http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson"].template
+      assert_equal "SpecialPerson", @mapper.classResources["http://pcai042.informatik.uni-leipzig.de/~dtp16#MagridsSpecialClass"].template #"AnotherSpecialPerson"
       #subclasshier... used in map -> problem: subclasses do not get the same template | class to class is not influenced by classHier... only instance to class
     end
   end

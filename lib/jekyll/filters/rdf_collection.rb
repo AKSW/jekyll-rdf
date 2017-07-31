@@ -33,8 +33,8 @@ module Jekyll
               (predicate.nil? ? "" : " <#{rdf_resolve_prefix(predicate)}> ?coll . ?coll ") <<
               " <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest>* ?r. ?r <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?f}"
       results = []
-      Jekyll::RdfHelper::sparql.query(query).each{ |solution|
-        results.push Jekyll::Drops::RdfTerm.build_term_drop(solution.f, Jekyll::RdfHelper::site).add_necessities(Jekyll::RdfHelper::site, Jekyll::RdfHelper::page)
+      sparql_query.query(query).each{ |solution|
+        results.push Jekyll::Drops::RdfTerm.build_term_drop(solution.f, Jekyll::RdfHelper::site, true).add_necessities(Jekyll::RdfHelper::site, Jekyll::RdfHelper::page)
       }
       return results
     end

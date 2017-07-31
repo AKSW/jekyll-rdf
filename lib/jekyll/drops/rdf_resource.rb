@@ -49,7 +49,12 @@ module Jekyll #:nodoc:
       ##
       #
       #
-      def initialize(term, site = nil, page = nil)
+      attr_reader :covered
+
+      ##
+      #
+      #
+      def initialize(term, site = nil, page = nil, covered = false)
         super(term)
         if(site.is_a?(Jekyll::Site))
           @site = site
@@ -58,6 +63,7 @@ module Jekyll #:nodoc:
           @page = page
         end
         @subResources = {}
+        @covered = covered
       end
 
       def add_necessities(site, page)
@@ -129,14 +135,18 @@ module Jekyll #:nodoc:
       # Return the URL of the page representing this RdfResource
       #
       def page_url
-        @page_url ||= generate_file_name(@site.config["url"], @site.config["baseurl"]).chomp('index.html').chomp('.html')
+	    return @page_url unless @page_url.nil?
+        generate_file_name(@site.config["url"], @site.config["baseurl"])
+		@page_url
       end
 
       ##
       # Return the path to the page representing this RdfResource
       #
       def render_path
-        @render_path ||= generate_file_name(@site.config["url"], @site.config["baseurl"])
+        return @render_path unless @page_url.nil?
+        generate_file_name(@site.config["url"], @site.config["baseurl"])
+		@render_path
       end
 
       ##
@@ -219,13 +229,13 @@ module Jekyll #:nodoc:
       #
       def generate_file_name(domain_name, baseurl)
         if(term.to_s[0..1].eql? "_:")
-          file_name = "rdfsites/blanknode/#{term.to_s}/"
+          file_name = "rdfsites/blanknode/#{term.to_s.gsub('_:','blanknode_')}/" # ':' can not be used on windows
         else
           begin
             uri = Addressable::URI.parse(term.to_s).to_hash
             file_name = "rdfsites/" # in this directory all external RDF sites are stored
             if((uri[:host].eql? domain_name) || ("#{uri[:scheme]}://#{uri[:host]}".eql? domain_name))
-              file_name = ""
+              file_name = "/"
               uri[:scheme] = nil
               uri[:host] = nil
               if(uri[:path].length > baseurl.length)
@@ -236,7 +246,7 @@ module Jekyll #:nodoc:
                 uri[:path] = nil
               end
             end
-            #key_field = [:scheme, :userinfo, :host, :port, :registry, :path, :opaque, :query, :fragment]
+            #An URI consists of these fields [:scheme, :userinfo, :host, :port, :registry, :path, :opaque, :query, :fragment]
             file_name << "#{uri[:scheme]}/" unless uri[:scheme].nil?
             file_name << "#{uri[:userinfo]}@" unless uri[:userinfo].nil?
             file_name << "#{uri[:host]}/" unless uri[:host].nil?
@@ -245,17 +255,15 @@ module Jekyll #:nodoc:
             file_name << "#{uri[:path][1..-1]}" unless uri[:path].nil?
             # opaque jekyll produces static pages, so we do not dereferencing
             # query queries do not address resources
-            file_name << "#/#{uri[:fragment]}" unless uri[:fragment].nil?
-          rescue Addressable::URI::InvalidURIError => x #unclean coding: blanknodes are recognized through errors
+            # file_name << "#/#{uri[:fragment]}" unless uri[:fragment].nil? fragments are not evaluated by browsers, only by clients
+          rescue Addressable::URI::InvalidURIError => x
             file_name = "invalids/#{term.to_s}"
             Jekyll.logger.error("Invalid resource found: #{term.to_s} is not a proper uri")
             Jekyll.logger.error("URI parser exited with message: #{x.message}")
           end
         end
         # windows compatibility
-        file_name = file_name.gsub('_','_u')
         file_name = file_name.gsub('//','/') # needs a better regex to include /// ////...
-        file_name = file_name.gsub(':','_D')
         file_name = file_name.strip
         if(file_name[-2..-1] == "#/")
           file_name = file_name[0..-3]
@@ -264,15 +272,15 @@ module Jekyll #:nodoc:
           file_name << "index.html"
         else
           last_slash = file_name.rindex('/')
-          if(last_slash.nil?)
-            file_name << "/" unless(file_name.eql? ""||(file_name[-1].eql? "/"))
-            file_name << "index.html"
-          else
-            file_name[file_name.rindex('/')..-1] = "#{file_name[file_name.rindex('/')..-1]}.html"
-          end
+		  ending = ""
+		  if(file_name[-5..-1].eql? ".html")
+		    ending = ".html" #in case .html is already contained by the term.url
+		  else
+            file_name[last_slash..-1] = "#{file_name[last_slash..-1]}.html"
+		  end
         end
         @render_path = file_name
-        @page_url = file_name.chomp('index.html').chomp('.html')
+        @page_url = "#{file_name.chomp('index.html').chomp('.html')}#{ending}"
         file_name
       end
     end
