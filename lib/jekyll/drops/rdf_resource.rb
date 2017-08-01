@@ -42,11 +42,6 @@ module Jekyll #:nodoc:
       attr_accessor :page
 
       ##
-      # The relative path to the location on the disk where this resource is rendered to
-      #
-      attr_reader :render_path
-
-      ##
       #
       #
       attr_accessor :subResources
@@ -133,7 +128,14 @@ module Jekyll #:nodoc:
       # Return the URL of the page representing this RdfResource
       #
       def page_url
-        page ? page.url.chomp('index.html') : term.to_s
+        @page_url ||= generate_file_name(@site.config["url"], @site.config["baseurl"]).chomp('index.html').chomp('.html')
+      end
+
+      ##
+      # Return the path to the page representing this RdfResource
+      #
+      def render_path
+        @render_path ||= generate_file_name(@site.config["url"], @site.config["baseurl"])
       end
 
       ##
@@ -216,7 +218,7 @@ module Jekyll #:nodoc:
           begin
             uri = Addressable::URI.parse(term.to_s).to_hash
             file_name = "rdfsites/" # in this directory all external RDF sites are stored
-            if (uri[:host] == domain_name)
+            if((uri[:host].eql? domain_name) || ("#{uri[:scheme]}://#{uri[:host]}".eql? domain_name))
               file_name = ""
               uri[:scheme] = nil
               uri[:host] = nil
@@ -259,6 +261,7 @@ module Jekyll #:nodoc:
         end
         file_name += 'index.html'
         @render_path = file_name
+        @page_url = file_name.chomp('index.html').chomp('.html')
         file_name
       end
     end
