@@ -42,7 +42,7 @@ module Jekyll
     end
 
     def query_additions(input, sparql_client)
-      return "BIND((<http://www.w3.org/2001/XMLSchema#integer>(SUBSTR(str(?p), 45))) AS ?order) } ORDER BY ASC(?order)" #ASK WHERE{ {<http://www.ifi.uio.no/INF3580/simpson-container#Container> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq>} UNION {<http://www.ifi.uio.no/INF3580/simpson-container#Container> <http://www.w3.org/2000/01/rdf-schema#subClassOf>* <http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq>}}  wildcard * does not work well
+      return "BIND((<http://www.w3.org/2001/XMLSchema#integer>(SUBSTR(str(?p), 45))) AS ?order) } ORDER BY ASC(?order)"
     end
 
     def valid_container?(input, sparql_client, type = nil)
