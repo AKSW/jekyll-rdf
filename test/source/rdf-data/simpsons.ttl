@@ -136,12 +136,31 @@ simc:c3 rdf:first sim:Maggie.
 simc:c3 rdf:rest simc:c4.
 simc:c4 rdf:first sim:Lisa.
 simc:c4 rdf:rest rdf:nil.
-simcon:Container a rdf:Seq.
+
+simcon:Seq a rdf:Seq.
+simcon:Seq rdf:_1 sim:Homer.
+simcon:Seq rdf:_2 sim:Marge.
+simcon:Seq rdf:_3 sim:Bart.
+simcon:Seq rdf:_4 sim:Lisa.
+simcon:Seq rdf:_5 sim:Maggie.
+
+simcon:Container a rdfs:Container .
 simcon:Container rdf:_1 sim:Homer.
 simcon:Container rdf:_2 sim:Marge.
 simcon:Container rdf:_3 sim:Bart.
 simcon:Container rdf:_4 sim:Lisa.
 simcon:Container rdf:_5 sim:Maggie.
+
+simcon:ContainerClass rdfs:subClassOf simcon:ContainmentClass .
+simcon:ContainmentClass rdfs:subClassOf rdfs:Container .
+
+simcon:CustomContainer a simcon:ContainerClass .
+simcon:CustomContainer rdf:_1 sim:Homer.
+simcon:CustomContainer rdf:_2 sim:Marge.
+simcon:CustomContainer rdf:_3 sim:Bart.
+simcon:CustomContainer rdf:_4 sim:Lisa.
+simcon:CustomContainer rdf:_5 sim:Maggie.
+
 dtp16:SparqlClient a plh:object.
 plh:object1 plh:predicate2 plh:object2.
 plh:subject1 plh:predicate1 plh:object1.

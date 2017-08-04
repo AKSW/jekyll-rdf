@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## [2.1.1] - 2017-08-03
+
+### Fixed
+- Fix support for RDF Containers and Collections: subclasses of rdfs:Container can be used now and containers are ordered
+
 ## [2.1.0] - 2017-07-19
 ### Added
 - Automated pre-release builds with travis and rubygems
