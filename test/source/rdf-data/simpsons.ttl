@@ -166,3 +166,4 @@ plh:object1 plh:predicate2 plh:object2.
 plh:subject1 plh:predicate1 plh:object1.
 
 <http://example.org/Sören> rdf:type foaf:Person.    #testing öüä
+base:main <http://example.org/rel> base:RelatedResource.          #testing pathing for base url
