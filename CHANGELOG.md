@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - Fix `render_path` and `page_url` attributes of resources
+- Fix release builds with travis for rubygems
 
 ## [2.1.1] - 2017-08-03
 
