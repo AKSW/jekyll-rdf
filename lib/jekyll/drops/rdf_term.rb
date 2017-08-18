@@ -86,7 +86,7 @@ module Jekyll
       def self.build_term_drop(term, sparql, site)
         case term
         when RDF::URI, RDF::Node
-          return RdfResource.new(term, sparql)
+          return RdfResource.new(term, sparql, site)
         when RDF::Literal
           return RdfLiteral.new(term, sparql)
         else

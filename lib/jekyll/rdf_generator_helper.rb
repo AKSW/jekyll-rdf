@@ -113,6 +113,10 @@ module Jekyll
         page = RdfPageData.new(site, site.source, resource, mapper, global_config)
         if(page.complete)
           site.pages << page
+          resource.add_necessities(site, page)
+          resource.subResources.each {|key, value|
+            value.add_necessities(site, page)
+          } unless resource.subResources.nil?
         end
       end
   end
