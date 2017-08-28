@@ -63,6 +63,22 @@ In the example of the simpsons model it could be:
 baseurl: "/INF3580"
 url: "http://www.ifi.uio.no"
 ```
+### Deployment in Jekyll 3.3.0
+To deploy your custom jekyll-rdf content, you have to build your website:
+```
+  jekyll build
+```
+Do not just use
+```
+  jekyll serve
+```
+Since version 3.3.0, Jekyll overwrites its variable site.url with your host and port reference,
+breaking some of jekyll-rdfs linking features. Instead, use
+```
+  jekyll serve --skip-initial-build
+```
+
+Another possibility is to set `JEKYLL_ENV=production`. It causes `jekyll serve` to work properly.
 
 ## Make use of RDF data
 ### Templates
