@@ -25,10 +25,22 @@ module Jekyll
 
       def assign_class_templates(classes_to_templates)
         if(classes_to_templates.is_a?(Hash))
+          @classResources.default = StopObject.new
           classes_to_templates.each{|key, value|
             @classResources[key].propagate_template(value,0)
             @classResources[key].traverse_hierarchy_value(0);
           }
+          @classResources.default = nil
+        end
+      end
+
+      class StopObject #unfortunately next does not work in this setup, it avoids to have "if" in every iteration
+        def propagate_template(template, lock)
+          return
+        end
+
+        def traverse_hierarchy_value(predecessorHierarchyValue)
+          return
         end
       end
   end

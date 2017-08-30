@@ -36,6 +36,7 @@ jekyll_rdf:
     "http://pcai042.informatik.uni-leipzig.de/~dtp16/#ThirdSpecialPerson" : "person.html"
     "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson" : "person.html"
     "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SimpsonPerson" : "simpsonPerson.html"
+    "http://this.class/does/not/exist" : "person.html"
   instance_template_mappings:
     "http://www.ifi.uio.no/INF3580/main" : "main.html"
     "http://www.ifi.uio.no/INF3580/simpsons#Abraham" : "abraham.html"
