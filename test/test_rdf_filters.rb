@@ -6,6 +6,7 @@ class TestRdfFilter < Test::Unit::TestCase
   include Jekyll::RdfContainer
   include Jekyll::RdfPrefixResolver
   include Jekyll::RdfSparqlQuery
+  include Jekyll::RdfGet
   graph = RDF::Graph.load(TestHelper::TEST_OPTIONS['jekyll_rdf']['path'])
   sparql = SPARQL::Client.new(graph)
   res_helper = ResourceHelper.new(sparql)
@@ -206,6 +207,25 @@ class TestRdfFilter < Test::Unit::TestCase
     should "use a container validator that recognizes non container" do
       resource = res_helper.basic_resource("http://Test")
       assert !(valid_container?(resource, resource.sparql)), "validContainer? returned true"
+    end
+  end
+
+  context "Filter rdf_get from Jekyll::RdfGet" do
+    setup do
+      Jekyll::RdfHelper::sparql = sparql
+      Jekyll::RdfHelper::site = Jekyll::Site.new(Jekyll.configuration(TestHelper::TEST_OPTIONS))
+      Jekyll::RdfHelper::page = Jekyll::Page.new(Jekyll::RdfHelper::site, "./", "test/dir", "myPage")
+      Jekyll::RdfHelper::page.data["rdf_prefixes"] = "base: <http://www.ifi.uio.no/INF3580/>"
+      Jekyll::RdfHelper::page.data["rdf_prefix_map"] = {}
+      Jekyll::RdfHelper::page.data["rdf_prefix_map"]["base"] = "http://www.ifi.uio.no/INF3580/"
+    end
+
+    should "return the resource base:main" do
+      test_resource =  rdf_get("base:main")
+      assert_equal "http://www.ifi.uio.no/INF3580/main", test_resource.iri
+      assert (test_resource.sparql.eql? Jekyll::RdfHelper::sparql), "The resource should contain the same sparql client as Jekyll::RdfHelper"
+      assert (test_resource.site.eql? Jekyll::RdfHelper::site), "The resource should contain the same site as Jekyll::RdfHelper"
+      assert (test_resource.page.eql? Jekyll::RdfHelper::page), "The resource should contain the same page as Jekyll::RdfHelper"
     end
   end
 end
