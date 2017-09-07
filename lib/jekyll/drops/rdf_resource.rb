@@ -57,6 +57,7 @@ module Jekyll #:nodoc:
         if(page.is_a?(Jekyll::Page))
           @page = page
         end
+        @subResources = {}
       end
 
       def add_necessities(site, page)
@@ -179,6 +180,11 @@ module Jekyll #:nodoc:
             Jekyll.logger.error "Not existing role found in #{term.to_s}"
             return
         end
+      end
+
+      def inspect
+        obj_id = ('%x' % (self.object_id << 1)).to_s
+        return "#<RdfResource:0x#{"0"*(14 - obj_id.length)}#{obj_id} @iri=#{iri} @subResources=[#{subResources.map { |x| x.inspect}.join(", ")}]>"
       end
 
       #checks if a query solution contains a language or type tag and returns those in a hash

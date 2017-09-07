@@ -57,6 +57,11 @@ module Jekyll
         @predicate ||= Jekyll::Drops::RdfTerm.build_term_drop(statement.predicate, sparql, site)
         @object ||= Jekyll::Drops::RdfTerm.build_term_drop(statement.object, sparql, site)
       end
+
+      def inspect
+        obj_id = ('%x' % (self.object_id << 1)).to_s
+        return "#<RdfStatement:0x#{"0"*(14 - obj_id.length)}#{obj_id} @subject=#{subject.inspect} @predicate=#{predicate.inspect} @object=#{object.inspect}>"
+      end
     end
   end
 end

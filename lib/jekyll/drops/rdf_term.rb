@@ -105,6 +105,10 @@ module Jekyll
         end
       end
 
+      def inspect
+        obj_id = ('%x' % (self.object_id << 1)).to_s
+        return "#<#{self.class.to_s.split("::")[-1]}:0x#{"0"*(14 - obj_id.length)}#{obj_id} @term=#{@term}>"
+      end
     end
   end
 end
