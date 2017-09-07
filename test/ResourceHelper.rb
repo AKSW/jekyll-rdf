@@ -5,6 +5,7 @@ class ResourceHelper
   def initialize(sparql)
     @global_site = false
     @sparql = sparql
+    @obj_id = 0;
   end
 
   def basic_resource(uri)
@@ -142,6 +143,28 @@ class ResourceHelper
       end
       return @data
     end
+
+    def fake_page.id= (id)
+      @type = :page
+      @id = id
+    end
+
+    def fake_page.id
+      @id
+    end
+
+    def fake_page.type
+      @type
+    end
+
+    def fake_page.eql? other_page
+      return (other_page.id.eql? @id)&&(other_page.type.eql? @type)
+    end
+
+    def fake_page.inspect
+      return "<#page:xxxx#{@id} @type = #{@type}>"
+    end
+    fake_page.id = obj_id
     return fake_page
   end
 
@@ -169,6 +192,27 @@ class ResourceHelper
       return @data
     end
 
+    def fake_site.id= (id)
+      @type = :site
+      @id = id
+    end
+
+    def fake_site.id
+      @id
+    end
+
+    def fake_site.type
+      @type
+    end
+
+    def fake_site.eql? other_site
+      return (other_site.id.eql? @id)&&(other_site.type.eql? @type)
+    end
+
+    def fake_site.inspect
+      return "<#site:xxxx#{@id} @type = #{@type}>"
+    end
+    fake_site.id = obj_id
     return fake_site
   end
 
@@ -207,5 +251,10 @@ class ResourceHelper
       @data["rdf_prefix_path"] = "simpsssssssons.pref"
       return true
     end
+  end
+
+  def obj_id
+    @obj_id = @obj_id*1 +1
+    return (@obj_id - 1)
   end
 end

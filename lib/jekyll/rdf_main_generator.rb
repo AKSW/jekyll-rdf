@@ -52,6 +52,9 @@ module Jekyll
       graph = RDF::Graph.load(@config['path'])
       sparql = SPARQL::Client.new(graph)
 
+      Jekyll::RdfHelper::sparql = sparql
+      Jekyll::RdfHelper::site = site
+
       # restrict RDF graph with restriction
       resources = extract_resources(@config['restriction'], @config['include_blank'], sparql)
       site.data['sparql'] = sparql

@@ -76,6 +76,17 @@ module Jekyll
         term.to_s
       end
 
+      def ==(other_obj)
+        return self.eql? other_obj
+      end
+
+      def eql? other_obj
+        return (self.to_s.eql? other_obj.to_s)&&((other_obj.class <= self.class)||(self.class <= other_obj.class)||(other_obj.class <= self.term.class))
+      end
+
+      def ===(other_obj)
+        return self.to_s.eql? other_obj.to_s
+      end
       ##
       # Convert an RDF term into a new Jekyll::Drops::RdfTerm
       #
@@ -94,6 +105,10 @@ module Jekyll
         end
       end
 
+      def inspect
+        obj_id = ('%x' % (self.object_id << 1)).to_s
+        return "#<#{self.class.to_s.split("::")[-1]}:0x#{"0"*(14 - obj_id.length)}#{obj_id} @term=#{@term}>"
+      end
     end
   end
 end
