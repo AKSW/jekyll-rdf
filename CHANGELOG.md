@@ -4,15 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.2.0] - 2017-09-07
+### Added
+- Add new filter `rdf_get` to create new instances of `RdfResource` within liquid
+- Add `.inspect` method for `RdfResource`
+- Add support for equality operators on `RdfResource`
+
+### Fixed
+- Fix build process and don't fail if a class in the mapping doesn't exist in the RDF model
+- Fix/Improve description for `jekyll build` vs `jeykll serve` in README
 
 ## [2.1.2] - 2017-08-18
-
 ### Fixed
 - Fix `render_path` and `page_url` attributes of resources
 - Fix release builds with travis for rubygems
 
 ## [2.1.1] - 2017-08-03
-
 ### Fixed
 - Fix support for RDF Containers and Collections: subclasses of rdfs:Container can be used now and containers are ordered
 
