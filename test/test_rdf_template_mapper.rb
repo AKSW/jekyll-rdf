@@ -149,6 +149,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       compare_uri = TestURI.new("http://www.ifi.uio.no/INF3580/main")
       compare_resource = Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/main", sparql)
       compare_object = RandomClass.new()
+      assert (@compare_term === "http://www.ifi.uio.no/INF3580/main"), "=== should see equality between term: #{@compare_term} and \"http://www.ifi.uio.no/INF3580/main\""
       assert (@compare_term.eql? compare_uri), ".eql? should see equality between term: #{@compare_term}  class: #{@compare_term.class} and term: #{compare_uri} class: #{compare_uri.class}"
       assert (@compare_term.eql? compare_resource), ".eql? should see equality between term: #{@compare_term}  class: #{@compare_term.class} and term: #{compare_resource} class: #{compare_resource.class}"
       assert (compare_resource.eql? @compare_term ), ".eql? should see equality between term: #{compare_resource} class: #{compare_resource.class} and term: #{@compare_term}  class: #{@compare_term.class}"
