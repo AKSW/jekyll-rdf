@@ -46,23 +46,27 @@ First, you need a jekyll page. In order to create one, just do:
 jekyll new my_page
 cd my_page
 ```
-Add `jekyll-rdf` to your `_config.yml`:
-```yaml
-gems: [jekyll-rdf]
-```
-Specify path to your RDF-File in `_config.yml`:
-```yaml
-jekyll_rdf:
-  path: "simpsons.ttl"
-```
 
-Running `jekyll build` will render the RDF resources to `_site/rdfsites/…` for including resource pages into the root of the site you have to specify the `url:` and `baseurl:` parameters of the jekyll configuration accordingly.
+Further there are some parameters required in your `_config.yml` for `jekyll-rdf`. I.e. the `url` and `baseurl` parameters are used for including the resource pages into the root of the site, the plug-in has to be configured, and the path to the RDF file has to be present.
 
-In the example of the simpsons model it could be:
 ```yaml
-baseurl: "/INF3580"
 url: "http://www.ifi.uio.no"
+baseurl: "/INF3580"
+
+plugins:
+    - jekyll-rdf
+
+jekyll_rdf:
+    path: "simpsons.ttl"
 ```
+
+Running `jekyll build` will render the RDF resources to the `_site/…` directory.
+RDF resources whose IRIs don't start with the configured jekyll `url` and `baseurl` are rendered to the `_site/rdfsites/…` subdirectory.
+
+*Note:* Since Jekyll 3.3.0 there is a special behavior of the `jekyll serve` command in a development environment.
+Jekyll overwrites the `site.url` variable with your host and port reference, as [described in the Jekyll documentation](https://jekyllrb.com/docs/variables/#site-variables).
+The behavior breaks the jekyll-rdf resource creation.
+If you want to use `jekyll serve` you have to run `jekyll serve --skip-initial-build` or set `JEKYLL_ENV=production`.
 
 ## Make use of RDF data
 ### Templates
