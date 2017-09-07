@@ -49,8 +49,8 @@ module Jekyll #:nodoc:
       ##
       #
       #
-      def initialize(term, sparql, site = nil, page = nil)
-        super(term, sparql)
+      def initialize(term, site = nil, page = nil)
+        super(term)
         if(site.is_a?(Jekyll::Site))
           @site = site
         end
@@ -161,19 +161,19 @@ module Jekyll #:nodoc:
         case role
           when :subject
             query = "SELECT ?p ?o ?dt ?lit ?lang WHERE{ #{input_uri} ?p ?o BIND(datatype(?o) AS ?dt) BIND(isLiteral(?o) AS ?lit) BIND(lang(?o) AS ?lang)}"
-            sparql.query(query).map do |solution|
+            Jekyll::RdfHelper::sparql.query(query).map do |solution|
               check = check_solution(solution)
               create_statement(term.to_s, solution.p, solution.o, solution.lit, check[:lang], check[:data_type])
             end
           when :predicate
             query = "SELECT ?s ?o ?dt ?lit ?lang WHERE{ ?s #{input_uri} ?o BIND(datatype(?o) AS ?dt) BIND(isLiteral(?o) AS ?lit) BIND(lang(?o) AS ?lang)}"
-            sparql.query(query).map do |solution|
+            Jekyll::RdfHelper::sparql.query(query).map do |solution|
               check = check_solution(solution)
               create_statement(solution.s, term.to_s, solution.o, solution.lit, check[:lang], check[:data_type])
             end
           when :object
             query = "SELECT ?s ?p WHERE{ ?s ?p #{input_uri}}"
-            sparql.query(query).map do |solution|
+            Jekyll::RdfHelper::sparql.query(query).map do |solution|
               create_statement( solution.s, solution.p, term.to_s)
             end
           else
@@ -209,7 +209,7 @@ module Jekyll #:nodoc:
         else
           object = RDF::URI(object_string)
         end
-        return RdfStatement.new(RDF::Statement( subject, predicate, object), @sparql, @site)
+        return RdfStatement.new(RDF::Statement( subject, predicate, object), @site)
       end
 
       private

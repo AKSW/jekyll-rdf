@@ -117,17 +117,17 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
 
   context "RdfTerm comparisions" do
     setup do
-      @compare_term = Jekyll::Drops::RdfTerm.new(RDF::URI("http://www.ifi.uio.no/INF3580/main"), sparql)
+      @compare_term = Jekyll::Drops::RdfTerm.new(RDF::URI("http://www.ifi.uio.no/INF3580/main"))
     end
 
     should "recognize to completly equal terms" do
-      assert (@compare_term.eql? Jekyll::Drops::RdfTerm.new(RDF::URI("http://www.ifi.uio.no/INF3580/main"), sparql)), ".eql? does not recognize equality"
-      assert (@compare_term == Jekyll::Drops::RdfTerm.new(RDF::URI("http://www.ifi.uio.no/INF3580/main"), sparql)), "== does not recognize equality"
-      assert (@compare_term === Jekyll::Drops::RdfTerm.new(RDF::URI("http://www.ifi.uio.no/INF3580/main"), sparql)), "=== does not recognize equality"
+      assert (@compare_term.eql? Jekyll::Drops::RdfTerm.new(RDF::URI("http://www.ifi.uio.no/INF3580/main"))), ".eql? does not recognize equality"
+      assert (@compare_term == Jekyll::Drops::RdfTerm.new(RDF::URI("http://www.ifi.uio.no/INF3580/main"))), "== does not recognize equality"
+      assert (@compare_term === Jekyll::Drops::RdfTerm.new(RDF::URI("http://www.ifi.uio.no/INF3580/main"))), "=== does not recognize equality"
     end
 
     should "recognize differences" do
-      current_term = Jekyll::Drops::RdfTerm.new(RDF::URI("http://www.ifi.uio.no/INF3580/main2"), sparql)
+      current_term = Jekyll::Drops::RdfTerm.new(RDF::URI("http://www.ifi.uio.no/INF3580/main2"))
       assert !(@compare_term.eql? current_term), "RdfTerm comparisons do not find the difference between the iris #{@compare_term} and #{current_term}"
     end
 
@@ -157,12 +157,12 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     end
 
     should "let === handle to_s implementing Objects" do
-      current_term = Jekyll::Drops::RdfResource.new(RDF::URI("http://www.ifi.uio.no/INF3580/main"), sparql)
+      current_term = Jekyll::Drops::RdfResource.new(RDF::URI("http://www.ifi.uio.no/INF3580/main"))
       assert (@compare_term === current_term), "RdfTerm comparisons should see equality between #{@compare_term} class: #{@compare_term.class} and #{current_term} class: #{current_term.class}"
-      current_term = Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/main", sparql)
+      current_term = Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/main")
       assert (@compare_term === current_term), "RdfTerm comparisons should see equality between #{@compare_term} class: #{@compare_term.class} and #{current_term} class: #{current_term.class}"
-      current_term = Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/main", sparql)
-      current_term_2 = Jekyll::Drops::RdfTerm.new(RDF::URI("http://www.ifi.uio.no/INF3580/main"), sparql)
+      current_term = Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/main")
+      current_term_2 = Jekyll::Drops::RdfTerm.new(RDF::URI("http://www.ifi.uio.no/INF3580/main"))
       assert (current_term === current_term_2), "RdfTerm comparisons should see equality between #{current_term} class: #{current_term.class} and #{current_term_2} class: #{current_term_2.class}"
     end
   end

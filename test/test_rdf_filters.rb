@@ -12,8 +12,11 @@ class TestRdfFilter < Test::Unit::TestCase
   res_helper = ResourceHelper.new(sparql)
   context "Filter rdf_property from Jekyll::RdfProperty" do
     setup do
+      Jekyll::RdfHelper.sparql = sparql
       prefixes = {"rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs" => "http://www.w3.org/2000/01/rdf-schema#", "foaf" => "http://xmlns.com/foaf/0.1/", "fam" => "http://www.ifi.uio.no/INF3580/family#"}
       @testResource = res_helper.resource_with_prefixes_config("http://www.ifi.uio.no/INF3580/simpsons#Homer", prefixes)
+      Jekyll::RdfHelper.page = @testResource.page
+      Jekyll::RdfHelper.page.data['rdf'] = @testResource
     end
 
     should "return the correct URI" do
@@ -63,13 +66,16 @@ class TestRdfFilter < Test::Unit::TestCase
 
   context "Filter sparql_query from Jekyll::RdfSparqlQuery" do
     setup do
+      Jekyll::RdfHelper.sparql = sparql
       prefixes = {"rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs" => "http://www.w3.org/2000/01/rdf-schema#", "foaf" => "http://xmlns.com/foaf/0.1/", "fam" => "http://www.ifi.uio.no/INF3580/family#"}
       @testResource = res_helper.resource_with_prefixes_config("http://www.ifi.uio.no/INF3580/simpsons#Homer", prefixes)
+      Jekyll::RdfHelper.page = @testResource.page
+      Jekyll::RdfHelper.page.data['rdf'] = @testResource
     end
 
     should "return an array of solutions to one query" do
       query = "SELECT ?x ?y WHERE{ ?x <http://www.ifi.uio.no/INF3580/family#hasFather> ?y}"
-      answer = sparql_query(@testResource, query)
+      answer = sparql_query(query)
       assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Bart') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')}, "answerset does not contain the pair http://www.ifi.uio.no/INF3580/simpsons#Bart and http://www.ifi.uio.no/INF3580/simpsons#Homer")
       assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Lisa') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')}, "answerset does not contain the pair http://www.ifi.uio.no/INF3580/simpsons#Lisa and http://www.ifi.uio.no/INF3580/simpsons#Homer")
       assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Maggie') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')}, "answerset does not contain the pair http://www.ifi.uio.no/INF3580/simpsons#Maggie and http://www.ifi.uio.no/INF3580/simpsons#Homer")
@@ -77,82 +83,89 @@ class TestRdfFilter < Test::Unit::TestCase
 
     should "return an array of solutions to one query with prefixes" do
       query = "SELECT ?x ?y WHERE{ ?x fam:hasFather ?y}"
-      answer = sparql_query(@testResource, query)
+      answer = sparql_query(query)
       assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Bart') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')}, "answerset does not contain the pair http://www.ifi.uio.no/INF3580/simpsons#Bart and http://www.ifi.uio.no/INF3580/simpsons#Homer")
       assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Lisa') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')}, "answerset does not contain the pair http://www.ifi.uio.no/INF3580/simpsons#Lisa and http://www.ifi.uio.no/INF3580/simpsons#Homer")
       assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Maggie') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')}, "answerset does not contain the pair http://www.ifi.uio.no/INF3580/simpsons#Maggie and http://www.ifi.uio.no/INF3580/simpsons#Homer")
     end
 
-    should "return the literal if a literal was passed as first argument" do
-      literal = res_helper.basic_literal("basic")
-      query = "TEST"
-      answer = sparql_query(literal, query)
-      assert((literal.to_s.eql? answer.to_s), "the literal string does not correspond to the answer string")
-    end
+    #should "return the literal if a literal was passed as first argument" do
+    #  literal = res_helper.basic_literal("basic")
+    #  query = "TEST"
+    #  answer = sparql_query(literal, query)
+    #  assert((literal.to_s.eql? answer.to_s), "the literal string does not correspond to the answer string")
+    #end
 
     # These 3 tests are prune to errors if rdf_resource changes to use sparql in its setup process
     should "log a SPARQL::Client::ClientError Exception" do
-      resource = res_helper.resource_faulty_sparql("http://www.ifi.uio.no/INF3580/simpsons#Homer", :ClientError)
+      Jekyll::RdfHelper::sparql = res_helper.faulty_sparql_client(:ClientError)
       query = "SELECT ?x ?y WHERE{ ?x <http://www.ifi.uio.no/INF3580/family#hasFather> ?y}"
-      sparql_query(resource, query)
+      sparql_query(query)
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)} , "missing error message: client error experienced: ****"
     end
 
     should "log a SPARQL::MalformedQuery Exception" do
-      resource = res_helper.resource_faulty_sparql("http://www.ifi.uio.no/INF3580/simpsons#Homer", :MalformedQuery)
+      Jekyll::RdfHelper::sparql = res_helper.faulty_sparql_client(:MalformedQuery)
       query = "SELECT ?x ?y WHERE{ ?x <http://www.ifi.uio.no/INF3580/family#hasFather> ?y}"
-      sparql_query(resource, query)
+      sparql_query(query)
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)}, "missing error message: client error experienced: ****"
     end
 
     should "log a basic Exception if an unknown exception occurs" do
-      resource = res_helper.resource_faulty_sparql("http://www.ifi.uio.no/INF3580/simpsons#Homer", :Exception)
+      Jekyll::RdfHelper::sparql = res_helper.faulty_sparql_client(:Exception)
       query = "SELECT ?x ?y WHERE{ ?x <http://www.ifi.uio.no/INF3580/family#hasFather> ?y}"
-      sparql_query(resource, query)
+      sparql_query(query)
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)}, "missing error message: client error experienced: ****"
     end
   end
 
   context "rdf_resolve_prefix from Jekyll::RdfPrefixResolver" do
     setup do
+      Jekyll::RdfHelper.sparql = sparql
       prefixes = {"rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs" => "http://www.w3.org/2000/01/rdf-schema#", "foaf" => "http://xmlns.com/foaf/0.1/", "fam" => "http://www.ifi.uio.no/INF3580/family#"}
       @testResource = res_helper.resource_with_prefixes_config("http://www.ifi.uio.no/INF3580/simpsons#Homer", prefixes)
+      Jekyll::RdfHelper.page = @testResource.page
+      Jekyll::RdfHelper.page.data['rdf'] = @testResource
     end
 
     should "resolve the prefix foaf to its full length" do
-      answer = rdf_resolve_prefix(@testResource, 'foaf:name')
+      answer = rdf_resolve_prefix('foaf:name')
       assert_equal(answer, "http://xmlns.com/foaf/0.1/name")
     end
 
     should "return the uri of any correctly marked uri" do
-      answer = rdf_resolve_prefix(@testResource, '<http://xmlns.com/foaf/0.1/name>')
+      answer = rdf_resolve_prefix('<http://xmlns.com/foaf/0.1/name>')
       assert_equal(answer, 'http://xmlns.com/foaf/0.1/name')
     end
 
     should "raise an UnMarkedUri exception if there is a full uri instead of a prefix" do
       assert_raise UnMarkedUri do
-        rdf_resolve_prefix(@testResource, 'http://xmlns.com/foaf/0.1/name')
+        rdf_resolve_prefix('http://xmlns.com/foaf/0.1/name')
       end
     end
 
     should "raise a NoPrefixMapped exception if no fitting prefix is found" do
       assert_raise NoPrefixMapped do
-        rdf_resolve_prefix(@testResource, 'foae:name')
+        rdf_resolve_prefix('foae:name')
       end
     end
 
     should "raise a NoPrefixesDefined exception if no prefixes are found" do
       resource = res_helper.basic_resource("test")
+      Jekyll::RdfHelper::page.data["rdf_prefixes"] = nil
       assert_raise NoPrefixesDefined do
-        rdf_resolve_prefix(resource, 'foae:name')
+        rdf_resolve_prefix('foae:name')
       end
     end
   end
 
   context "Filter rdf_collection from Jekyll::RdfCollection" do
     setup do
+      Jekyll::RdfHelper.sparql = sparql
       prefixes = {"rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs" => "http://www.w3.org/2000/01/rdf-schema#", "foaf" => "http://xmlns.com/foaf/0.1/", "fam" => "http://www.ifi.uio.no/INF3580/family#", "simc" => "http://www.ifi.uio.no/INF3580/simpson-collection#"}
       @testResource = res_helper.resource_with_prefixes_config("http://www.ifi.uio.no/INF3580/simpson-collection#Collection", prefixes)
+      Jekyll::RdfHelper.page = @testResource.page
+      Jekyll::RdfHelper.page.data['rdf'] = @testResource
     end
 
     should "return a set of resources stashed in the passed collection" do
@@ -181,6 +194,7 @@ class TestRdfFilter < Test::Unit::TestCase
 
   context "Filter rdf_container from Jekyll::RdfContainer" do
     setup do
+      Jekyll::RdfHelper.sparql = sparql
       prefixes = {"rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs" => "http://www.w3.org/2000/01/rdf-schema#", "foaf" => "http://xmlns.com/foaf/0.1/", "fam" => "http://www.ifi.uio.no/INF3580/family#", "simcon" => "http://www.ifi.uio.no/INF3580/simpson-container#"}
       @testSeq = res_helper.resource_with_prefixes_config("http://www.ifi.uio.no/INF3580/simpson-container#Seq", prefixes)
       @testContainer = res_helper.resource_with_prefixes_config("http://www.ifi.uio.no/INF3580/simpson-container#Container", prefixes)
@@ -215,12 +229,12 @@ class TestRdfFilter < Test::Unit::TestCase
     end
 
     should "use a container validator that recognizes container" do
-      assert valid_container?(@testSeq, @testSeq.sparql), "validContainer? returned false"
+      assert valid_container?(@testSeq.term.to_ntriples), "validContainer? returned false"
     end
 
     should "use a container validator that recognizes non container" do
       resource = res_helper.basic_resource("http://Test")
-      assert !(valid_container?(resource, resource.sparql)), "validContainer? returned true"
+      assert !(valid_container?(resource.term.to_ntriples)), "validContainer? returned true"
     end
   end
 
@@ -237,7 +251,6 @@ class TestRdfFilter < Test::Unit::TestCase
     should "return the resource base:main" do
       test_resource =  rdf_get("base:main")
       assert_equal "http://www.ifi.uio.no/INF3580/main", test_resource.iri
-      assert (test_resource.sparql.eql? Jekyll::RdfHelper::sparql), "The resource should contain the same sparql client as Jekyll::RdfHelper"
       assert (test_resource.site.eql? Jekyll::RdfHelper::site), "The resource should contain the same site as Jekyll::RdfHelper"
       assert (test_resource.page.eql? Jekyll::RdfHelper::page), "The resource should contain the same page as Jekyll::RdfHelper"
     end

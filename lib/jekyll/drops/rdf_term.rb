@@ -37,30 +37,23 @@ module Jekyll
       attr_reader :term
 
       ##
-      # The SPARQL::Client which contains the represented +term+
-      #
-      attr_reader :sparql
-
-      ##
       # Create a new Jekyll::Drops::RdfTerm
       #
       # * +term+ - The term to be represented
-      # * +sparql+ - The SPARQL::Client which contains the represented +term+
       #
-      def initialize(term, sparql)
+      def initialize(term)
         @term  ||= term
-        @sparql ||= sparql
       end
 
       ##
-      # Funktion stub with no funktionality. Its purpose is to keep RdfResource compatible.
+      # Function stub with no functionality. Its purpose is to keep RdfResource compatible.
       #
       def add_necessities (site, page)
         return self
       end
 
       ##
-      # Funktion stub with no funktionality. Its purpose is to keep RdfResource compatible.
+      # Function stub with no functionality. Its purpose is to keep RdfResource compatible.
       #
       def ready?
         return true;
@@ -69,7 +62,7 @@ module Jekyll
       ##
       # Convert this RdfTerm into a string
       # This should be:
-      # - for resoruces: the IRI
+      # - for resources: the IRI
       # - for literals: the literal representation e.g. "Hallo"@de or "123"^^<http://www.w3.org/2001/XMLSchema#integer>
       #
       def to_s
@@ -91,15 +84,14 @@ module Jekyll
       # Convert an RDF term into a new Jekyll::Drops::RdfTerm
       #
       # * +term+ - The term to be represented
-      # * +sparql+ - The SPARQL::Client which contains the represented +term+
       # * +site+ - The Jekyll::Site to be enriched
       #
-      def self.build_term_drop(term, sparql, site)
+      def self.build_term_drop(term, site)
         case term
         when RDF::URI, RDF::Node
-          return RdfResource.new(term, sparql, site)
+          return RdfResource.new(term, site)
         when RDF::Literal
-          return RdfLiteral.new(term, sparql)
+          return RdfLiteral.new(term,)
         else
           return nil
         end

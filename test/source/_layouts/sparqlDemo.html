@@ -6,7 +6,7 @@
   <body>
     <h1>This is a Sparqldemo</h1>
     {% assign query = "SELECT ?o WHERE{ <http://www.ifi.uio.no/INF3580/simpson-container#Container> ?p ?o }" %}
-    {% assign result = page.rdf | sparql_query: query %}
+    {% assign result = query | sparql_query %}
     {% for res in result %}
       <h4> {{res.o}}</h4>
     {% endfor %}

@@ -65,7 +65,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       resources << RDF::URI.new("http://www.ifi.uio.no/INF3580/family#Jeanne")
       resources << RDF::Node.new
       resources << RDF::Node.new
-      parse_resources(resources, sparql)
+      parse_resources(resources)
       assert_equal "http://www.ifi.uio.no/INF3580/simpsons", @pageResources["http://www.ifi.uio.no/INF3580/simpsons"]["./"].to_s
       assert_equal "http://www.ifi.uio.no/INF3580/simpsons#Homer", @pageResources["http://www.ifi.uio.no/INF3580/simpsons"]["Homer"].to_s
       assert_equal "http://www.ifi.uio.no/INF3580/simpsons#Marge", @pageResources["http://www.ifi.uio.no/INF3580/simpsons"]["Marge"].to_s
