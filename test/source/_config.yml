@@ -20,7 +20,7 @@ github_username:  jekyll
 # Build settings
 markdown: kramdown
 
-gems:
+plugins:
 - jekyll-rdf
 
 jekyll_rdf:
