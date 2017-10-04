@@ -153,7 +153,7 @@ To support [RDF Containers](https://www.w3.org/TR/rdf-schema/#ch_containervocab)
 In both cases the respective container resource resp. head of the collection needs to be identified and then passed through the respective filter.
 For containers we currently support explicit instances of `rdf:Bag`, `rdf:Seq` and `rdf:Alt` with the members identified using the `rdfs:ContainerMembershipProperty`s: `rdf:_1`, `rdf:_2`, `rdf:_3` ….
 Collections are identified using `rdf:first`, `rdf:rest` and terminated with `L rdf:rest rdf:nil`.
-Since the head of a collection needs to be identified you cannot use a blank node there, while blank nodes are supported as subsequent lists.
+Since the head of a collection needs to be identified you cannot use a blank node there, you can identify it indirectly through the predicate which contains the collection.
 
 Example graph:
 
@@ -162,6 +162,7 @@ Example graph:
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
 ex:Resource ex:lists ex:List ;
+            ex:directList ("hello" "from" "turtle") .
             ex:hasContainer ex:Container .
 
 ex:List rdf:first "hello" ;
@@ -176,7 +177,7 @@ ex:Container a rdf:Bag ;
 The template for `ex:Resource`:
 
 ```
-{% assign list = page.rdf | rdf_property: '<http://example.org/lists>' | rdf_collection %}
+{% assign list = page.rdf | rdf_collection: '<http://example.org/directList>' %}
 <ol>
 {% for item in list %}
 <li>{{ item }}</li>
@@ -310,7 +311,7 @@ jekyll_rdf:
 |rdf_inverse_property|predicate-URI as String|language-tag as String|true to get a list|The same as rdf_property, but the predicate is used reversed|```{{ page.rdf \| rdf_inverse_property: '<http://www.ifi.uio.no/INF3580/family#hasFather>','en' }} <!--Returns a Son instead of a Father-->```|
 |sparql_query|SPARQL-Query as String|-|-|Runs a SPARQL-Query with the current subject as ?resourceURI|```{% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}{% assign resultset = page.rdf \| sparql_query: query %}<table>{% for result in resultset %}<tr><td>{{ result.sub }}</td><td>{{ result.pre }}</td></tr>{% endfor %}</table>```|
 |rdf_container|-|-|-|Retrieve an array from an [RDF Container](https://www.w3.org/TR/rdf-schema/#ch_containervocab)|```{% assign array = containerResource \| rdf_container %}{% for item in array %}{{ item }}{% endfor %}```|
-|rdf_collection|-|-|-|Retrieve an array from an [RDF Collection](https://www.w3.org/TR/rdf-schema/#ch_collectionvocab)|```{% assign array = collectionResource \| rdf_collection %}{% for item in array %}{{ item }}{% endfor %}```|
+|rdf_collection|-|predicate-URI as String|-|Retrieve an array from an [RDF Collection](https://www.w3.org/TR/rdf-schema/#ch_collectionvocab)|```{% assign array = Resource \| rdf_collection: 'collectionPredicate' %}{% for item in array %}{{ item }}{% endfor %}```|
 
 ## Plugin Configuration (\_config.yml)
 |Name|Parameter|Default|Description|Example|
