@@ -305,13 +305,30 @@ jekyll_rdf:
 # Parameters and configuration options at a glance
 
 ## Liquid Filters
-|Name|Parameter|Optional Parameter|Optional Flag|Description|Example|
-|---	|---	|---    |---	|---	|---	|
-|rdf_property|predicate-URI as String|language-tag as String|true to get a list|Returns a single object or an array with objects which are connected to the current subject through a given predicate|```{{ page.rdf \| rdf_property: '<http://xmlns.com/foaf/0.1/job>','en' }}``` ```{% assign resultset = page.rdf \| rdf_property: '<http://xmlns.com/foaf/0.1/currentproject>','en', true %}{% for result in resultset %}<li>{{ result }}</li>{% endfor %}```|
-|rdf_inverse_property|predicate-URI as String|language-tag as String|true to get a list|The same as rdf_property, but the predicate is used reversed|```{{ page.rdf \| rdf_inverse_property: '<http://www.ifi.uio.no/INF3580/family#hasFather>','en' }} <!--Returns a Son instead of a Father-->```|
-|sparql_query|SPARQL-Query as String|-|-|Runs a SPARQL-Query with the current subject as ?resourceURI|```{% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}{% assign resultset = page.rdf \| sparql_query: query %}<table>{% for result in resultset %}<tr><td>{{ result.sub }}</td><td>{{ result.pre }}</td></tr>{% endfor %}</table>```|
-|rdf_container|-|-|-|Retrieve an array from an [RDF Container](https://www.w3.org/TR/rdf-schema/#ch_containervocab)|```{% assign array = containerResource \| rdf_container %}{% for item in array %}{{ item }}{% endfor %}```|
-|rdf_collection|-|predicate-URI as String|-|Retrieve an array from an [RDF Collection](https://www.w3.org/TR/rdf-schema/#ch_collectionvocab)|```{% assign array = Resource \| rdf_collection: 'collectionPredicate' %}{% for item in array %}{{ item }}{% endfor %}```|
+### rdf_get
+  **Synopsis:**`<resource_uri> | rdf_get`
+
+  **Description:** Takes the provided uri and returns a corresponding resource from your knowledge base.
+### rdf_property
+  **Synopsis:**`<rdf_resource> | rdf_property: <predicate>, [<lang> | [<lang>, <list> | nil, <list>]]`
+
+  **Description:** Returns a resource corresponding to an object, that is connected to `rdf_resource` through `predicate`.
+### rdf_inverse_property
+  **Synopsis:**`<rdf_resource> | rdf_inverse_property: <predicate>, [<lang> | [<lang>, <list> | nil, <list>]]`
+
+  **Description:** Same as rdf_property, but in inverse direction.
+### sparql_query
+  **Synopsis:**`<query> | sparql_query`
+
+  **Description:** Evaluates `query` by reference to your knowledge base and returns an array of results. Each result is either a resource or a literal.
+### rdf_container
+  **Synopsis:**`<rdf_container_head> | rdf_container`
+
+  **Description:** Returns an array with resources for each element in the container whose head is referenced by `rdf_container_head`.
+### rdf_collection
+  **Synopsis:**`<rdf_collection_head> | rdf_collection`
+
+  **Description:** Returns an array with resources for each element in the collection whose head is referenced by `rdf_collection_head`.
 
 ## Plugin Configuration (\_config.yml)
 |Name|Parameter|Default|Description|Example|
