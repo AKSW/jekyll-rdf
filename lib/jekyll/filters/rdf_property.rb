@@ -42,8 +42,8 @@ module Jekyll
       return map_predicate(input, predicate, lang, list)
     end
 
-    def rdf_inverse_property(input, predicate, lang = nil, list = false)
-      return map_predicate(input, predicate, lang, list, true)
+    def rdf_inverse_property(input, predicate, list = false)
+      return map_predicate(input, predicate, nil, list, true)
     end
 
     private

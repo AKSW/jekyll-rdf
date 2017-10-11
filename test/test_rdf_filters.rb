@@ -57,7 +57,7 @@ class TestRdfFilter < Test::Unit::TestCase
     end
 
     should "be reversable with all specifications" do
-      answer = rdf_inverse_property(@testResource, "fam:hasFather", nil, true)
+      answer = rdf_inverse_property(@testResource, "fam:hasFather", true)
       assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Bart"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Bart")
       assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Lisa")
       assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Maggie"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Maggie")
@@ -88,13 +88,6 @@ class TestRdfFilter < Test::Unit::TestCase
       assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Lisa') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')}, "answerset does not contain the pair http://www.ifi.uio.no/INF3580/simpsons#Lisa and http://www.ifi.uio.no/INF3580/simpsons#Homer")
       assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Maggie') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')}, "answerset does not contain the pair http://www.ifi.uio.no/INF3580/simpsons#Maggie and http://www.ifi.uio.no/INF3580/simpsons#Homer")
     end
-
-    #should "return the literal if a literal was passed as first argument" do
-    #  literal = res_helper.basic_literal("basic")
-    #  query = "TEST"
-    #  answer = sparql_query(literal, query)
-    #  assert((literal.to_s.eql? answer.to_s), "the literal string does not correspond to the answer string")
-    #end
 
     # These 3 tests are prune to errors if rdf_resource changes to use sparql in its setup process
     should "log a SPARQL::Client::ClientError Exception" do
