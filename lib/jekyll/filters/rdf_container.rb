@@ -31,7 +31,7 @@ module Jekyll
       sparql_client = Jekyll::RdfHelper::sparql
       n_triples = input.term.to_ntriples
       if(!(valid_container?(n_triples, type)))
-        Jekyll.logger.error "#{n_triples} is not recognized as a container"
+        Jekyll::RdfHelper::error_log "#{n_triples} is not recognized as a container"
         return []
       end
       query = "SELECT ?p ?o WHERE{ #{n_triples} ?p ?o #{query_additions()}"

@@ -54,11 +54,13 @@ module Jekyll
         end
         return result
       rescue SPARQL::Client::ClientError => ce
-        Jekyll.logger.error("client error experienced: \n #{query} \n Error Message: #{ce.message}")
+        Jekyll::RdfHelper::error_log("client error experienced: \n #{query} \n Error Message: #{ce.message}")
+        Jekyll::RdfHelper::error_log("Trace:\n#{ce.backtrace.drop(1).map{|s| "\t#{s}"}.join("\n")}") if Jekyll::RdfHelper::developer_mode
       rescue SPARQL::MalformedQuery => mq
-        Jekyll.logger.error("malformed query found: \n #{query} \n Error Message: #{mq.message}")
+        Jekyll::RdfHelper::error_log("malformed query found: \n #{query} \n Error Message: #{mq.message}")
+        Jekyll::RdfHelper::error_log("Trace:\n#{mq.backtrace.drop(1).map{|s| "\t#{s}"}.join("\n")}") if Jekyll::RdfHelper::developer_mode
       rescue Exception => e
-        Jekyll.logger.error("unknown Exception of class: #{e.class} in sparql_query \n Query: #{query} \nMessage: #{e.message} \nTrace #{e.backtrace.drop(1).map{|s| "\t#{s}"}.join("\n")}")
+        Jekyll::RdfHelper::error_log("unknown Exception of class: #{e.class} in sparql_query \n Query: #{query} \nMessage: #{e.message} \nTrace #{e.backtrace.drop(1).map{|s| "\t#{s}"}.join("\n")}")
       end
       return []
     end

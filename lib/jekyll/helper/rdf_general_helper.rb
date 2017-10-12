@@ -51,5 +51,33 @@ module Jekyll
     def self.page
       @@page
     end
+
+    def self.developer_mode= mode
+      @@developer_mode = mode
+    end
+
+    def self.developer_mode
+      @@developer_mode
+    end
+
+    def self.supress_log= mode
+      @@supress_log = mode
+    end
+
+    def self.supress_log
+      @@supress_log
+    end
+
+    def self.error_log log
+      Jekyll.logger.error log unless @@supress_log
+    end
+
+    def self.info_log log
+      Jekyll.logger.info log unless @@supress_log
+    end
+
+    def self.warn_log log
+      Jekyll.logger.warn log unless @@supress_log
+    end
   end
 end
