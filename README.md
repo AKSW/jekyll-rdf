@@ -307,175 +307,210 @@ jekyll_rdf:
 ## Resource
 Every resource returned by one of `jekyll-rdf`s filters is an object that liquid can also handle like a string. They all have the following methods usable in Liquid.
 
-### statements_as_subject
-  Return a list of statements whose subject is the holding resource. Statements can be accessed by addressing their positions: `Statement.subject Statement.predicate Statement.object`
+### Resource.statements_as_subject
+Return a list of statements whose subject is the current resource.
+The statements in the returned list can be accessed by addressing their positions: `Statement.subject`, `Statement.predicate`, respective `Statement.object`.
 
-### statements_as_predicate
-  Return a list of statements whose predicate is the holding resource. Statements can be accessed by addressing their positions: `Statement.subject Statement.predicate Statement.object`
+### Resource.statements_as_predicate
+Return a list of statements whose predicate is the current resource.
+The statements in the returned list can be accessed by addressing their positions: `Statement.subject`, `Statement.predicate`, respective `Statement.object`.
 
-### statements_as_object
-  Return a list of statements whose object is the holding resource. Statements can be accessed by addressing their positions: `Statement.subject Statement.predicate Statement.object`
+### Resource.statements_as_object
+Return a list of statements whose object is the current resource.
+The statements in the returned list can be accessed by addressing their positions: `Statement.subject`, `Statement.predicate`, respective `Statement.object`.
 
-### page_url
-  Return the URL of the page representing this RdfResource
-### render_path
-  Return the path to the page representing this RdfResource. Use it with care.
-### covered
-  Returns true if the resource is actually extracted from your knowledgebase
-### inspect
-  Returns a verbose String representing this resource.
+### Resource.page_url
+Return the URL of the page representing this RdfResource.
+
+### Resource.render_path
+Return the path to the page representing this RdfResource. Use it with care.
+
+### Resource.covered
+This method is relevant for rendering pages for IRIs containing a fragment identifier (`http://superresource#anchor`).
+This method returns true for the super-resource (`http://superresource`) if it is actually described in the given knowledgebase.
+
+### Resource.inspect
+Returns a verbose String representing this resource.
 
 ## Liquid Filters
 ### rdf_get
-  **Synopsis:**`<resource_uri> | rdf_get`
+**Synopsis:** `<resource_iri> | rdf_get`
 
-  **Description:** Takes the provided uri and returns a corresponding resource from your knowledge base.
+**Description:** Takes the provided IRI and returns the corresponding RdfResource object from your knowledge base.
+On this object you can call the methods as described in the section [Resource](Resource).
 
-  **Examples:**
-  ```
-    {{'<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }}
-  ```
-###### Result:
-  ```html
-    http://www.ifi.uio.no/INF3580/simpsons#Homer
-  ```
+**Example:**
+```
+{{'<http://www.ifi.uio.no/INF3580/simpsons>' | rdf_get }}
+```
+
+**Result:**
+```html
+http://www.ifi.uio.no/INF3580/simpsons
+```
 
 ### rdf_property
-  **Synopsis:**`<rdf_resource> | rdf_property: <predicate>, [<lang> | [<lang>, <list> | nil, <list>]]`
+**Synopsis:** `<rdf_resource> | rdf_property: <predicate>, [<lang> | <lang>, <list> | nil, <list>]`
 
-  **Description:** Returns a resource corresponding to an object, that is connected to `rdf_resource` through `predicate`.
+**Description:** Returns the object, of the triple `<rdf_resource> <predicate> ?object`.
+The returned object can by any of the kind, resource, literal, or blanknode.
 
-  **Examples:**
-  ```
-  {assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
-  {{ resource | rdf_property: '<http://xmlns.com/foaf/0.1/job>' }}
-  ```
-###### Result:
-  ```html
-    "unknown"
-  ```
-
-  ```
-  {assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
-  {{ resource | rdf_property: '<http://xmlns.com/foaf/0.1/job>', 'de' }}
-  ```
-###### Result:
-  ```html
-    "unbekannt"
+**Example (default):**
+```
+{assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
+{{ resource | rdf_property: '<http://xmlns.com/foaf/0.1/job>' }}
+```
+**Result:**
+```html
+"unknown"
   ```
 
-  ```
-  {assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
-  {% assign resultset = resource | rdf_property: '<http://xmlns.com/foaf/0.1/job>', nil, true %}
-  {% for result in resultset %}
-    <li>{{ result }}</li>
-  {% endfor %}
-  ```
-###### Result:
-  ```html
-    <li>"unknown"</li>
-    <li>"unbekannt"</li>
-    <li>"unbekannter Job 2"</li>
-    <li>"unknown Job 2"</li>
-  ```
+**Example (with language):**
+```
+{assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
+{{ resource | rdf_property: '<http://xmlns.com/foaf/0.1/job>', 'de' }}
+```
+**Result:**
+```html
+"unbekannt"
+```
+
+**Example (return as list):**
+```
+{assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
+{% assign resultset = resource | rdf_property: '<http://xmlns.com/foaf/0.1/job>', nil, true %}
+{% for result in resultset %}
+<li>{{ result }}</li>
+{% endfor %}
+```
+**Result:**
+```html
+<li>"unknown"</li>
+<li>"unbekannt"</li>
+<li>"unbekannter Job 2"</li>
+<li>"unknown Job 2"</li>
+```
 
 ### rdf_inverse_property
-  **Synopsis:**`<rdf_resource> | rdf_inverse_property: <predicate>, [<lang> | [<lang>, <list> | nil, <list>]]`
+**Synopsis:** `<rdf_resource> | rdf_inverse_property: <predicate>, [<list>]`
 
-  **Description:** Same as rdf_property, but in inverse direction.
+**Description:** Same as rdf_property, but in inverse direction.
+It returns the subject, of the triple `?subject <predicate> <rdf_resource>`.
+The returned object can by any of the kind, resource, or blanknode.
 
-  **Examples:**
-  ```
-  {assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
-  {{ page.rdf | rdf_inverse_property: '<http://www.ifi.uio.no/INF3580/family#hasFather>' }}
-  ```
-###### Result:
-  ```html
-    http://www.ifi.uio.no/INF3580/simpsons#Bart
-  ```
+**Examples (default):**
+```
+{assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
+{{ page.rdf | rdf_inverse_property: '<http://www.ifi.uio.no/INF3580/family#hasFather>' }}
+```
+**Result:**
+```html
+http://www.ifi.uio.no/INF3580/simpsons#Bart
+```
 
-  ```
-  {assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
-  {% assign resultset = resource | rdf_property: '<http://www.ifi.uio.no/INF3580/family#hasFather>', nil, true %}
-  {% for result in resultset %}
-    <li>{{ result }}</li>
-  {% endfor %}
-  ```
-###### Result:
-  ```html
-    http://www.ifi.uio.no/INF3580/simpsons#Bart
-    http://www.ifi.uio.no/INF3580/simpsons#Lisa
-    http://www.ifi.uio.no/INF3580/simpsons#Maggie
-  ```
+**Example (as list):**
+```
+{assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
+{% assign resultset = resource | rdf_property: '<http://www.ifi.uio.no/INF3580/family#hasFather>', true %}
+{% for result in resultset %}
+<li>{{ result }}</li>
+{% endfor %}
+```
+**Result:**
+```html
+http://www.ifi.uio.no/INF3580/simpsons#Bart
+http://www.ifi.uio.no/INF3580/simpsons#Lisa
+http://www.ifi.uio.no/INF3580/simpsons#Maggie
+```
 
 ### sparql_query
-  **Synopsis:**`<query> | sparql_query`
+**Synopsis:** `<query> | sparql_query`
 
-  **Description:** Evaluates `query` by reference to your knowledge base and returns an array of results. Each result is either a resource or a literal. You can use `?resourceUri` inside the query to reference the resource of the currently rendered page.
+**Description:** Evaluates `query` on the given knowledge base and returns an array of results (result set).
+Each entry object in the result set (result) contains the selected variables as resources or literals.
+You can use `?resourceUri` inside the query to reference the resource of the currently rendered page.
 
-  **Examples:**
-  ```
-  <!--Rendering the page of resource Lisa -->
-  {% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}
-  {% assign resultset = sparql_query: query %}
-  <table>
-    {% for result in resultset %}
-      <tr><td>{{ result.sub }}</td><td>{{ result.pre }}</td></tr>
-    {% endfor %}
-  </table>
-  ```
-###### Result:
-  ```html
-    <tr><td>http://www.ifi.uio.no/INF3580/simpsons#TheSimpsons</td><td>http://www.ifi.uio.no/INF3580/family#hasFamilyMember</td></tr>
-    <tr><td>http://www.ifi.uio.no/INF3580/simpsons#Bart</td><td>http://www.ifi.uio.no/INF3580/family#hasSister</td></tr>
-    <tr><td>http://www.ifi.uio.no/INF3580/simpsons#Maggie</td><td>http://www.ifi.uio.no/INF3580/family#hasSister</td></tr>
-    ...
-  ```
+**Examples:**
+```
+<!--Rendering the page of resource Lisa -->
+{% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}
+{% assign resultset = sparql_query: query %}
+<table>
+{% for result in resultset %}
+  <tr><td>{{ result.sub }}</td><td>{{ result.pre }}</td></tr>
+{% endfor %}
+</table>
+```
+**Result:**
+```html
+<tr><td>http://www.ifi.uio.no/INF3580/simpsons#TheSimpsons</td><td>http://www.ifi.uio.no/INF3580/family#hasFamilyMember</td></tr>
+<tr><td>http://www.ifi.uio.no/INF3580/simpsons#Bart</td><td>http://www.ifi.uio.no/INF3580/family#hasSister</td></tr>
+<tr><td>http://www.ifi.uio.no/INF3580/simpsons#Maggie</td><td>http://www.ifi.uio.no/INF3580/family#hasSister</td></tr>
+...
+```
 
 ### rdf_container
-  **Synopsis:**`<rdf_container_head> | rdf_container`
+**Synopsis:** `<rdf_container_head> | rdf_container`
 
-  **Description:** Returns an array with resources for each element in the container whose head is referenced by `rdf_container_head`.
+**Description:** Returns an array with resources for each element in the container whose head is referenced by `rdf_container_head`.
 
-  **Examples:**
-  ```
-  {% assign resource = '<http://www.ifi.uio.no/INF3580/simpson-container#Container>' | rdf_get %}
-  {% assign array = resource | rdf_container %}
-  {% for item in array %}
-    {{ item }}
-  {% endfor %}
-  ```
+**Examples:**
+```
+{% assign resource = '<http://www.ifi.uio.no/INF3580/simpson-container#Container>' | rdf_get %}
+{% assign array = resource | rdf_container %}
+{% for item in array %}
+{{ item }}
+{% endfor %}
+```
 ###### Result:
-  ```html
-    http://www.ifi.uio.no/INF3580/simpsons#Homer
-    http://www.ifi.uio.no/INF3580/simpsons#Marge
-    http://www.ifi.uio.no/INF3580/simpsons#Bart
-    http://www.ifi.uio.no/INF3580/simpsons#Lisa
-    http://www.ifi.uio.no/INF3580/simpsons#Maggie
+```html
+http://www.ifi.uio.no/INF3580/simpsons#Homer
+http://www.ifi.uio.no/INF3580/simpsons#Marge
+http://www.ifi.uio.no/INF3580/simpsons#Bart
+http://www.ifi.uio.no/INF3580/simpsons#Lisa
+http://www.ifi.uio.no/INF3580/simpsons#Maggie
 
-  ```
+```
 
 ### rdf_collection
-  **Synopsis:**`<rdf_collection_head> | rdf_collection`
+**Synopsis:** `<rdf_collection_head> | rdf_collection` or `<rdf_resource> | rdf_collection: "<property>"`
 
-  **Description:** Returns an array with resources for each element in the collection whose head is referenced by `rdf_collection_head`.
+**Description:** Returns an array with resources for each element in the collection whose head is referenced by `rdf_collection_head`.
+Instead of directly referencing a head it is also possible to specify the property referencing the collection head.
 
-  **Examples:**
-  ```
-  {% assign resource = '<http://www.ifi.uio.no/INF3580/simpson-collection#Collection>' | rdf_get %}
-  {% assign array = resource | rdf_collection %}
-  {% for item in array %}
-    {{ item }}
-  {% endfor %}
-  ```
-###### Result:
-  ```html
-    http://www.ifi.uio.no/INF3580/simpsons#Homer
-    http://www.ifi.uio.no/INF3580/simpsons#Marge
-    http://www.ifi.uio.no/INF3580/simpsons#Bart
-    http://www.ifi.uio.no/INF3580/simpsons#Lisa
-    http://www.ifi.uio.no/INF3580/simpsons#Maggie
-  ```
+**Example (specify head resource):**
+```
+{% assign resource = '<http://www.ifi.uio.no/INF3580/simpson-collection#Collection>' | rdf_get %}
+{% assign array = resource | rdf_collection %}
+{% for item in array %}
+{{ item }}
+{% endfor %}
+```
+**Result:**
+```html
+http://www.ifi.uio.no/INF3580/simpsons#Homer
+http://www.ifi.uio.no/INF3580/simpsons#Marge
+http://www.ifi.uio.no/INF3580/simpsons#Bart
+http://www.ifi.uio.no/INF3580/simpsons#Lisa
+http://www.ifi.uio.no/INF3580/simpsons#Maggie
+```
+
+**Example (specify via property):**
+```
+{% assign resource = '<http://www.ifi.uio.no/INF3580/simpsons>' | rdf_get %}
+{% assign array = resource | rdf_collection: "<http://www.ifi.uio.no/INF3580/simpsons#familycollection>" %}
+{% for item in array %}
+{{ item }}
+{% endfor %}
+```
+**Result:**
+```html
+http://www.ifi.uio.no/INF3580/simpsons#Homer
+http://www.ifi.uio.no/INF3580/simpsons#Marge
+http://www.ifi.uio.no/INF3580/simpsons#Bart
+http://www.ifi.uio.no/INF3580/simpsons#Lisa
+http://www.ifi.uio.no/INF3580/simpsons#Maggie
+```
 
 ## Plugin Configuration (\_config.yml)
 |Name|Parameter|Default|Description|Example|
