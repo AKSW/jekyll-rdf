@@ -38,7 +38,7 @@ module Jekyll
 
           # give parents to orphaned resources
           @pageResources.each_key{|key|
-            @pageResources[key]['./'] = Jekyll::Drops::RdfResource.new(RDF::URI(key), sparql) if @pageResources[key]['./'].nil?
+            @pageResources[key]['./'] = Jekyll::Drops::RdfResource.new(RDF::URI(key)) if @pageResources[key]['./'].nil?
           }
         end
       end
