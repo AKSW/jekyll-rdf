@@ -10,7 +10,7 @@ layout: abraham_outer_layout
   <img alt="Abe Simpson.png" src="http://upload.wikimedia.org/wikipedia/en/3/3e/Abe_Simpson.png" width="167" height="300" data-file-width="167" data-file-height="300">
 
   {% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}
-  {% assign resultset = page.rdf | sparql_query: query %}
+  {% assign resultset = query | sparql_query %}
   <table>
   {% for result in resultset %}
     <tr>

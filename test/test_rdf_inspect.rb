@@ -21,8 +21,8 @@ class TestRdfResource < Test::Unit::TestCase
 
   context "RdfTerm.inspect" do
     setup do
-      @literal = Jekyll::Drops::RdfLiteral.new("http://a.random/literal", sparql)
-      @term = Jekyll::Drops::RdfTerm.new("http://a.random/term", sparql)
+      @literal = Jekyll::Drops::RdfLiteral.new("http://a.random/literal")
+      @term = Jekyll::Drops::RdfTerm.new("http://a.random/term")
     end
     should "return the class, the object_id and the term of this object" do
       assert_equal "#<RdfLiteral:0x", @literal.inspect[0..14]
@@ -34,7 +34,7 @@ class TestRdfResource < Test::Unit::TestCase
 
   context "RdfStatement.inspect" do
     setup do
-      @statement = Jekyll::Drops::RdfStatement.new(RDF::Statement(RDF::URI("http://example.resource/subject"), RDF::Node("http://example.term/predicate"), RDF::Literal("http://example.literal/object")), sparql, Object.new)
+      @statement = Jekyll::Drops::RdfStatement.new(RDF::Statement(RDF::URI("http://example.resource/subject"), RDF::Node("http://example.term/predicate"), RDF::Literal("http://example.literal/object")), Object.new)
     end
     should "return the class, the object_id and the term of this object" do
       assert_equal "#<RdfStatement:0x", @statement.inspect[0..16]

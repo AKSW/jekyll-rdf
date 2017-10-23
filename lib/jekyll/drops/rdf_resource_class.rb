@@ -38,13 +38,15 @@ module Jekyll #:nodoc:
       attr_accessor :alternativeTemplates
       attr_accessor :subClasses
       attr_accessor :subClassHierarchyValue
+      attr_reader :sparql
 
       def initialize(term, sparql)
-        super(term, sparql)
+        super(term)
         @subClasses = []
         @lock = -1
         @subClassHierarchyValue = 0
         @alternativeTemplates = []
+        @sparql = sparql
       end
 
       def multiple_templates?
@@ -52,12 +54,7 @@ module Jekyll #:nodoc:
       end
 
       def find_direct_subclasses
-        if(!@term.to_s[0..1].eql? "_:")
-          term_uri = "<#{@term.to_s}>"
-        else
-          term_uri = @term.to_s
-        end
-        query = "SELECT ?s WHERE{ ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> #{term_uri}}"
+        query = "SELECT ?s WHERE{ ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> #{@term.to_ntriples}}"
         selection = @sparql.query(query).map{ |solution| solution.s.to_s}
         return selection
       end

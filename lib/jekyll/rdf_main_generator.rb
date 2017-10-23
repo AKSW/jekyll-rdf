@@ -60,7 +60,7 @@ module Jekyll
       site.data['sparql'] = sparql
       site.data['resources'] = []
 
-      parse_resources(resources, sparql)
+      parse_resources(resources)
 
       mapper = Jekyll::RdfTemplateMapper.new(@config['instance_template_mappings'], @config['class_template_mappings'], @config['default_template'], sparql)
 

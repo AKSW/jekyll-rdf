@@ -37,16 +37,15 @@ module Jekyll
     # * +input+ - the context RDF resource
     # * +query+ - the SPARQL query
     #
-    def sparql_query(input, query)
-      return input unless input.is_a?(Jekyll::Drops::RdfResource)
-      query.gsub!('?resourceUri', "<#{input.term.to_s}>")
-      if(!input.page.data["rdf_prefixes"].nil?)
-        query = query.prepend(" ").prepend(input.page.data["rdf_prefixes"])
+    def sparql_query(query)
+      query.gsub!('?resourceUri', "<#{Jekyll::RdfHelper::page.data['rdf'].term}>") #maybe use this part as optional parameter
+      if(!Jekyll::RdfHelper::page.data["rdf_prefixes"].nil?)
+        query = query.prepend(" ").prepend(Jekyll::RdfHelper::page.data["rdf_prefixes"])
       end
       begin
-        result = input.sparql.query(query).map do |solution|
+        result = Jekyll::RdfHelper::sparql.query(query).map do |solution|
           hsh = solution.to_h
-          hsh.update(hsh){ |k,v| Jekyll::Drops::RdfTerm.build_term_drop(v, input.sparql, input.site).add_necessities(input.site, input.page)}
+          hsh.update(hsh){ |k,v| Jekyll::Drops::RdfTerm.build_term_drop(v, Jekyll::RdfHelper::site).add_necessities(Jekyll::RdfHelper::site, Jekyll::RdfHelper::page)}
           hsh.collect{|k,v| [k.to_s, v]}.to_h
         end
         return result
