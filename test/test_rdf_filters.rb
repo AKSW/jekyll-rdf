@@ -165,6 +165,20 @@ class TestRdfFilter < Test::Unit::TestCase
     end
   end
 
+  context "Filter rdf_collection with argument from Jekyll::RdfCollection" do
+    setup do
+      prefixes = {"rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs" => "http://www.w3.org/2000/01/rdf-schema#", "foaf" => "http://xmlns.com/foaf/0.1/", "fam" => "http://www.ifi.uio.no/INF3580/family#", "simc" => "http://www.ifi.uio.no/INF3580/simpson-collection#"}
+      @testResource = res_helper.resource_with_prefixes_config("http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestEntity", prefixes)
+    end
+
+    should "return a set of resources stashed in the passed collection" do
+      answer = rdf_collection(@testResource, "<http://pcai042.informatik.uni-leipzig.de/~dtp16/#hasList>")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Homer")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Marge"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Marge")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Lisa")
+    end
+  end
+
   context "Filter rdf_container from Jekyll::RdfContainer" do
     setup do
       prefixes = {"rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs" => "http://www.w3.org/2000/01/rdf-schema#", "foaf" => "http://xmlns.com/foaf/0.1/", "fam" => "http://www.ifi.uio.no/INF3580/family#", "simcon" => "http://www.ifi.uio.no/INF3580/simpson-container#"}

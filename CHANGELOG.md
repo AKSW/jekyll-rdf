@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.3.0] - 2017-10-23
+### Added
+- Add convenient method to parse collections starting with a blank node, using the `rdf_collection` filter.
+
+### Fixed
+- Fix Jekyll warning about config syntax change. Replace `gems` by `plugins` in test `_config.yml`.
+
 ## [2.2.0] - 2017-09-07
 ### Added
 - Add new filter `rdf_get` to create new instances of `RdfResource` within liquid

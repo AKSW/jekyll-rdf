@@ -125,6 +125,7 @@ dtp16:TestPersonMagrid rdf:type dtp16:MagridsSpecialClass.         #test purpose
 dtp16:TestPersonIra rdf:type foaf:Person,
                              dtp16:SimpsonPerson.
 <http://www.ifi.uio.no/INF3580> rdf:type foaf:Person.
+dtp16:TestEntity dtp16:hasList (sim:Marge sim:Homer sim:Lisa) .
 simc:Collection a rdf:List.
 simc:Collection rdf:first sim:Homer.
 simc:Collection rdf:rest simc:c1.
