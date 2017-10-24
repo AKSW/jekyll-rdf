@@ -135,9 +135,9 @@ module Jekyll #:nodoc:
       # Return the URL of the page representing this RdfResource
       #
       def page_url
-	    return @page_url unless @page_url.nil?
+        return @page_url unless @page_url.nil?
         generate_file_name(@site.config["url"], @site.config["baseurl"])
-		@page_url
+        @page_url
       end
 
       ##
@@ -146,7 +146,7 @@ module Jekyll #:nodoc:
       def render_path
         return @render_path unless @page_url.nil?
         generate_file_name(@site.config["url"], @site.config["baseurl"])
-		@render_path
+        @render_path
       end
 
       ##
@@ -210,7 +210,6 @@ module Jekyll #:nodoc:
         return result
       end
 
-      private
       def create_statement(subject_string, predicate_string, object_string, is_lit = nil, lang = nil, data_type = nil)
         subject = RDF::URI(subject_string)
         predicate = RDF::URI(predicate_string)
@@ -222,28 +221,38 @@ module Jekyll #:nodoc:
         return RdfStatement.new(RDF::Statement( subject, predicate, object), @site)
       end
 
-      private
       ##
       # Generate a filename corresponding to the RDF resource represented by the receiver. The mapping between RDF resources and filenames should be bijective. If the url of the rdf is the same as of the hosting site it will be omitted.
       # * +domain_name+
       #
       def generate_file_name(domain_name, baseurl)
+        fragment_holder = nil
+        domain_name = domain_name.to_s
+        baseurl = baseurl.to_s
+        (("/".eql? baseurl[-1]) || (baseurl.empty? && ("/".eql? domain_name[-1]))) ? rdfsites="rdfsites/": rdfsites="/rdfsites/"
         if(term.to_s[0..1].eql? "_:")
-          file_name = "rdfsites/blanknode/#{term.to_s.gsub('_:','blanknode_')}/" # ':' can not be used on windows
+          file_name = "#{rdfsites}blanknode/#{term.to_s.gsub('_:','blanknode_')}/" # ':' can not be used on windows
         else
           begin
             uri = Addressable::URI.parse(term.to_s).to_hash
-            file_name = "rdfsites/" # in this directory all external RDF sites are stored
+            file_name = rdfsites # in this directory all external RDF sites are stored
             if((uri[:host].eql? domain_name) || ("#{uri[:scheme]}://#{uri[:host]}".eql? domain_name))
-              file_name = "/"
-              uri[:scheme] = nil
-              uri[:host] = nil
-              if(uri[:path].length > baseurl.length)
-                if(uri[:path][0..(baseurl.length)].eql? (baseurl + "/"))
-                  uri[:path] = uri[:path][(baseurl.length)..-1]
-                end
+              if((baseurl.length == 0))       #Special cases like baseurl == path or non-existent baseurl
+                uri[:scheme] = nil
+                uri[:host] = nil
+                file_name = ""
               elsif(uri[:path].eql?(baseurl))
                 uri[:path] = nil
+                uri[:scheme] = nil
+                uri[:host] = nil
+                file_name = ""
+              elsif(uri[:path].length > baseurl.length)                   #baseurl might be the first part of :path
+                if(uri[:path][0..(baseurl.length - 1)].eql? baseurl)
+                  uri[:path] = uri[:path][(baseurl.length)..-1]
+                  uri[:scheme] = nil
+                  uri[:host] = nil
+                  file_name = ""
+                end
               end
             end
             #An URI consists of these fields [:scheme, :userinfo, :host, :port, :registry, :path, :opaque, :query, :fragment]
@@ -252,7 +261,8 @@ module Jekyll #:nodoc:
             file_name << "#{uri[:host]}/" unless uri[:host].nil?
             file_name << "#{uri[:port]}/" unless uri[:port].nil?
             # registry purpose unknown
-            file_name << "#{uri[:path][1..-1]}" unless uri[:path].nil?
+            file_name << "#{uri[:path][0..-1]}" unless uri[:path].nil?
+            fragment_holder = "##{uri[:fragment]}" unless uri[:fragment].nil?
             # opaque jekyll produces static pages, so we do not dereferencing
             # query queries do not address resources
             # file_name << "#/#{uri[:fragment]}" unless uri[:fragment].nil? fragments are not evaluated by browsers, only by clients
@@ -262,7 +272,6 @@ module Jekyll #:nodoc:
             Jekyll.logger.error("URI parser exited with message: #{x.message}")
           end
         end
-        # windows compatibility
         file_name = file_name.gsub('//','/') # needs a better regex to include /// ////...
         file_name = file_name.strip
         if(file_name[-2..-1] == "#/")
@@ -272,15 +281,16 @@ module Jekyll #:nodoc:
           file_name << "index.html"
         else
           last_slash = file_name.rindex('/')
-		  ending = ""
-		  if(file_name[-5..-1].eql? ".html")
-		    ending = ".html" #in case .html is already contained by the term.url
-		  else
+          last_slash = 0 if last_slash.nil?
+          ending = ""
+          if(file_name[-5..-1].eql? ".html")
+            ending = ".html" #in case .html is already contained by the term.url
+          else
             file_name[last_slash..-1] = "#{file_name[last_slash..-1]}.html"
-		  end
+          end
         end
         @render_path = file_name
-        @page_url = "#{file_name.chomp('index.html').chomp('.html')}#{ending}"
+        @page_url = "#{file_name.chomp('index.html').chomp('.html')}#{ending}#{fragment_holder}"
         file_name
       end
     end

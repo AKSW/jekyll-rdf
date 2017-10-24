@@ -42,7 +42,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
 
     should "keep subclass relations between class resources" do
       assert (@classResources["http://xmlns.com/foaf/0.1/Person"].subClasses.any?{|class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson"}&&
-          @classResources["http://xmlns.com/foaf/0.1/Person"].subClasses.any?{|class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson"}), "http://xmlns.com/foaf/0.1/Person should have http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson and http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson as subclass"
+      @classResources["http://xmlns.com/foaf/0.1/Person"].subClasses.any?{|class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson"}), "http://xmlns.com/foaf/0.1/Person should have http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson and http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson as subclass"
       assert @classResources["http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson"].subClasses.any?{|class_res| class_res.to_s.eql? "http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson"},"http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson should have http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson as subclass"
     end
 
