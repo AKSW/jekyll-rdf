@@ -188,6 +188,10 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     end
 
     should "correctly render simple urls" do
+      assert_equal "/bla/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/bla/a"), @site).render_path
+      assert_equal "/rdfsites/http/ex.org/bla/blog/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/bla/blog/a"), @site).render_path
+      assert_equal "/rdfsites/http/ex.org/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).render_path
+      assert_equal "/rdfsites/http/ex.org/a", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).page_url
       assert_equal "/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a"), @site).render_path
       assert_equal "/a", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a"), @site).page_url
       assert_equal "/b/index.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/"), @site).render_path
@@ -215,6 +219,10 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     end
 
     should "correctly render simple urls" do
+      assert_equal "bla/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/bla/a"), @site).render_path
+      assert_equal "rdfsites/http/ex.org/bla/blog/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/bla/blog/a"), @site).render_path
+      assert_equal "rdfsites/http/ex.org/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).render_path
+      assert_equal "rdfsites/http/ex.org/a", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).page_url
       assert_equal "a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a"), @site).render_path
       assert_equal "a", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a"), @site).page_url
       assert_equal "b/index.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/"), @site).render_path
