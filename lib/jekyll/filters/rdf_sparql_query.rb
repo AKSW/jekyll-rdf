@@ -29,7 +29,7 @@ module Jekyll
   # Internal module to hold the medthod #sparql_query
   #
   module RdfSparqlQuery
-
+    include Jekyll::RdfPrefixResolver
     ##
     # Executes a SPARQL query. The supplied query is augmented by replacing each occurence of '?resourceUri' by the URI of the context RDF resource.
     # Returns an Array of bindings. Each binding is a Hash mapping variables to their values.
@@ -40,6 +40,14 @@ module Jekyll
     def sparql_query(resource = nil, query)
       if(resource.nil? || resource.class <= (Jekyll::RdfPageData))
         query.gsub!('?resourceUri', "<#{Jekyll::RdfHelper::page.data['rdf'].term}>")
+      elsif(resource.class <= Array)
+        resource.each_with_index do |uri, index|
+          if(uri.class <= Jekyll::Drops::RdfResource)
+            query.gsub!("?resourceUri_#{index-1}", uri.term.to_ntriples)
+          else
+            query.gsub!("?resourceUri_#{index-1}", rdf_resolve_prefix(uri.to_s))
+          end
+        end
       else
         query.gsub!('?resourceUri', "<#{resource}>")
       end
