@@ -38,7 +38,7 @@ module Jekyll
     # * +lang+ - (optional) preferred language of a the returned object. The precise implementation of choosing which object to return (both in case a language is supplied and in case is not supplied) is undefined
     # * +list+ - (optional) decides the format of the return value. If set to true it returns an array, otherwise it returns a singleton String containing a URI.
     #
-    def rdf_property( input, predicate, lang = nil, list = false)
+    def rdf_property(input, predicate, lang = nil, list = false)
       return map_predicate(input, predicate, lang, list)
     end
 
@@ -48,7 +48,7 @@ module Jekyll
 
     private
     def map_predicate(input, predicate, lang = nil, list = false, inverse = false)
-      input = Jekyll::RdfHelper::page.data['rdf'] if(input.nil?)
+      input = Jekyll::RdfHelper::page.data['rdf'] if(input.nil? ||  input.class <= (Jekyll::RdfPageData))
       return input unless input.is_a?(Jekyll::Drops::RdfResource)
       predicate = rdf_resolve_prefix(predicate)
       result = filter_statements(input.term.to_ntriples, predicate, inverse, lang)

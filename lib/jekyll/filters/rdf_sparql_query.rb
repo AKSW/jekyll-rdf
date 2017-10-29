@@ -38,7 +38,7 @@ module Jekyll
     # * +query+ - the SPARQL query
     #
     def sparql_query(resource = nil, query)
-      if(resource.nil?)
+      if(resource.nil? || resource.class <= (Jekyll::RdfPageData))
         query.gsub!('?resourceUri', "<#{Jekyll::RdfHelper::page.data['rdf'].term}>") #maybe use this part as optional parameter
       else
         query.gsub!('?resourceUri', "<#{resource}>")

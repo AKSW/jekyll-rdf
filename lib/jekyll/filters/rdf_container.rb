@@ -27,7 +27,7 @@ module Jekyll
   module RdfContainer
     include Jekyll::RdfPrefixResolver
     def rdf_container(input, type = nil)
-      input = Jekyll::RdfHelper::page.data['rdf'] if input.nil?
+      input = Jekyll::RdfHelper::page.data['rdf'] if(input.nil? ||  input.class <= (Jekyll::RdfPageData))
       sparql_client = Jekyll::RdfHelper::sparql
       n_triples = input.term.to_ntriples
       if(!(valid_container?(n_triples, type)))
