@@ -26,6 +26,7 @@
 
 module Jekyll
   module RdfCollection
+    include Jekyll::RdfPrefixResolver
     def rdf_collection(input, predicate = nil)
       query = "SELECT ?f WHERE{ #{input.term.to_ntriples} " <<
               (predicate.nil? ? "" : " <#{rdf_resolve_prefix(predicate)}> ?coll . ?coll ") <<
