@@ -336,6 +336,9 @@ Returns a verbose String representing this resource.
 ### rdf_get
 **Synopsis:** `<resource_iri> | rdf_get`
 
+**Parameters:**
+- `<resource_iri>` is a string representing an RDF resource, with prefix (`prefix:name`) or a full IRI (`<http://ex.org/name>`). To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
+
 **Description:** Takes the provided IRI and returns the corresponding RdfResource object from your knowledge base.
 On this object you can call the methods as described in the section [Resource](Resource).
 
@@ -350,7 +353,13 @@ http://www.ifi.uio.no/INF3580/simpsons
 ```
 
 ### rdf_property
-**Synopsis:** `<rdf_resource> | rdf_property: <predicate>, [<lang> | <lang>, <list> | nil, <list>]`
+**Synopsis:** `<rdf_resource> | rdf_property: <property>, [<lang>] OR [<lang>, <list>] OR [nil, <list>]`
+
+**Parameters:**
+- `<rdf_resource>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
+- `<property>` is a string representing an RDF predicate, with prefix (`prefix:name`) or a full IRI (`<http://ex.org/name>`).
+- `<lang>` is a language tag (e.g. `de`). If this parameter is omitted replace it by `nil`.
+- `<list>` is a boolean value (`true`, `false`).
 
 **Description:** Returns the object, of the triple `<rdf_resource> <predicate> ?object`.
 The returned object can by any of the kind, resource, literal, or blanknode.
@@ -392,7 +401,12 @@ The returned object can by any of the kind, resource, literal, or blanknode.
 ```
 
 ### rdf_inverse_property
-**Synopsis:** `<rdf_resource> | rdf_inverse_property: <predicate>, [<list>]`
+**Synopsis:** `<rdf_resource> | rdf_inverse_property: <property>, [<list>]`
+
+**Parameters:**
+- `<rdf_resource>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
+- `<property>` is a string representing an RDF predicate, with prefix (`prefix:name`) or a full IRI (`<http://ex.org/name>`).
+- `<list>` is a boolean value (`true`, `false`).
 
 **Description:** Same as rdf_property, but in inverse direction.
 It returns the subject, of the triple `?subject <predicate> <rdf_resource>`.
@@ -424,17 +438,21 @@ http://www.ifi.uio.no/INF3580/simpsons#Maggie
 ```
 
 ### sparql_query
-**Synopsis:** `<query> | sparql_query`
+**Synopsis:** `<rdf_resource> | sparql_query: <query>`
+
+**Parameters:**
+- `<rdf_resource>` is an RdfResource which will replace `?resourceUri` in the query. To omit this parameter or reference the resource of the current page use `page.rdf`, `page`, or `nil`.
+- `<query>` a string containing a SPARQL query.
 
 **Description:** Evaluates `query` on the given knowledge base and returns an array of results (result set).
 Each entry object in the result set (result) contains the selected variables as resources or literals.
-You can use `?resourceUri` inside the query to reference the resource of the currently rendered page.
+You can use `?resourceUri` inside the query to reference the resource which is given as `<rdf_resource>`.
 
 **Examples:**
 ```
 <!--Rendering the page of resource Lisa -->
 {% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}
-{% assign resultset = sparql_query: query %}
+{% assign resultset = page | sparql_query: query %}
 <table>
 {% for result in resultset %}
   <tr><td>{{ result.sub }}</td><td>{{ result.pre }}</td></tr>
@@ -451,6 +469,9 @@ You can use `?resourceUri` inside the query to reference the resource of the cur
 
 ### rdf_container
 **Synopsis:** `<rdf_container_head> | rdf_container`
+
+**Parameters:**
+- `<rdf_container_head>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
 
 **Description:** Returns an array with resources for each element in the container whose head is referenced by `rdf_container_head`.
 
@@ -474,6 +495,12 @@ http://www.ifi.uio.no/INF3580/simpsons#Maggie
 
 ### rdf_collection
 **Synopsis:** `<rdf_collection_head> | rdf_collection` or `<rdf_resource> | rdf_collection: "<property>"`
+
+**Parameters:**
+- `<rdf_collection_head>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
+
+- `<rdf_resource>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
+- `<property>` is a string representing an RDF predicate, with prefix (`prefix:name`) or a full IRI (`<http://ex.org/name>`).
 
 **Description:** Returns an array with resources for each element in the collection whose head is referenced by `rdf_collection_head`.
 Instead of directly referencing a head it is also possible to specify the property referencing the collection head.
