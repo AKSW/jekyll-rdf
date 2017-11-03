@@ -62,6 +62,18 @@ class TestRdfFilter < Test::Unit::TestCase
       assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Lisa")
       assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Maggie"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Maggie")
     end
+
+    should "be able to substitude nil with the page object" do
+      answer = rdf_property(nil, "<http://www.ifi.uio.no/INF3580/family#hasSpouse>")
+      assert_equal("http://www.ifi.uio.no/INF3580/simpsons#Marge", answer.to_s)
+    end
+
+    should "substitude nil with the page object even in the reverse variant" do
+      answer = rdf_inverse_property(nil, "<http://www.ifi.uio.no/INF3580/family#hasSpouse>")
+      assert_equal("http://www.ifi.uio.no/INF3580/simpsons#Marge", answer.to_s)
+      answer = rdf_inverse_property(nil, "<http://xmlns.com/foaf/0.1/name>")
+      assert_equal("http://placeholder.host.plh/placeholder#TPerson", answer.to_s)
+    end
   end
 
   context "Filter sparql_query from Jekyll::RdfSparqlQuery" do
@@ -87,6 +99,12 @@ class TestRdfFilter < Test::Unit::TestCase
       assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Bart') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')}, "answerset does not contain the pair http://www.ifi.uio.no/INF3580/simpsons#Bart and http://www.ifi.uio.no/INF3580/simpsons#Homer")
       assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Lisa') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')}, "answerset does not contain the pair http://www.ifi.uio.no/INF3580/simpsons#Lisa and http://www.ifi.uio.no/INF3580/simpsons#Homer")
       assert(answer.any? {|solution| (solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/simpsons#Maggie') && (solution['y'].to_s.eql?  'http://www.ifi.uio.no/INF3580/simpsons#Homer')}, "answerset does not contain the pair http://www.ifi.uio.no/INF3580/simpsons#Maggie and http://www.ifi.uio.no/INF3580/simpsons#Homer")
+    end
+
+    should "properly substitude ?resourceUri with the given resource" do
+      query = "SELECT ?y WHERE{ ?resourceUri foaf:age ?y}"
+      answer = sparql_query(@testResource, query)
+      assert(answer.any? {|solution| solution['y'].to_s.eql?  '36'}, "answer should return the age of Homer Simpson (36)")
     end
 
     # These 3 tests are prune to errors if rdf_resource changes to use sparql in its setup process
@@ -169,16 +187,28 @@ class TestRdfFilter < Test::Unit::TestCase
       assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Lisa")
       assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Maggie"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Maggie")
     end
+
+    should "substitude nil with the page resource object" do
+      answer = rdf_collection(nil)
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Homer")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Marge"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Marge")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Bart"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Bart")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Lisa")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Maggie"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Maggie")
+    end
   end
 
-  context "Filter rdf_collection with argument from Jekyll::RdfCollection" do
+  context "Filter rdf_collection with argument from Jekyll::RdfCollection and a predicate as shortcut" do
     setup do
+      Jekyll::RdfHelper.sparql = sparql
       prefixes = {"rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs" => "http://www.w3.org/2000/01/rdf-schema#", "foaf" => "http://xmlns.com/foaf/0.1/", "fam" => "http://www.ifi.uio.no/INF3580/family#", "simc" => "http://www.ifi.uio.no/INF3580/simpson-collection#"}
       @testResource = res_helper.resource_with_prefixes_config("http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestEntity", prefixes)
+      Jekyll::RdfHelper.page = @testResource.page
+      Jekyll::RdfHelper.page.data['rdf'] = @testResource
     end
 
     should "return a set of resources stashed in the passed collection" do
-      answer = rdf_collection(@testResource, "<http://pcai042.informatik.uni-leipzig.de/~dtp16/#hasList>")
+      answer = rdf_collection(nil, "<http://pcai042.informatik.uni-leipzig.de/~dtp16/#hasList>")
       assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Homer")
       assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Marge"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Marge")
       assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Lisa")
@@ -192,6 +222,8 @@ class TestRdfFilter < Test::Unit::TestCase
       @testSeq = res_helper.resource_with_prefixes_config("http://www.ifi.uio.no/INF3580/simpson-container#Seq", prefixes)
       @testContainer = res_helper.resource_with_prefixes_config("http://www.ifi.uio.no/INF3580/simpson-container#Container", prefixes)
       @testCustomContainer = res_helper.resource_with_prefixes_config("http://www.ifi.uio.no/INF3580/simpson-container#CustomContainer", prefixes)
+      Jekyll::RdfHelper.page = @testSeq.page
+      Jekyll::RdfHelper.page.data['rdf'] = @testSeq
     end
 
     should "return a set of resources stashed in the passed sequence container" do
@@ -229,6 +261,15 @@ class TestRdfFilter < Test::Unit::TestCase
       resource = res_helper.basic_resource("http://Test")
       assert !(valid_container?(resource.term.to_ntriples)), "validContainer? returned true"
     end
+
+    should "substitude nil with the page resource object" do
+      answer = rdf_container(nil)
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Homer")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Marge"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Marge")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Bart"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Bart")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Lisa")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Maggie"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Maggie")
+    end
   end
 
   context "Filter rdf_get from Jekyll::RdfGet" do
@@ -246,6 +287,12 @@ class TestRdfFilter < Test::Unit::TestCase
       assert_equal "http://www.ifi.uio.no/INF3580/main", test_resource.iri
       assert (test_resource.site.eql? Jekyll::RdfHelper::site), "The resource should contain the same site as Jekyll::RdfHelper"
       assert (test_resource.page.eql? Jekyll::RdfHelper::page), "The resource should contain the same page as Jekyll::RdfHelper"
+    end
+
+    should "substitude nil with page resource" do
+      Jekyll::RdfHelper::page.data["rdf"] = res_helper.basic_resource("http://www.ifi.uio.no/INF3580/main")
+      test_resource =  rdf_get(nil)
+      assert_equal "http://www.ifi.uio.no/INF3580/main", test_resource.iri
     end
   end
 end
