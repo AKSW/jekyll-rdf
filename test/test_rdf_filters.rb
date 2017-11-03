@@ -65,7 +65,7 @@ class TestRdfFilter < Test::Unit::TestCase
 
     should "be able to substitude nil with the page object" do
       answer = rdf_property(nil, "<http://www.ifi.uio.no/INF3580/family#hasSpouse>")
-      assert_equal(answer.to_s, "http://www.ifi.uio.no/INF3580/simpsons#Marge")
+      assert_equal("http://www.ifi.uio.no/INF3580/simpsons#Marge", answer.to_s)
     end
 
     should "substitude nil with the page object even in the reverse variant" do
