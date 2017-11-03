@@ -26,6 +26,7 @@
 
 module Jekyll
   module RdfCollection
+    include Jekyll::RdfPrefixResolver
     def rdf_collection(input, predicate = nil)
       input = Jekyll::RdfHelper::page.data['rdf'] if(input.nil? || input.class <= (Jekyll::RdfPageData))
       query = "SELECT ?f WHERE{ #{input.term.to_ntriples} " <<
