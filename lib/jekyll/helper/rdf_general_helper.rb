@@ -23,33 +23,37 @@
 #
 
 module Jekyll
+  module JekyllRdf
+    module Helper
+      ##
+      # Internal module to hold support for functionalities like submitting sparql queries
+      #
+      module RdfHelper
+        def self.sparql= sparql
+          @@sparql = sparql
+        end
 
-  ##
-  # Internal module to hold the medthod #rdf_get
-  #
-  module RdfHelper
-    def self.sparql= sparql
-      @@sparql = sparql
-    end
+        def self.sparql
+          @@sparql
+        end
 
-    def self.sparql
-      @@sparql
-    end
+        def self.site= site
+          @@site = site
+        end
 
-    def self.site= site
-      @@site = site
-    end
+        def self.site
+          @@site
+        end
 
-    def self.site
-      @@site
-    end
+        def self.page= page
+          @@page = page
+        end
 
-    def self.page= page
-      @@page = page
+        def self.page
+          @@page
+        end
+      end
     end
-
-    def self.page
-      @@page
-    end
+    
   end
 end

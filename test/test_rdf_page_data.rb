@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class TestRdfTemplateMapper < Test::Unit::TestCase
-  include Jekyll::RdfPageHelper
+  include Jekyll::JekyllRdf::Helper::RdfPageHelper
   graph = RDF::Graph.load(TestHelper::TEST_OPTIONS['jekyll_rdf']['path'])
   sparql = SPARQL::Client.new(graph)
   res_helper = ResourceHelper.new(sparql)
@@ -49,7 +49,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
 
       assert_equal("http://www.ifi.uio.no/INF3580/simpsons#Homer", self.data["title"])
       assert_equal("http://www.ifi.uio.no/INF3580/simpsons#Homer", self.data["rdf"].to_s)
-      assert_equal("Jekyll::Drops::RdfResource", self.data["rdf"].class.to_s)
+      assert_equal("Jekyll::JekyllRdf::Drops::RdfResource", self.data["rdf"].class.to_s)
       assert_equal("homer.html", self.data["template"])
       assert self.data['sub_rdf'].any?{|res| res.to_s.eql? "http://subres1"}, "the testpage did not load the resource http://subres1"
       assert self.data['sub_rdf'].any?{|res| res.to_s.eql? "http://subres2"}, "the testpage did not load the resource http://subres2"
@@ -127,119 +127,119 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     end
   end
 
-  context "Jekyll::Drops::RdfResource.render_path with empty baseurl"do
+  context "Jekyll::JekyllRdf::Drops::RdfResource.render_path with empty baseurl"do
     setup do
       @config = Jekyll.configuration({'url' => "http://ex.org", 'baseurl' => "" })
       @site = Jekyll::Site.new(@config)
     end
 
     should "correctly render simple urls" do
-      assert_equal "/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).render_path
-      assert_equal "/a", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).page_url
-      assert_equal "/b/index.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/b/"), @site).render_path
-      assert_equal "/b/", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/b/"), @site).page_url
-      assert_equal "/b/x.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/b/x"), @site).render_path
-      assert_equal "/b/x", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/b/x"), @site).page_url
-      assert_equal "/b/y/index.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/b/y/"), @site).render_path
-      assert_equal "/b/y/", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/b/y/"), @site).page_url
-      assert_equal "/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/a.html"), @site).render_path
-      assert_equal "/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/a.html"), @site).page_url
+      assert_equal "/a.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).render_path
+      assert_equal "/a", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).page_url
+      assert_equal "/b/index.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/b/"), @site).render_path
+      assert_equal "/b/", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/b/"), @site).page_url
+      assert_equal "/b/x.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/b/x"), @site).render_path
+      assert_equal "/b/x", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/b/x"), @site).page_url
+      assert_equal "/b/y/index.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/b/y/"), @site).render_path
+      assert_equal "/b/y/", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/b/y/"), @site).page_url
+      assert_equal "/a.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/a.html"), @site).render_path
+      assert_equal "/a.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/a.html"), @site).page_url
     end
 
     should "let fragment-identifier default to super resource" do
-      assert_equal "/c.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/c#alpha"), @site).render_path
-      assert_equal "/c#alpha", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/c#alpha"), @site).page_url
-      assert_equal "/c.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/c#beta"), @site).render_path
-      assert_equal "/c#beta", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/c#beta"), @site).page_url
+      assert_equal "/c.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/c#alpha"), @site).render_path
+      assert_equal "/c#alpha", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/c#alpha"), @site).page_url
+      assert_equal "/c.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/c#beta"), @site).render_path
+      assert_equal "/c#beta", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/c#beta"), @site).page_url
     end
   end
 
-  context "Jekyll::Drops::RdfResource.render_path with '/' as baseurl"do
+  context "Jekyll::JekyllRdf::Drops::RdfResource.render_path with '/' as baseurl"do
     setup do
       @config = Jekyll.configuration({'url' => "http://ex.org", 'baseurl' => "/" })
       @site = Jekyll::Site.new(@config)
     end
 
     should "correctly render simple urls" do
-      assert_equal "a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).render_path
-      assert_equal "a", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).page_url
-      assert_equal "b/index.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/b/"), @site).render_path
-      assert_equal "b/", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/b/"), @site).page_url
-      assert_equal "b/x.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/b/x"), @site).render_path
-      assert_equal "b/x", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/b/x"), @site).page_url
-      assert_equal "b/y/index.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/b/y/"), @site).render_path
-      assert_equal "b/y/", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/b/y/"), @site).page_url
-      assert_equal "a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/a.html"), @site).render_path
-      assert_equal "a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/a.html"), @site).page_url
+      assert_equal "a.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).render_path
+      assert_equal "a", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).page_url
+      assert_equal "b/index.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/b/"), @site).render_path
+      assert_equal "b/", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/b/"), @site).page_url
+      assert_equal "b/x.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/b/x"), @site).render_path
+      assert_equal "b/x", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/b/x"), @site).page_url
+      assert_equal "b/y/index.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/b/y/"), @site).render_path
+      assert_equal "b/y/", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/b/y/"), @site).page_url
+      assert_equal "a.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/a.html"), @site).render_path
+      assert_equal "a.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/a.html"), @site).page_url
     end
 
     should "let fragment-identifier default to super resource" do
-      assert_equal "c.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/c#alpha"), @site).render_path
-      assert_equal "c#alpha", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/c#alpha"), @site).page_url
-      assert_equal "c.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/c#beta"), @site).render_path
-      assert_equal "c#beta", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/c#beta"), @site).page_url
+      assert_equal "c.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/c#alpha"), @site).render_path
+      assert_equal "c#alpha", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/c#alpha"), @site).page_url
+      assert_equal "c.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/c#beta"), @site).render_path
+      assert_equal "c#beta", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/c#beta"), @site).page_url
     end
   end
 
-  context "Jekyll::Drops::RdfResource.render_path with subdirectory baseurl"do
+  context "Jekyll::JekyllRdf::Drops::RdfResource.render_path with subdirectory baseurl"do
     setup do
       @config = Jekyll.configuration({'url' => "http://ex.org", 'baseurl' => "/blog" })
       @site = Jekyll::Site.new(@config)
     end
 
     should "correctly render simple urls" do
-      assert_equal "/bla/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/bla/a"), @site).render_path
-      assert_equal "/rdfsites/http/ex.org/bla/blog/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/bla/blog/a"), @site).render_path
-      assert_equal "/rdfsites/http/ex.org/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).render_path
-      assert_equal "/rdfsites/http/ex.org/a", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).page_url
-      assert_equal "/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a"), @site).render_path
-      assert_equal "/a", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a"), @site).page_url
-      assert_equal "/b/index.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/"), @site).render_path
-      assert_equal "/b/", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/"), @site).page_url
-      assert_equal "/b/x.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/x"), @site).render_path
-      assert_equal "/b/x", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/x"), @site).page_url
-      assert_equal "/b/y/index.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/y/"), @site).render_path
-      assert_equal "/b/y/", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/y/"), @site).page_url
-      assert_equal "/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a.html"), @site).render_path
-      assert_equal "/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a.html"), @site).page_url
+      assert_equal "/bla/a.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/bla/a"), @site).render_path
+      assert_equal "/rdfsites/http/ex.org/bla/blog/a.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/bla/blog/a"), @site).render_path
+      assert_equal "/rdfsites/http/ex.org/a.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).render_path
+      assert_equal "/rdfsites/http/ex.org/a", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).page_url
+      assert_equal "/a.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a"), @site).render_path
+      assert_equal "/a", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a"), @site).page_url
+      assert_equal "/b/index.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/"), @site).render_path
+      assert_equal "/b/", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/"), @site).page_url
+      assert_equal "/b/x.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/x"), @site).render_path
+      assert_equal "/b/x", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/x"), @site).page_url
+      assert_equal "/b/y/index.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/y/"), @site).render_path
+      assert_equal "/b/y/", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/y/"), @site).page_url
+      assert_equal "/a.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a.html"), @site).render_path
+      assert_equal "/a.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a.html"), @site).page_url
     end
 
     should "let fragment-identifier default to super resource" do
-      assert_equal "/c.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/c#alpha"), @site).render_path
-      assert_equal "/c#alpha", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/c#alpha"), @site).page_url
-      assert_equal "/c.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/c#beta"), @site).render_path
-      assert_equal "/c#beta", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/c#beta"), @site).page_url
+      assert_equal "/c.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/c#alpha"), @site).render_path
+      assert_equal "/c#alpha", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/c#alpha"), @site).page_url
+      assert_equal "/c.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/c#beta"), @site).render_path
+      assert_equal "/c#beta", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/c#beta"), @site).page_url
     end
   end
 
-  context "Jekyll::Drops::RdfResource.render_path with subdirectory baseurl ending with slash"do
+  context "Jekyll::JekyllRdf::Drops::RdfResource.render_path with subdirectory baseurl ending with slash"do
     setup do
       @config = Jekyll.configuration({'url' => "http://ex.org", 'baseurl' => "/blog/" })
       @site = Jekyll::Site.new(@config)
     end
 
     should "correctly render simple urls" do
-      assert_equal "bla/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/bla/a"), @site).render_path
-      assert_equal "rdfsites/http/ex.org/bla/blog/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/bla/blog/a"), @site).render_path
-      assert_equal "rdfsites/http/ex.org/a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).render_path
-      assert_equal "rdfsites/http/ex.org/a", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).page_url
-      assert_equal "a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a"), @site).render_path
-      assert_equal "a", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a"), @site).page_url
-      assert_equal "b/index.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/"), @site).render_path
-      assert_equal "b/", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/"), @site).page_url
-      assert_equal "b/x.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/x"), @site).render_path
-      assert_equal "b/x", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/x"), @site).page_url
-      assert_equal "b/y/index.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/y/"), @site).render_path
-      assert_equal "b/y/", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/y/"), @site).page_url
-      assert_equal "a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a.html"), @site).render_path
-      assert_equal "a.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a.html"), @site).page_url
+      assert_equal "bla/a.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/bla/a"), @site).render_path
+      assert_equal "rdfsites/http/ex.org/bla/blog/a.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/bla/blog/a"), @site).render_path
+      assert_equal "rdfsites/http/ex.org/a.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).render_path
+      assert_equal "rdfsites/http/ex.org/a", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/a"), @site).page_url
+      assert_equal "a.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a"), @site).render_path
+      assert_equal "a", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a"), @site).page_url
+      assert_equal "b/index.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/"), @site).render_path
+      assert_equal "b/", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/"), @site).page_url
+      assert_equal "b/x.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/x"), @site).render_path
+      assert_equal "b/x", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/x"), @site).page_url
+      assert_equal "b/y/index.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/y/"), @site).render_path
+      assert_equal "b/y/", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/y/"), @site).page_url
+      assert_equal "a.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a.html"), @site).render_path
+      assert_equal "a.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/a.html"), @site).page_url
     end
 
     should "let fragment-identifier default to super resource" do
-      assert_equal "c.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/c#alpha"), @site).render_path
-      assert_equal "c#alpha", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/c#alpha"), @site).page_url
-      assert_equal "c.html", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/c#beta"), @site).render_path
-      assert_equal "c#beta", Jekyll::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/c#beta"), @site).page_url
+      assert_equal "c.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/c#alpha"), @site).render_path
+      assert_equal "c#alpha", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/c#alpha"), @site).page_url
+      assert_equal "c.html", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/c#beta"), @site).render_path
+      assert_equal "c#beta", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/c#beta"), @site).page_url
     end
   end
 end

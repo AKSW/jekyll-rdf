@@ -24,5 +24,5 @@
 
 
 Jekyll::Hooks.register :pages, :pre_render do |page|
-  Jekyll::RdfHelper::page = page
+  Jekyll::JekyllRdf::Helper::RdfHelper::page = page
 end

@@ -29,7 +29,7 @@ module Jekyll
   # JekyllRdf::RdfPageData creates pages for each RDF resource using a given template
   #
   class RdfPageData < Jekyll::Page
-    include Jekyll::RdfPageHelper
+    include Jekyll::JekyllRdf::Helper::RdfPageHelper
     attr_reader :complete
 
     ##

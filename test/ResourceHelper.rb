@@ -10,7 +10,7 @@ class ResourceHelper
   end
 
   def basic_resource(uri)
-    resource = Jekyll::Drops::RdfResource.new(RDF::URI.new(uri))
+    resource = Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI.new(uri))
     if(@global_site)
       attach_site(resource, use_global_site())
     else
@@ -21,7 +21,7 @@ class ResourceHelper
   end
 
   def basic_literal(string)
-    literal = Jekyll::Drops::RdfLiteral.new(RDF::Literal.new(string))
+    literal = Jekyll::JekyllRdf::Drops::RdfLiteral.new(RDF::Literal.new(string))
     return literal
   end
 

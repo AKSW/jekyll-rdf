@@ -24,20 +24,22 @@
 #
 
 module Jekyll
-  module Drops
-
-    ##
-    # Represents an RDF literal to the Liquid template engine
-    #
-    class RdfLiteral < RdfTerm
+  module JekyllRdf
+    module Drops
 
       ##
-      # Return a user-facing string representing this RdfLiteral
+      # Represents an RDF literal to the Liquid template engine
       #
-      def literal
-        term.to_s
-      end
+      class RdfLiteral < RdfTerm
 
+        ##
+        # Return a user-facing string representing this RdfLiteral
+        #
+        def literal
+          term.to_s
+        end
+
+      end
     end
   end
 end

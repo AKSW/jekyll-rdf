@@ -5,9 +5,9 @@ class TestRdfResource < Test::Unit::TestCase
   sparql = SPARQL::Client.new(graph)
   context "rdfResource.inspect" do
     setup do
-      @resource = Jekyll::Drops::RdfResource.new("http://test.this/resource", sparql)
-      @resourceSubs = Jekyll::Drops::RdfResource.new("http://test.this/resource/with/sub/resources", sparql)
-      @resourceSubs.subResources = [Jekyll::Drops::RdfResource.new("http://test.this/resource/with/sub/resources1", sparql), Jekyll::Drops::RdfResource.new("http://test.this/resource/with/sub/resources2", sparql), Jekyll::Drops::RdfResource.new("http://test.this/resource/with/sub/resources3", sparql), Jekyll::Drops::RdfResource.new("http://test.this/resource/with/sub/resources4", sparql), Jekyll::Drops::RdfResource.new("http://test.this/resource/with/sub/resources5", sparql), Jekyll::Drops::RdfResource.new("http://test.this/resource/with/sub/resources6", sparql)]
+      @resource = Jekyll::JekyllRdf::Drops::RdfResource.new("http://test.this/resource", sparql)
+      @resourceSubs = Jekyll::JekyllRdf::Drops::RdfResource.new("http://test.this/resource/with/sub/resources", sparql)
+      @resourceSubs.subResources = [Jekyll::JekyllRdf::Drops::RdfResource.new("http://test.this/resource/with/sub/resources1", sparql), Jekyll::JekyllRdf::Drops::RdfResource.new("http://test.this/resource/with/sub/resources2", sparql), Jekyll::JekyllRdf::Drops::RdfResource.new("http://test.this/resource/with/sub/resources3", sparql), Jekyll::JekyllRdf::Drops::RdfResource.new("http://test.this/resource/with/sub/resources4", sparql), Jekyll::JekyllRdf::Drops::RdfResource.new("http://test.this/resource/with/sub/resources5", sparql), Jekyll::JekyllRdf::Drops::RdfResource.new("http://test.this/resource/with/sub/resources6", sparql)]
     end
     should "return the ruby object_id and iri of the rdf-resource" do
       assert_equal "#<RdfResource:0x", @resource.inspect[0..15]
@@ -21,8 +21,8 @@ class TestRdfResource < Test::Unit::TestCase
 
   context "RdfTerm.inspect" do
     setup do
-      @literal = Jekyll::Drops::RdfLiteral.new("http://a.random/literal")
-      @term = Jekyll::Drops::RdfTerm.new("http://a.random/term")
+      @literal = Jekyll::JekyllRdf::Drops::RdfLiteral.new("http://a.random/literal")
+      @term = Jekyll::JekyllRdf::Drops::RdfTerm.new("http://a.random/term")
     end
     should "return the class, the object_id and the term of this object" do
       assert_equal "#<RdfLiteral:0x", @literal.inspect[0..14]
@@ -34,7 +34,7 @@ class TestRdfResource < Test::Unit::TestCase
 
   context "RdfStatement.inspect" do
     setup do
-      @statement = Jekyll::Drops::RdfStatement.new(RDF::Statement(RDF::URI("http://example.resource/subject"), RDF::Node("http://example.term/predicate"), RDF::Literal("http://example.literal/object")), Object.new)
+      @statement = Jekyll::JekyllRdf::Drops::RdfStatement.new(RDF::Statement(RDF::URI("http://example.resource/subject"), RDF::Node("http://example.term/predicate"), RDF::Literal("http://example.literal/object")), Object.new)
     end
     should "return the class, the object_id and the term of this object" do
       assert_equal "#<RdfStatement:0x", @statement.inspect[0..16]

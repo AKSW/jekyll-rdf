@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class TestRdfTemplateMapper < Test::Unit::TestCase
-  include Jekyll::RdfGeneratorHelper
+  include Jekyll::JekyllRdf::Helper::RdfGeneratorHelper
   graph = RDF::Graph.load(TestHelper::TEST_OPTIONS['jekyll_rdf']['path'])
   sparql = SPARQL::Client.new(graph)
   res_helper = ResourceHelper.new(sparql)
@@ -83,19 +83,19 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     setup do
       @pageResources = {
         "http://www.ifi.uio.no/INF3580/simpsons" => {
-          "./" => Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/simpsons", sparql),
-          "Homer" => Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/simpsons#Homer", sparql),
-          "Marge" => Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/simpsons#Marge", sparql)
+          "./" => Jekyll::JekyllRdf::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/simpsons", sparql),
+          "Homer" => Jekyll::JekyllRdf::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/simpsons#Homer", sparql),
+          "Marge" => Jekyll::JekyllRdf::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/simpsons#Marge", sparql)
         },
         "http://www.ifi.uio.no/INF3580/family" => {
-          "./" => Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/family", sparql),
-          "Max" => Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/family#Max", sparql),
-          "Jeanne" => Jekyll::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/family#Jeanne", sparql),
+          "./" => Jekyll::JekyllRdf::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/family", sparql),
+          "Max" => Jekyll::JekyllRdf::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/family#Max", sparql),
+          "Jeanne" => Jekyll::JekyllRdf::Drops::RdfResource.new("http://www.ifi.uio.no/INF3580/family#Jeanne", sparql),
         }
       }
       @blanknodes = []
-      @blanknodes << Jekyll::Drops::RdfResource.new(RDF::Node.new, sparql)
-      @blanknodes << Jekyll::Drops::RdfResource.new(RDF::Node.new, sparql)
+      @blanknodes << Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::Node.new, sparql)
+      @blanknodes << Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::Node.new, sparql)
       @resources_to_templates = {
         "http://www.ifi.uio.no/INF3580/simpsons#Homer" => "homer.html",
         "http://placeholder.host.plh/placeholder#Placeholder" => "Placeholder",
