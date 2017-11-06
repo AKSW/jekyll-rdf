@@ -9,7 +9,7 @@ module Jekyll
       def map_template(resource, mapper)
         @template = mapper.map(resource)
         if(@template.nil?)
-          Jekyll.logger.warn("Resource #{resource} not rendered: No fitting template or default template found.")
+          Jekyll::RdfHelper::warn_log("Resource #{resource} not rendered: No fitting template or default template found.")
           @complete = false
         end
       end
@@ -45,7 +45,7 @@ module Jekyll
               [arr[0][7..-1].strip, arr[1].strip[1..-2]]
             }.flatten)]
           rescue Errno::ENOENT => ex
-            Jekyll.logger.error("context: #{@resource}  template: #{@template}  file not found: #{File.join(@base, 'rdf-data', self.data["rdf_prefix_path"])}")
+            Jekyll::RdfHelper::error_log("context: #{@resource}  template: #{@template}  file not found: #{File.join(@base, 'rdf-data', self.data["rdf_prefix_path"])}")
           end
         end
       end

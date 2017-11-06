@@ -44,8 +44,10 @@ module Jekyll
       if(!load_config(site))
         return false#in case of error, exit routine
       end
+      Jekyll::RdfHelper::developer_mode = @config['developer_mode']
+      Jekyll::RdfHelper::supress_log = @config['supress_log']
       if(@config.key? "template_mapping")
-        Jekyll.logger.error("Outdated format in _config.yml:\n  'template_mapping' detected but the following keys must be used now instead:\n    instance_template_mappings -> maps single resources to single layouts\n    class_template_mappings -> maps entire classes of resources to layouts\nJekyll-RDF wont render any pages for #{site.source}")
+        Jekyll::RdfHelper::error_log("Outdated format in _config.yml:\n  'template_mapping' detected but the following keys must be used now instead:\n    instance_template_mappings -> maps single resources to single layouts\n    class_template_mappings -> maps entire classes of resources to layouts\nJekyll-RDF wont render any pages for #{site.source}")
         return false
       end
 

@@ -46,7 +46,7 @@ module Jekyll
       @name = resource.filename(URI::split(config['url'])[2], config['baseurl'])
       @resource = resource
       if(base.nil?)
-        Jekyll.logger.warn "Resource #{resource} not rendered: no base url found."
+        Jekyll::RdfHelper::warn_log "Resource #{resource} not rendered: no base url found."
         @complete = false   #TODO: set a return here and adapt the test for displaying a warning for rendering a page without template
       else
         @complete = true

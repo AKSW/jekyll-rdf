@@ -75,7 +75,7 @@ module Jekyll
           classRes = classResources[classUri]
           if((classRes.lock <= lock || lock == -1) && !classRes.template.nil?)
             if(classRes.subClassHierarchyValue > hier)
-              Jekyll.logger.info("classMapped: #{classUri} : #{resource.term.to_s} : #{classResources[classUri].template}")
+              Jekyll::RdfHelper::info_log("classMapped: #{classUri} : #{resource.term.to_s} : #{classResources[classUri].template}")
               lock = classRes.lock
               tmpl = classRes.template
               hier = classRes.subClassHierarchyValue
@@ -92,7 +92,7 @@ module Jekyll
           end unless classRes.nil?
         end
         if(warn_mult_templ)
-          Jekyll.logger.warn("Warning: multiple possible templates for #{resource.term.to_s}: #{duplicate_level_templ.uniq.join(', ')}")
+          Jekyll::RdfHelper::warn_log("Warning: multiple possible templates for #{resource.term.to_s}: #{duplicate_level_templ.uniq.join(', ')}")
         end
       end
       return tmpl unless tmpl.nil?

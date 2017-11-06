@@ -187,7 +187,7 @@ module Jekyll #:nodoc:
               create_statement( solution.s, solution.p, term.to_s)
             end
           else
-            Jekyll.logger.error "Not existing role found in #{term.to_s}"
+            Jekyll::RdfHelper::error_log "Not existing role found in #{term.to_s}"
             return
         end
       end
@@ -268,8 +268,8 @@ module Jekyll #:nodoc:
             # file_name << "#/#{uri[:fragment]}" unless uri[:fragment].nil? fragments are not evaluated by browsers, only by clients
           rescue Addressable::URI::InvalidURIError => x
             file_name = "invalids/#{term.to_s}"
-            Jekyll.logger.error("Invalid resource found: #{term.to_s} is not a proper uri")
-            Jekyll.logger.error("URI parser exited with message: #{x.message}")
+            Jekyll::RdfHelper::error_log("Invalid resource found: #{term.to_s} is not a proper uri")
+            Jekyll::RdfHelper::error_log("URI parser exited with message: #{x.message}")
           end
         end
         file_name = file_name.gsub('//','/') # needs a better regex to include /// ////...
