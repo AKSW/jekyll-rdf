@@ -86,10 +86,10 @@ module Jekyll
       # * +term+ - The term to be represented
       # * +site+ - The Jekyll::Site to be enriched
       #
-      def self.build_term_drop(term, site)
+      def self.build_term_drop(term, site, covered)
         case term
         when RDF::URI, RDF::Node
-          return RdfResource.new(term, site)
+          return RdfResource.new(term, site, nil, covered)
         when RDF::Literal
           return RdfLiteral.new(term,)
         else

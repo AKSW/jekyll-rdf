@@ -49,7 +49,7 @@ module Jekyll
       begin
         result = Jekyll::RdfHelper::sparql.query(query).map do |solution|
           hsh = solution.to_h
-          hsh.update(hsh){ |k,v| Jekyll::Drops::RdfTerm.build_term_drop(v, Jekyll::RdfHelper::site).add_necessities(Jekyll::RdfHelper::site, Jekyll::RdfHelper::page)}
+          hsh.update(hsh){ |k,v| Jekyll::Drops::RdfTerm.build_term_drop(v, Jekyll::RdfHelper::site, true).add_necessities(Jekyll::RdfHelper::site, Jekyll::RdfHelper::page)}
           hsh.collect{|k,v| [k.to_s, v]}.to_h
         end
         return result

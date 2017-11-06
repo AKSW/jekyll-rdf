@@ -3,17 +3,9 @@ module Jekyll
     private
       def prepare_pages (site, mapper)
         @pageResources.each{|uri, entry|
-          if(entry['./'].nil?)
-            if(@config['render_orphaned_uris'])
-              entry.each{|name, resource|
-                create_page(site, resource, mapper, @global_config)
-              }
-            end
-          else
-            resource = entry.delete('./')
-            resource.subResources = entry
-            create_page(site, resource, mapper, @global_config)
-          end
+          resource = entry.delete('./')
+          resource.subResources = entry
+          create_page(site, resource, mapper, @global_config)
         }
 
         @blanknodes.each{|resource|
@@ -22,10 +14,10 @@ module Jekyll
       end
 
       def parse_resources (resources)
-        @pageResources={};
+        @pageResources={}
         @blanknodes=[]
         resources.each do |uri|
-          resource = Jekyll::Drops::RdfResource.new(uri)
+          resource = Jekyll::Drops::RdfResource.new(uri, nil, nil, true)
           if(uri.instance_of? RDF::URI)
             uriString = uri.to_s
             if((uriString.include? "#") && (uriString.index("#") < (uriString.length - 1)))   #sorting in uris with a #
@@ -43,6 +35,11 @@ module Jekyll
           elsif(uri.instance_of? RDF::Node)
             @blanknodes << resource
           end
+
+          # give parents to orphaned resources
+          @pageResources.each_key{|key|
+            @pageResources[key]['./'] = Jekyll::Drops::RdfResource.new(RDF::URI(key)) if @pageResources[key]['./'].nil?
+          }
         end
       end
 
