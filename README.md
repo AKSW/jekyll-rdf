@@ -438,17 +438,18 @@ http://www.ifi.uio.no/INF3580/simpsons#Maggie
 ```
 
 ### sparql_query
-**Synopsis:** `<rdf_resource> | sparql_query: <query>`
+**Synopsis:** `<rdf_resource> | sparql_query: <query>` **OR** `<reference_array> | sparql_query: <query>`
 
 **Parameters:**
 - `<rdf_resource>` is an RdfResource which will replace `?resourceUri` in the query. To omit this parameter or reference the resource of the current page use `page.rdf`, `page`, or `nil`.
+- `<reference_array>` an array containing IRIs as Strings or `rdf_resource`. They will consecutive replace each `?resourceUri_<index>` in your query.
 - `<query>` a string containing a SPARQL query.
 
 **Description:** Evaluates `query` on the given knowledge base and returns an array of results (result set).
 Each entry object in the result set (result) contains the selected variables as resources or literals.
 You can use `?resourceUri` inside the query to reference the resource which is given as `<rdf_resource>`.
 
-**Examples:**
+**Example (page)**
 ```
 <!--Rendering the page of resource Lisa -->
 {% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}
@@ -461,10 +462,29 @@ You can use `?resourceUri` inside the query to reference the resource which is g
 ```
 **Result:**
 ```html
+<table>
 <tr><td>http://www.ifi.uio.no/INF3580/simpsons#TheSimpsons</td><td>http://www.ifi.uio.no/INF3580/family#hasFamilyMember</td></tr>
 <tr><td>http://www.ifi.uio.no/INF3580/simpsons#Bart</td><td>http://www.ifi.uio.no/INF3580/family#hasSister</td></tr>
 <tr><td>http://www.ifi.uio.no/INF3580/simpsons#Maggie</td><td>http://www.ifi.uio.no/INF3580/family#hasSister</td></tr>
 ...
+```
+
+**Example (array)**
+```
+{% assign query = 'SELECT ?x WHERE {?resourceUri_0 ?x ?resourceUri_1}' %}
+<!-- something that creates array = ["<http://www.ifi.uio.no/INF3580/simpsons#Homer>", "<http://www.ifi.uio.no/INF3580/simpsons#Marge>"] -->
+{% assign resultset = array | sparql_query: query %}
+<table>
+{% for result in resultset %}
+  <tr><td>{{ result.x }}</td></tr>
+{% endfor %}
+</table>
+```
+**Result:**
+```
+<table>
+  <tr><td>http://www.ifi.uio.no/INF3580/family#hasSpouse</td></tr>
+</table>
 ```
 
 ### rdf_container

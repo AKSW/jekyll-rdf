@@ -108,10 +108,10 @@ class TestRdfFilter < Test::Unit::TestCase
     end
 
     should "properly substitude ?resourceUri_#num with a given set of resource" do
-      query = "SELECT ?x WHERE {?resourceUri_1 ?x ?resourceUri_2}"
+      query = "SELECT ?x WHERE {?resourceUri_0 ?x ?resourceUri_1}"
       answer = sparql_query([Jekyll::Drops::RdfResource.new(RDF::URI.new("http://www.ifi.uio.no/INF3580/simpsons#Homer")), Jekyll::Drops::RdfResource.new(RDF::URI.new("http://www.ifi.uio.no/INF3580/simpsons#Marge"))], query)
       assert(answer.any? {|solution| solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/family#hasSpouse'}, "answerset should contain http://www.ifi.uio.no/INF3580/family#hasSpouse.\n    Returned answers:\n     #{answer.inspect}")
-      query = "SELECT ?x WHERE {?resourceUri_1 ?x ?resourceUri_2}"
+      query = "SELECT ?x WHERE {?resourceUri_0 ?x ?resourceUri_1}"
       answer = sparql_query(["<http://www.ifi.uio.no/INF3580/simpsons#Homer>", "<http://www.ifi.uio.no/INF3580/simpsons#Marge>"], query)
       assert(answer.any? {|solution| solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/family#hasSpouse'}, "answerset should contain http://www.ifi.uio.no/INF3580/family#hasSpouse.\n    Returned answers:\n     #{answer.inspect}")
     end
