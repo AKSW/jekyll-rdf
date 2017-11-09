@@ -442,7 +442,7 @@ http://www.ifi.uio.no/INF3580/simpsons#Maggie
 
 **Parameters:**
 - `<rdf_resource>` is an RdfResource which will replace `?resourceUri` in the query. To omit this parameter or reference the resource of the current page use `page.rdf`, `page`, or `nil`.
-- `<reference_array>` an array containing IRIs as Strings or `rdf_resource`. They will consecutive replace each `?resourceUri_<index>` in your query.
+- `<reference_array>` an array containing IRIs as Strings or `rdf_resource`. They will consecutively replace each `?resourceUri_<index>` in your query.
 - `<query>` a string containing a SPARQL query.
 
 **Description:** Evaluates `query` on the given knowledge base and returns an array of results (result set).
