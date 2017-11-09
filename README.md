@@ -21,6 +21,9 @@ The API Documentation is available at [RubyDoc.info](http://www.rubydoc.info/gem
 
 # Installation
 
+As a prerequisite for *Jekyll RDF* you of course need to install [*Jekyll*](https://jekyllrb.com/).
+Please take a look at the installations instructions at https://jekyllrb.com/docs/installation/.
+
 ## Installation as a gem
 The easiest and fastest way to install our project is the installation as a gem. The following command automatically installs the project and all required components such as Jekyll and the RDF-library
 ```
@@ -63,10 +66,16 @@ jekyll_rdf:
 Running `jekyll build` will render the RDF resources to the `_site/…` directory.
 RDF resources whose IRIs don't start with the configured jekyll `url` and `baseurl` are rendered to the `_site/rdfsites/…` subdirectory.
 
-*Note:* Since Jekyll 3.3.0 there is a special behavior of the `jekyll serve` command in a development environment.
+***Note:*** Since Jekyll 3.3.0 there is a special behavior of the **`jekyll serve`** command in a development environment.
 Jekyll overwrites the `site.url` variable with your host and port reference, as [described in the Jekyll documentation](https://jekyllrb.com/docs/variables/#site-variables).
 The behavior breaks the jekyll-rdf resource creation.
-If you want to use `jekyll serve` you have to run `jekyll serve --skip-initial-build` or set `JEKYLL_ENV=production`.
+If you want to use `jekyll serve` you have to set the environment variable `JEKYLL_ENV=production`.
+
+## Using in Combination with Permalinks
+
+If you have configured [permalinks](https://jekyllrb.com/docs/permalinks/) in your `_config.yml` as it is the case for the initial example page of Jekyll whit might interfere with the way JekyllRDF is generating URLs.
+A rule of thumb seems to be, that permalinks not ending with a slash (`/`, e.g. `data`, `ordinal`, and `none`) are safe, while permalinks ending with a slash (e.g. `pretty`) cause strange URLs for RDF resources.
+This issue is discussed in [issue#131](https://github.com/white-gecko/jekyll-rdf/issues/131).
 
 ## Make use of RDF data
 ### Templates
