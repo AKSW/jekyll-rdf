@@ -52,6 +52,8 @@ require 'jekyll/filters/rdf_property'
 require 'jekyll/filters/rdf_collection'
 require 'jekyll/filters/rdf_container'
 require 'jekyll/filters/rdf_get'
+require 'jekyll/filters/rdf_message'
+require 'jekyll/filters/rdf_page_to_resource'
 
 Liquid::Template.register_filter(Jekyll::JekyllRdf::Filter)
 require 'jekyll/rdf_main_generator'

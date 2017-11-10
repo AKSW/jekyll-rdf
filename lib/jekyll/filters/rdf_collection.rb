@@ -28,7 +28,7 @@ module Jekyll
   module JekyllRdf
     module Filter
       def rdf_collection(input, predicate = nil)
-        input = Jekyll::JekyllRdf::Helper::RdfHelper::page.data['rdf'] if(input.nil? || input.class <= (Jekyll::RdfPageData))
+        input = rdf_page_to_resource(input)
         query = "SELECT ?f WHERE{ #{input.term.to_ntriples} " <<
           (predicate.nil? ? "" : " <#{rdf_resolve_prefix(predicate)}> ?coll . ?coll ") <<
           " <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest>* ?r. ?r <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?f}"
