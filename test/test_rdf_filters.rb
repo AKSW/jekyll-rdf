@@ -107,6 +107,15 @@ class TestRdfFilter < Test::Unit::TestCase
       assert(answer.any? {|solution| solution['y'].to_s.eql?  '36'}, "answer should return the age of Homer Simpson (36)")
     end
 
+    should "properly substitude ?resourceUri_#num with a given set of resource" do
+      query = "SELECT ?x WHERE {?resourceUri_0 ?x ?resourceUri_1}"
+      answer = sparql_query([Jekyll::Drops::RdfResource.new(RDF::URI.new("http://www.ifi.uio.no/INF3580/simpsons#Homer")), Jekyll::Drops::RdfResource.new(RDF::URI.new("http://www.ifi.uio.no/INF3580/simpsons#Marge"))], query)
+      assert(answer.any? {|solution| solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/family#hasSpouse'}, "answerset should contain http://www.ifi.uio.no/INF3580/family#hasSpouse.\n    Returned answers:\n     #{answer.inspect}")
+      query = "SELECT ?x WHERE {?resourceUri_0 ?x ?resourceUri_1}"
+      answer = sparql_query(["<http://www.ifi.uio.no/INF3580/simpsons#Homer>", "<http://www.ifi.uio.no/INF3580/simpsons#Marge>"], query)
+      assert(answer.any? {|solution| solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/family#hasSpouse'}, "answerset should contain http://www.ifi.uio.no/INF3580/family#hasSpouse.\n    Returned answers:\n     #{answer.inspect}")
+    end
+
     # These 3 tests are prune to errors if rdf_resource changes to use sparql in its setup process
     should "log a SPARQL::Client::ClientError Exception" do
       Jekyll::RdfHelper::sparql = res_helper.faulty_sparql_client(:ClientError)
