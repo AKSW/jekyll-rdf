@@ -28,6 +28,7 @@ module Jekyll
     module Filter
       def rdf_container(input, type = nil)
         input = rdf_page_to_resource(input)
+        return unless valid_resource?(input)
         sparql_client = Jekyll::JekyllRdf::Helper::RdfHelper::sparql
         n_triples = input.term.to_ntriples
         if(!(valid_container?(n_triples, type)))
