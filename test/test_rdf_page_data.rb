@@ -67,7 +67,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     should "should map prefixes from the file given through rdf_prefix_path in target templates frontmatter" do
       res_helper.monkey_patch_page_data(self)
       self.read_yaml "arg1", "arg2"
-      load_prefixes
+      load_prefixes_yaml
       assert_equal "http://www.w3.org/1999/02/22-rdf-syntax-ns#", self.data["rdf_prefix_map"]["rdf"]
       assert_equal "http://www.w3.org/2000/01/rdf-schema#", self.data["rdf_prefix_map"]["rdfs"]
       assert_equal "http://www.w3.org/2001/XMLSchema#", self.data["rdf_prefix_map"]["xsd"]
@@ -80,8 +80,8 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     should "raise an error if the given prefixfile is not accessible" do
       res_helper.monkey_patch_wrong_page_data(self)
       self.read_yaml "arg1", "arg2"
-      load_prefixes
-      assert Jekyll.logger.messages.any?{|message| !!(message=~ /\s*context: .*  template: .* file not found: .*\s*/)}, "missing error message: context: ****  template: **** file not found: ****"
+      load_prefixes_yaml
+      assert Jekyll.logger.messages.any?{|message| !!(message=~ /\s*file not found: .*\s*/)}, "missing error message: file not found: ****"
     end
   end
 

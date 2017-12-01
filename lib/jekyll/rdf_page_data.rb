@@ -58,7 +58,7 @@ module Jekyll
         return        #return if something went wrong
       end
       load_data(site)
-      load_prefixes()
+      load_prefixes_yaml()
       resource.page = self
       resource.site = site
       site.data['resources'] << resource
