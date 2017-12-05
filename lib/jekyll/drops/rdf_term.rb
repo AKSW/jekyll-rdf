@@ -24,83 +24,86 @@
 #
 
 module Jekyll
-  module Drops
-
-    ##
-    # Represents an RDF term to the Liquid template engine
-    #
-    class RdfTerm < Liquid::Drop
+  module JekyllRdf
+    module Drops
 
       ##
-      # The represented RDF term
+      # Represents an RDF term to the Liquid template engine
       #
-      attr_reader :term
+      class RdfTerm < Liquid::Drop
 
-      ##
-      # Create a new Jekyll::Drops::RdfTerm
-      #
-      # * +term+ - The term to be represented
-      #
-      def initialize(term)
-        @term  ||= term
-      end
+        ##
+        # The represented RDF term
+        #
+        attr_reader :term
 
-      ##
-      # Function stub with no functionality. Its purpose is to keep RdfResource compatible.
-      #
-      def add_necessities (site, page)
-        return self
-      end
+        ##
+        # Create a new Jekyll::JekyllRdf::Drops::RdfTerm
+        #
+        # * +term+ - The term to be represented
+        #
+        def initialize(term)
+          @term  ||= term
+        end
 
-      ##
-      # Function stub with no functionality. Its purpose is to keep RdfResource compatible.
-      #
-      def ready?
-        return true;
-      end
+        ##
+        # Function stub with no functionality. Its purpose is to keep RdfResource compatible.
+        #
+        def add_necessities (site, page)
+          return self
+        end
 
-      ##
-      # Convert this RdfTerm into a string
-      # This should be:
-      # - for resources: the IRI
-      # - for literals: the literal representation e.g. "Hallo"@de or "123"^^<http://www.w3.org/2001/XMLSchema#integer>
-      #
-      def to_s
-        term.to_s
-      end
+        ##
+        # Function stub with no functionality. Its purpose is to keep RdfResource compatible.
+        #
+        def ready?
+          return true;
+        end
 
-      def ==(other_obj)
-        return self.eql? other_obj
-      end
+        ##
+        # Convert this RdfTerm into a string
+        # This should be:
+        # - for resources: the IRI
+        # - for literals: the literal representation e.g. "Hallo"@de or "123"^^<http://www.w3.org/2001/XMLSchema#integer>
+        #
+        def to_s
+          term.to_s
+        end
 
-      def eql? other_obj
-        return (self.to_s.eql? other_obj.to_s)&&((other_obj.class <= self.class)||(self.class <= other_obj.class)||(other_obj.class <= self.term.class))
-      end
+        def ==(other_obj)
+          return self.eql? other_obj
+        end
 
-      def ===(other_obj)
-        return self.to_s.eql? other_obj.to_s
-      end
-      ##
-      # Convert an RDF term into a new Jekyll::Drops::RdfTerm
-      #
-      # * +term+ - The term to be represented
-      # * +site+ - The Jekyll::Site to be enriched
-      #
-      def self.build_term_drop(term, site, covered)
-        case term
-        when RDF::URI, RDF::Node
-          return RdfResource.new(term, site, nil, covered)
-        when RDF::Literal
-          return RdfLiteral.new(term,)
-        else
-          return nil
+        def eql? other_obj
+          return (self.to_s.eql? other_obj.to_s)&&((other_obj.class <= self.class)||(self.class <= other_obj.class)||(other_obj.class <= self.term.class))
+        end
+
+        def ===(other_obj)
+          return self.to_s.eql? other_obj.to_s
+        end
+        ##
+        # Convert an RDF term into a new Jekyll::Drops::RdfTerm
+        #
+        # * +term+ - The term to be represented
+        # * +site+ - The Jekyll::Site to be enriched
+        #
+        def self.build_term_drop(term, site, covered)
+          case term
+          when RDF::URI, RDF::Node
+            return RdfResource.new(term, site, nil, covered)
+          when RDF::Literal
+            return RdfLiteral.new(term)
+          else
+            return nil
+          end
+        end
+
+        def inspect
+          obj_id = ('%x' % (self.object_id << 1)).to_s
+          return "#<#{self.class.to_s.split("::")[-1]}:0x#{"0"*(14 - obj_id.length)}#{obj_id} @term=#{@term}>"
         end
       end
 
-      def inspect
-        obj_id = ('%x' % (self.object_id << 1)).to_s
-        return "#<#{self.class.to_s.split("::")[-1]}:0x#{"0"*(14 - obj_id.length)}#{obj_id} @term=#{@term}>"
-      end
     end
   end
 end

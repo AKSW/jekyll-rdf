@@ -25,19 +25,19 @@
 
 module Jekyll
 
-  ##
-  # Internal module to hold the medthod #rdf_get
-  #
-  module RdfGet
-    include Jekyll::RdfPrefixResolver
-    def rdf_get(request_uri)
-      request_uri = "<#{Jekyll::RdfHelper::page.data['rdf'].term.to_s}>" if (request_uri.nil? || request_uri.class <= (Jekyll::RdfPageData))
-      request_uri = rdf_resolve_prefix(request_uri)
-      ask_exist = "ASK WHERE {{<#{request_uri}> ?p ?o}UNION{?s <#{request_uri}> ?o}UNION{?s ?p <#{request_uri}>}} "
-      return unless (Jekyll::RdfHelper::sparql.query(ask_exist).true?)
-      Jekyll::Drops::RdfResource.new(RDF::URI(request_uri), Jekyll::RdfHelper::site, Jekyll::RdfHelper::page)
+  module JekyllRdf
+
+    ##
+    # Internal module to hold the medthod #rdf_get
+    #
+    module Filter
+      def rdf_get(request_uri)
+        request_uri = "<#{Jekyll::JekyllRdf::Helper::RdfHelper::page.data['rdf'].term.to_s}>" if (request_uri.nil? || request_uri.class <= (Jekyll::RdfPageData))
+        request_uri = rdf_resolve_prefix(request_uri)
+        ask_exist = "ASK WHERE {{<#{request_uri}> ?p ?o}UNION{?s <#{request_uri}> ?o}UNION{?s ?p <#{request_uri}>}} "
+        return unless (Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(ask_exist).true?)
+        Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI(request_uri), Jekyll::JekyllRdf::Helper::RdfHelper::site, Jekyll::JekyllRdf::Helper::RdfHelper::page)
+      end
     end
   end
 end
-
-Liquid::Template.register_filter(Jekyll::RdfGet)

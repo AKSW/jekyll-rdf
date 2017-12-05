@@ -24,61 +24,63 @@
 #
 
 module Jekyll #:nodoc:
-  module Drops #:nodoc:
+  module JekyllRdf #:nodoc:
+    module Drops #:nodoc:
 
-    ##
-    # Represents an RDF resource class to the Liquid template engine
-    #
-    class RdfResourceClass < RdfResource
-      @subClasses = []
-      @lock = -1
-      @subClassHierarchyValue = 0
-      attr_accessor :lock
-      attr_accessor :template
-      attr_accessor :alternativeTemplates
-      attr_accessor :subClasses
-      attr_accessor :subClassHierarchyValue
-      attr_reader :sparql
-
-      def initialize(term, sparql)
-        super(term)
+      ##
+      # Represents an RDF resource class to the Liquid template engine
+      #
+      class RdfResourceClass < RdfResource
         @subClasses = []
         @lock = -1
         @subClassHierarchyValue = 0
-        @alternativeTemplates = []
-        @sparql = sparql
-      end
+        attr_accessor :lock
+        attr_accessor :template
+        attr_accessor :alternativeTemplates
+        attr_accessor :subClasses
+        attr_accessor :subClassHierarchyValue
+        attr_reader :sparql
 
-      def multiple_templates?
-        !@alternativeTemplates.empty?
-      end
-
-      def find_direct_subclasses
-        query = "SELECT ?s WHERE{ ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> #{@term.to_ntriples}}"
-        selection = @sparql.query(query).map{ |solution| solution.s.to_s}
-        return selection
-      end
-
-      def add_subclass(resource)
-        @subClasses << resource
-      end
-
-      def propagate_template(template, lock)
-        if(@lock>lock||@lock==-1)
-          @lock=lock
-          @template=template
-          @alternativeTemplates.clear()
-          subClasses.each{|sub| sub.propagate_template(template ,lock+1)}
-        elsif(@lock==lock)
-          @alternativeTemplates.push(template)
-          subClasses.each{|sub| sub.propagate_template(template ,lock+1)}
+        def initialize(term, sparql)
+          super(term)
+          @subClasses = []
+          @lock = -1
+          @subClassHierarchyValue = 0
+          @alternativeTemplates = []
+          @sparql = sparql
         end
-      end
 
-      def traverse_hierarchy_value(predecessorHierarchyValue)
-        if(@subClassHierarchyValue + 1 >= predecessorHierarchyValue)  #avoid loops
-          @subClassHierarchyValue += 1
-          subClasses.each{|sub| sub.traverse_hierarchy_value(@subClassHierarchyValue)}
+        def multiple_templates?
+          !@alternativeTemplates.empty?
+        end
+
+        def find_direct_subclasses
+          query = "SELECT ?s WHERE{ ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> #{@term.to_ntriples}}"
+          selection = @sparql.query(query).map{ |solution| solution.s.to_s}
+          return selection
+        end
+
+        def add_subclass(resource)
+          @subClasses << resource
+        end
+
+        def propagate_template(template, lock)
+          if(@lock>lock||@lock==-1)
+            @lock=lock
+            @template=template
+            @alternativeTemplates.clear()
+            subClasses.each{|sub| sub.propagate_template(template ,lock+1)}
+          elsif(@lock==lock)
+            @alternativeTemplates.push(template)
+            subClasses.each{|sub| sub.propagate_template(template ,lock+1)}
+          end
+        end
+
+        def traverse_hierarchy_value(predecessorHierarchyValue)
+          if(@subClassHierarchyValue + 1 >= predecessorHierarchyValue)  #avoid loops
+            @subClassHierarchyValue += 1
+            subClasses.each{|sub| sub.traverse_hierarchy_value(@subClassHierarchyValue)}
+          end
         end
       end
     end

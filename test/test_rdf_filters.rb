@@ -1,22 +1,17 @@
 require 'test_helper'
 
 class TestRdfFilter < Test::Unit::TestCase
-  include Jekyll::RdfProperty
-  include Jekyll::RdfCollection
-  include Jekyll::RdfContainer
-  include Jekyll::RdfPrefixResolver
-  include Jekyll::RdfSparqlQuery
-  include Jekyll::RdfGet
+  include Jekyll::JekyllRdf::Filter
   graph = RDF::Graph.load(TestHelper::TEST_OPTIONS['jekyll_rdf']['path'])
   sparql = SPARQL::Client.new(graph)
   res_helper = ResourceHelper.new(sparql)
   context "Filter rdf_property from Jekyll::RdfProperty" do
     setup do
-      Jekyll::RdfHelper.sparql = sparql
+      Jekyll::JekyllRdf::Helper::RdfHelper.sparql = sparql
       prefixes = {"rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs" => "http://www.w3.org/2000/01/rdf-schema#", "foaf" => "http://xmlns.com/foaf/0.1/", "fam" => "http://www.ifi.uio.no/INF3580/family#"}
       @testResource = res_helper.resource_with_prefixes_config("http://www.ifi.uio.no/INF3580/simpsons#Homer", prefixes)
-      Jekyll::RdfHelper.page = @testResource.page
-      Jekyll::RdfHelper.page.data['rdf'] = @testResource
+      Jekyll::JekyllRdf::Helper::RdfHelper.page = @testResource.page
+      Jekyll::JekyllRdf::Helper::RdfHelper.page.data['rdf'] = @testResource
     end
 
     should "return the correct URI" do
@@ -78,11 +73,11 @@ class TestRdfFilter < Test::Unit::TestCase
 
   context "Filter sparql_query from Jekyll::RdfSparqlQuery" do
     setup do
-      Jekyll::RdfHelper.sparql = sparql
+      Jekyll::JekyllRdf::Helper::RdfHelper.sparql = sparql
       prefixes = {"rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs" => "http://www.w3.org/2000/01/rdf-schema#", "foaf" => "http://xmlns.com/foaf/0.1/", "fam" => "http://www.ifi.uio.no/INF3580/family#"}
       @testResource = res_helper.resource_with_prefixes_config("http://www.ifi.uio.no/INF3580/simpsons#Homer", prefixes)
-      Jekyll::RdfHelper.page = @testResource.page
-      Jekyll::RdfHelper.page.data['rdf'] = @testResource
+      Jekyll::JekyllRdf::Helper::RdfHelper.page = @testResource.page
+      Jekyll::JekyllRdf::Helper::RdfHelper.page.data['rdf'] = @testResource
     end
 
     should "return an array of solutions to one query" do
@@ -109,7 +104,7 @@ class TestRdfFilter < Test::Unit::TestCase
 
     should "properly substitude ?resourceUri_#num with a given set of resource" do
       query = "SELECT ?x WHERE {?resourceUri_0 ?x ?resourceUri_1}"
-      answer = sparql_query([Jekyll::Drops::RdfResource.new(RDF::URI.new("http://www.ifi.uio.no/INF3580/simpsons#Homer")), Jekyll::Drops::RdfResource.new(RDF::URI.new("http://www.ifi.uio.no/INF3580/simpsons#Marge"))], query)
+      answer = sparql_query([Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI.new("http://www.ifi.uio.no/INF3580/simpsons#Homer")), Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI.new("http://www.ifi.uio.no/INF3580/simpsons#Marge"))], query)
       assert(answer.any? {|solution| solution['x'].to_s.eql? 'http://www.ifi.uio.no/INF3580/family#hasSpouse'}, "answerset should contain http://www.ifi.uio.no/INF3580/family#hasSpouse.\n    Returned answers:\n     #{answer.inspect}")
       query = "SELECT ?x WHERE {?resourceUri_0 ?x ?resourceUri_1}"
       answer = sparql_query(["<http://www.ifi.uio.no/INF3580/simpsons#Homer>", "<http://www.ifi.uio.no/INF3580/simpsons#Marge>"], query)
@@ -118,21 +113,21 @@ class TestRdfFilter < Test::Unit::TestCase
 
     # These 3 tests are prune to errors if rdf_resource changes to use sparql in its setup process
     should "log a SPARQL::Client::ClientError Exception" do
-      Jekyll::RdfHelper::sparql = res_helper.faulty_sparql_client(:ClientError)
+      Jekyll::JekyllRdf::Helper::RdfHelper::sparql = res_helper.faulty_sparql_client(:ClientError)
       query = "SELECT ?x ?y WHERE{ ?x <http://www.ifi.uio.no/INF3580/family#hasFather> ?y}"
       sparql_query(query)
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)} , "missing error message: client error experienced: ****"
     end
 
     should "log a SPARQL::MalformedQuery Exception" do
-      Jekyll::RdfHelper::sparql = res_helper.faulty_sparql_client(:MalformedQuery)
+      Jekyll::JekyllRdf::Helper::RdfHelper::sparql = res_helper.faulty_sparql_client(:MalformedQuery)
       query = "SELECT ?x ?y WHERE{ ?x <http://www.ifi.uio.no/INF3580/family#hasFather> ?y}"
       sparql_query(query)
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)}, "missing error message: client error experienced: ****"
     end
 
     should "log a basic Exception if an unknown exception occurs" do
-      Jekyll::RdfHelper::sparql = res_helper.faulty_sparql_client(:Exception)
+      Jekyll::JekyllRdf::Helper::RdfHelper::sparql = res_helper.faulty_sparql_client(:Exception)
       query = "SELECT ?x ?y WHERE{ ?x <http://www.ifi.uio.no/INF3580/family#hasFather> ?y}"
       sparql_query(query)
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)}, "missing error message: client error experienced: ****"
@@ -141,11 +136,11 @@ class TestRdfFilter < Test::Unit::TestCase
 
   context "rdf_resolve_prefix from Jekyll::RdfPrefixResolver" do
     setup do
-      Jekyll::RdfHelper.sparql = sparql
+      Jekyll::JekyllRdf::Helper::RdfHelper.sparql = sparql
       prefixes = {"rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs" => "http://www.w3.org/2000/01/rdf-schema#", "foaf" => "http://xmlns.com/foaf/0.1/", "fam" => "http://www.ifi.uio.no/INF3580/family#"}
       @testResource = res_helper.resource_with_prefixes_config("http://www.ifi.uio.no/INF3580/simpsons#Homer", prefixes)
-      Jekyll::RdfHelper.page = @testResource.page
-      Jekyll::RdfHelper.page.data['rdf'] = @testResource
+      Jekyll::JekyllRdf::Helper::RdfHelper.page = @testResource.page
+      Jekyll::JekyllRdf::Helper::RdfHelper.page.data['rdf'] = @testResource
     end
 
     should "resolve the prefix foaf to its full length" do
@@ -172,7 +167,7 @@ class TestRdfFilter < Test::Unit::TestCase
 
     should "raise a NoPrefixesDefined exception if no prefixes are found" do
       resource = res_helper.basic_resource("test")
-      Jekyll::RdfHelper::page.data["rdf_prefixes"] = nil
+      Jekyll::JekyllRdf::Helper::RdfHelper::page.data["rdf_prefixes"] = nil
       assert_raise NoPrefixesDefined do
         rdf_resolve_prefix('foae:name')
       end
@@ -181,11 +176,11 @@ class TestRdfFilter < Test::Unit::TestCase
 
   context "Filter rdf_collection from Jekyll::RdfCollection" do
     setup do
-      Jekyll::RdfHelper.sparql = sparql
+      Jekyll::JekyllRdf::Helper::RdfHelper.sparql = sparql
       prefixes = {"rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs" => "http://www.w3.org/2000/01/rdf-schema#", "foaf" => "http://xmlns.com/foaf/0.1/", "fam" => "http://www.ifi.uio.no/INF3580/family#", "simc" => "http://www.ifi.uio.no/INF3580/simpson-collection#"}
       @testResource = res_helper.resource_with_prefixes_config("http://www.ifi.uio.no/INF3580/simpson-collection#Collection", prefixes)
-      Jekyll::RdfHelper.page = @testResource.page
-      Jekyll::RdfHelper.page.data['rdf'] = @testResource
+      Jekyll::JekyllRdf::Helper::RdfHelper.page = @testResource.page
+      Jekyll::JekyllRdf::Helper::RdfHelper.page.data['rdf'] = @testResource
     end
 
     should "return a set of resources stashed in the passed collection" do
@@ -209,11 +204,11 @@ class TestRdfFilter < Test::Unit::TestCase
 
   context "Filter rdf_collection with argument from Jekyll::RdfCollection and a predicate as shortcut" do
     setup do
-      Jekyll::RdfHelper.sparql = sparql
+      Jekyll::JekyllRdf::Helper::RdfHelper.sparql = sparql
       prefixes = {"rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs" => "http://www.w3.org/2000/01/rdf-schema#", "foaf" => "http://xmlns.com/foaf/0.1/", "fam" => "http://www.ifi.uio.no/INF3580/family#", "simc" => "http://www.ifi.uio.no/INF3580/simpson-collection#"}
       @testResource = res_helper.resource_with_prefixes_config("http://pcai042.informatik.uni-leipzig.de/~dtp16#TestEntity", prefixes)
-      Jekyll::RdfHelper.page = @testResource.page
-      Jekyll::RdfHelper.page.data['rdf'] = @testResource
+      Jekyll::JekyllRdf::Helper::RdfHelper.page = @testResource.page
+      Jekyll::JekyllRdf::Helper::RdfHelper.page.data['rdf'] = @testResource
     end
 
     should "return a set of resources stashed in the passed collection" do
@@ -226,13 +221,13 @@ class TestRdfFilter < Test::Unit::TestCase
 
   context "Filter rdf_container from Jekyll::RdfContainer" do
     setup do
-      Jekyll::RdfHelper.sparql = sparql
+      Jekyll::JekyllRdf::Helper::RdfHelper.sparql = sparql
       prefixes = {"rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs" => "http://www.w3.org/2000/01/rdf-schema#", "foaf" => "http://xmlns.com/foaf/0.1/", "fam" => "http://www.ifi.uio.no/INF3580/family#", "simcon" => "http://www.ifi.uio.no/INF3580/simpson-container#"}
       @testSeq = res_helper.resource_with_prefixes_config("http://www.ifi.uio.no/INF3580/simpson-container#Seq", prefixes)
       @testContainer = res_helper.resource_with_prefixes_config("http://www.ifi.uio.no/INF3580/simpson-container#Container", prefixes)
       @testCustomContainer = res_helper.resource_with_prefixes_config("http://www.ifi.uio.no/INF3580/simpson-container#CustomContainer", prefixes)
-      Jekyll::RdfHelper.page = @testSeq.page
-      Jekyll::RdfHelper.page.data['rdf'] = @testSeq
+      Jekyll::JekyllRdf::Helper::RdfHelper.page = @testSeq.page
+      Jekyll::JekyllRdf::Helper::RdfHelper.page.data['rdf'] = @testSeq
     end
 
     should "return a set of resources stashed in the passed sequence container" do
@@ -283,23 +278,23 @@ class TestRdfFilter < Test::Unit::TestCase
 
   context "Filter rdf_get from Jekyll::RdfGet" do
     setup do
-      Jekyll::RdfHelper::sparql = sparql
-      Jekyll::RdfHelper::site = Jekyll::Site.new(Jekyll.configuration(TestHelper::TEST_OPTIONS))
-      Jekyll::RdfHelper::page = Jekyll::Page.new(Jekyll::RdfHelper::site, "./", "test/dir", "myPage")
-      Jekyll::RdfHelper::page.data["rdf_prefixes"] = "base: <http://www.ifi.uio.no/INF3580/>"
-      Jekyll::RdfHelper::page.data["rdf_prefix_map"] = {}
-      Jekyll::RdfHelper::page.data["rdf_prefix_map"]["base"] = "http://www.ifi.uio.no/INF3580/"
+      Jekyll::JekyllRdf::Helper::RdfHelper::sparql = sparql
+      Jekyll::JekyllRdf::Helper::RdfHelper::site = Jekyll::Site.new(Jekyll.configuration(TestHelper::TEST_OPTIONS))
+      Jekyll::JekyllRdf::Helper::RdfHelper::page = Jekyll::Page.new(Jekyll::JekyllRdf::Helper::RdfHelper::site, "./", "test/dir", "myPage")
+      Jekyll::JekyllRdf::Helper::RdfHelper::page.data["rdf_prefixes"] = "base: <http://www.ifi.uio.no/INF3580/>"
+      Jekyll::JekyllRdf::Helper::RdfHelper::page.data["rdf_prefix_map"] = {}
+      Jekyll::JekyllRdf::Helper::RdfHelper::page.data["rdf_prefix_map"]["base"] = "http://www.ifi.uio.no/INF3580/"
     end
 
     should "return the resource base:main" do
       test_resource =  rdf_get("base:main")
       assert_equal "http://www.ifi.uio.no/INF3580/main", test_resource.iri
-      assert (test_resource.site.eql? Jekyll::RdfHelper::site), "The resource should contain the same site as Jekyll::RdfHelper"
-      assert (test_resource.page.eql? Jekyll::RdfHelper::page), "The resource should contain the same page as Jekyll::RdfHelper"
+      assert (test_resource.site.eql? Jekyll::JekyllRdf::Helper::RdfHelper::site), "The resource should contain the same site as Jekyll::JekyllRdf::Helper::RdfHelper"
+      assert (test_resource.page.eql? Jekyll::JekyllRdf::Helper::RdfHelper::page), "The resource should contain the same page as Jekyll::JekyllRdf::Helper::RdfHelper"
     end
 
     should "substitude nil with page resource" do
-      Jekyll::RdfHelper::page.data["rdf"] = res_helper.basic_resource("http://www.ifi.uio.no/INF3580/main")
+      Jekyll::JekyllRdf::Helper::RdfHelper::page.data["rdf"] = res_helper.basic_resource("http://www.ifi.uio.no/INF3580/main")
       test_resource =  rdf_get(nil)
       assert_equal "http://www.ifi.uio.no/INF3580/main", test_resource.iri
     end
