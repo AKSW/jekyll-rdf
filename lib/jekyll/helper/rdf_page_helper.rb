@@ -3,6 +3,7 @@ module Jekyll
     module Helper
       module RdfPageHelper
         private
+        include Jekyll::JekyllRdf::Helper::RdfPrefixHelper
         ##
         # sets @template to the path of a fitting layout
         # it will set @complete to false if no fitting template is found
@@ -37,18 +38,9 @@ module Jekyll
 
         ##
         # loads the prefix data passed in the layout yaml-frontmatter into page.data["rdf_prefixes"] and page.data["rdf_prefix_map"]
-        def load_prefixes
+        def load_prefixes_yaml
           if !self.data["rdf_prefix_path"].nil?
-            begin
-              prefix_file=File.new(File.join(@base, 'rdf-data', self.data["rdf_prefix_path"].strip)).readlines
-              self.data["rdf_prefixes"] = prefix_file.join(" ")
-              self.data["rdf_prefix_map"] = Hash[ *(prefix_file.collect { |v|
-                    arr = v.split(":",2)
-                    [arr[0][7..-1].strip, arr[1].strip[1..-2]]
-                  }.flatten)]
-            rescue Errno::ENOENT => ex
-              Jekyll.logger.error("context: #{@resource}  template: #{@template}  file not found: #{File.join(@base, 'rdf-data', self.data["rdf_prefix_path"])}")
-            end
+            load_prefixes(File.join(@base, 'rdf-data', self.data["rdf_prefix_path"].strip), self.data)
           end
         end
       end

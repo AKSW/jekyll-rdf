@@ -174,6 +174,18 @@ class TestRdfFilter < Test::Unit::TestCase
     end
   end
 
+  context "rdf_resolve_prefix on global prefixes from Jekyll::RdfPrefixResolver" do
+    setup do
+      Jekyll::JekyllRdf::Helper::RdfHelper::prefixes = File.join(Dir.pwd, "test/source/rdf-data/simpsons.pref")
+      Jekyll::JekyllRdf::Helper::RdfHelper::page = {}
+    end
+
+    should "resolve the prefix foaf to its full length" do
+      answer = rdf_resolve_prefix('foaf:name')
+      assert_equal(answer, "http://xmlns.com/foaf/0.1/name")
+    end
+  end
+
   context "Filter rdf_collection from Jekyll::RdfCollection" do
     setup do
       Jekyll::JekyllRdf::Helper::RdfHelper.sparql = sparql
@@ -280,17 +292,15 @@ class TestRdfFilter < Test::Unit::TestCase
     setup do
       Jekyll::JekyllRdf::Helper::RdfHelper::sparql = sparql
       Jekyll::JekyllRdf::Helper::RdfHelper::site = Jekyll::Site.new(Jekyll.configuration(TestHelper::TEST_OPTIONS))
-      Jekyll::JekyllRdf::Helper::RdfHelper::page = Jekyll::Page.new(Jekyll::JekyllRdf::Helper::RdfHelper::site, "./", "test/dir", "myPage")
-      Jekyll::JekyllRdf::Helper::RdfHelper::page.data["rdf_prefixes"] = "base: <http://www.ifi.uio.no/INF3580/>"
-      Jekyll::JekyllRdf::Helper::RdfHelper::page.data["rdf_prefix_map"] = {}
-      Jekyll::JekyllRdf::Helper::RdfHelper::page.data["rdf_prefix_map"]["base"] = "http://www.ifi.uio.no/INF3580/"
+      prefixes = {"base" => "http://www.ifi.uio.no/INF3580/"}
+      Jekyll::JekyllRdf::Helper::RdfHelper::page = res_helper.resource_with_prefixes_config("http://example.com", prefixes).page
     end
 
     should "return the resource base:main" do
       test_resource =  rdf_get("base:main")
       assert_equal "http://www.ifi.uio.no/INF3580/main", test_resource.iri
       assert (test_resource.site.eql? Jekyll::JekyllRdf::Helper::RdfHelper::site), "The resource should contain the same site as Jekyll::JekyllRdf::Helper::RdfHelper"
-      assert (test_resource.page.eql? Jekyll::JekyllRdf::Helper::RdfHelper::page), "The resource should contain the same page as Jekyll::JekyllRdf::Helper::RdfHelper"
+      assert (test_resource.page.eql? Jekyll::JekyllRdf::Helper::RdfHelper::page), "The resource should contain the same page as Jekyll::JekyllRdf::Helper::RdfHelper: #{Jekyll::JekyllRdf::Helper::RdfHelper::page.inspect} <=> #{test_resource.page}"
     end
 
     should "substitude nil with page resource" do

@@ -1,8 +1,7 @@
 ##
 # MIT License
 #
-# Copyright (c) 2016 Elias Saalmann, Christian Frommert, Simon Jakobi,
-# Arne Jonas Präger, Maxi Bornmann, Georg Hackel, Eric Füg
+# Copyright (c) 2017 Sebastian Zänker
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,21 +23,21 @@
 #
 
 module Jekyll
-
   module JekyllRdf
-
-    ##
-    # Internal module to hold the medthod #rdf_get
-    #
-    module Filter
-      def rdf_get(request_uri)
-        request_uri = "<#{Jekyll::JekyllRdf::Helper::RdfHelper::page.data['rdf'].term.to_s}>" if (rdf_page_to_resource?(request_uri))
-        request_uri = rdf_resolve_prefix(request_uri)
-        return unless valid_resource?(request_uri)
-        ask_exist = "ASK WHERE {{<#{request_uri}> ?p ?o}UNION{?s <#{request_uri}> ?o}UNION{?s ?p <#{request_uri}>}} "
-        return unless (Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(ask_exist).true?)
-        Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI(request_uri), Jekyll::JekyllRdf::Helper::RdfHelper::site, Jekyll::JekyllRdf::Helper::RdfHelper::page)
+    module Helper
+      ##
+      # Internal module to hold support for functionalities like submitting sparql queries
+      #
+      module RdfPrefixHelper
+        ##
+        # loads the prefix data passed in the layout yaml-frontmatter or in _config.yml into page.data["rdf_prefixes"] and page.data["rdf_prefix_map"]
+        def load_prefixes(path, prefHolder)
+          Jekyll::JekyllRdf::Helper::RdfHelper.load_prefixes(path, prefHolder)
+        rescue Errno::ENOENT => ex
+          Jekyll.logger.error("--> context resource: #{@resource}  template: #{@template}") if self.class <= Jekyll::RdfPageData
+        end
       end
+
     end
   end
 end

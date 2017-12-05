@@ -159,6 +159,14 @@ class ResourceHelper
       return (other_page.id.eql? @id)&&(other_page.type.eql? @type)
     end
 
+    def fake_page.class
+      return Jekyll::RdfPageData
+    end
+
+    def fake_page.is_a? t_class
+      self.class <= t_class
+    end
+
     def fake_page.inspect
       return "<#page:xxxx#{@id} @type = #{@type}>"
     end

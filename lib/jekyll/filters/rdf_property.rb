@@ -48,7 +48,7 @@ module Jekyll
       private
       def map_predicate(input, predicate, lang = nil, list = false, inverse = false)
         input = rdf_page_to_resource(input)
-        return input unless input.is_a?(Jekyll::JekyllRdf::Drops::RdfResource)
+        return unless valid_resource?(input)
         predicate = rdf_resolve_prefix(predicate)
         result = filter_statements(input.term.to_ntriples, predicate, inverse, lang)
         return unless !result.empty?
