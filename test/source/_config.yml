@@ -28,7 +28,7 @@ jekyll_rdf:
   language: "en"
   include_blank: true
   render_orphaned_uris: true
-  restriction: "SELECT ?resourceUri WHERE { ?resourceUri ?p ?o}"
+  restriction: "SELECT ?resourceUri WHERE {?resourceUri ?p ?o}"
   default_template: "rdf_index.html"
   class_template_mappings:
     "http://xmlns.com/foaf/0.1/Person": "person.html"
@@ -49,3 +49,5 @@ jekyll_rdf:
     "http://placeholder.host.plh/placeholder#subject1" : "propertyChainingDemo.html"
     "http://www.ifi.uio.no/INF3580/main" : "show_rdf_get.html"
     "http://placeholder.host.plh/placeholder2/subject" : "UsePageDemo.html"
+    "http://bug.test/duplicateContent1" : "contentDuplication2Layer.html"
+    "http://bug.test/duplicateContent2" : "contentDuplication2Layer.html"
