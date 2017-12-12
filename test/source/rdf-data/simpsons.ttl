@@ -12,6 +12,7 @@
 @prefix dtp16: <http://pcai042.informatik.uni-leipzig.de/~dtp16#> .
 @prefix plh: <http://placeholder.host.plh/placeholder#> .
 @prefix plh2: <http://placeholder.host.plh/placeholder2/> .
+@prefix bug: <http://bug.test/> .
 @prefix plha: <http://placeholder.host.plh/placeholder/> .
 
 # uncomment this if you want to include the simpsons family as a resource
@@ -172,4 +173,7 @@ plh:subject1 plh:predicate1 plh:object1.
 base:main <http://example.org/rel> base:RelatedResource.          #testing pathing for base url
 
 plh2:subject plh2:predicate plh2:object.
+
+bug:duplicateContent1 a bug:Content.        # Jekyll doesn't clear its payload['content'] possibly causing duplication
+bug:duplicateContent2 a bug:Content.        # Jekyll doesn't clear its payload['content'] possibly causing duplication
 plha:Test plh:predicate plh:object.

@@ -23,6 +23,9 @@
 #
 
 
-Jekyll::Hooks.register :pages, :pre_render do |page|
+Jekyll::Hooks.register :pages, :pre_render do |page, payload|
+  if(page.class <= Jekyll::RdfPageData)
+    payload["content"] = ""
+  end
   Jekyll::JekyllRdf::Helper::RdfHelper::page = page
 end
