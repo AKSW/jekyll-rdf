@@ -13,6 +13,7 @@
 @prefix plh: <http://placeholder.host.plh/placeholder#> .
 @prefix plh2: <http://placeholder.host.plh/placeholder2/> .
 @prefix bug: <http://bug.test/> .
+@prefix plha: <http://placeholder.host.plh/placeholder/> .
 
 # uncomment this if you want to include the simpsons family as a resource
 <http://www.ifi.uio.no/INF3580/simpsons> a <http://www.ifi.uio.no/INF3580/family>.         #test purpose
@@ -175,3 +176,4 @@ plh2:subject plh2:predicate plh2:object.
 
 bug:duplicateContent1 a bug:Content.        # Jekyll doesn't clear its payload['content'] possibly causing duplication
 bug:duplicateContent2 a bug:Content.        # Jekyll doesn't clear its payload['content'] possibly causing duplication
+plha:Test plh:predicate plh:object.
