@@ -130,6 +130,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
   context "Jekyll::JekyllRdf::Drops::RdfResource.render_path with empty baseurl"do
     setup do
       @config = Jekyll.configuration({'url' => "http://ex.org", 'baseurl' => "" })
+      Jekyll::JekyllRdf::Helper::RdfHelper::config = @config
       @site = Jekyll::Site.new(@config)
     end
 
@@ -157,6 +158,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
   context "Jekyll::JekyllRdf::Drops::RdfResource.render_path with '/' as baseurl"do
     setup do
       @config = Jekyll.configuration({'url' => "http://ex.org", 'baseurl' => "/" })
+      Jekyll::JekyllRdf::Helper::RdfHelper::config = @config
       @site = Jekyll::Site.new(@config)
     end
 
@@ -184,6 +186,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
   context "Jekyll::JekyllRdf::Drops::RdfResource.render_path with subdirectory baseurl"do
     setup do
       @config = Jekyll.configuration({'url' => "http://ex.org", 'baseurl' => "/blog" })
+      Jekyll::JekyllRdf::Helper::RdfHelper::config = @config
       @site = Jekyll::Site.new(@config)
     end
 
@@ -215,6 +218,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
   context "Jekyll::JekyllRdf::Drops::RdfResource.render_path with subdirectory baseurl ending with slash"do
     setup do
       @config = Jekyll.configuration({'url' => "http://ex.org", 'baseurl' => "/blog/" })
+      Jekyll::JekyllRdf::Helper::RdfHelper::config = @config
       @site = Jekyll::Site.new(@config)
     end
 

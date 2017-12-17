@@ -133,7 +133,7 @@ module Jekyll #:nodoc:
         #
         def page_url
           return @page_url unless @page_url.nil?
-          generate_file_name(@site.config["url"], @site.config["baseurl"])
+          generate_file_name(Jekyll::JekyllRdf::Helper::RdfHelper::config["url"], Jekyll::JekyllRdf::Helper::RdfHelper::config["baseurl"])
           @page_url
         end
 
@@ -142,7 +142,7 @@ module Jekyll #:nodoc:
         #
         def render_path
           return @render_path unless @page_url.nil?
-          generate_file_name(@site.config["url"], @site.config["baseurl"])
+          generate_file_name(Jekyll::JekyllRdf::Helper::RdfHelper::config["url"], Jekyll::JekyllRdf::Helper::RdfHelper::config["baseurl"])
           @render_path
         end
 
