@@ -61,6 +61,14 @@ module Jekyll
           @@page
         end
 
+        def self.config= config
+          @@config = config
+        end
+
+        def self.config
+          @@config
+        end
+
         def self.prefixes= path
           @@prefixes = {}
           self.load_prefixes(path, @@prefixes)
