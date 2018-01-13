@@ -27,14 +27,14 @@ The API Documentation is available at [RubyDoc.info](http://www.rubydoc.info/gem
 As a prerequisite for *Jekyll RDF* you of course need to install [*Jekyll*](https://jekyllrb.com/).
 Please take a look at the installations instructions at https://jekyllrb.com/docs/installation/.
 
-## Installation as a gem
 If you already have a working Jekyll installation you can add the the Jekyll-RDF plugin.
-Probably you already using [Bundler](https://bundler.io/) and there is [`Gemfile`](https://bundler.io/gemfile.html) in your jekyll-directory.
+Probably you already using [Bundler](https://bundler.io/) and there is a [`Gemfile`](https://bundler.io/gemfile.html) in your Jekyll directory.
 Add Jekyll-RDF to the plugins section:
 
 ```
 group :jekyll_plugins do
     gem "jekyll-rdf", '~> 3.0.0.pre.a'
+    …
 end
 ```
 
