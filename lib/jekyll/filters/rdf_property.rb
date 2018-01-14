@@ -50,7 +50,7 @@ module Jekyll
         input = rdf_page_to_resource(input)
         return unless valid_resource?(input)
         predicate = rdf_resolve_prefix(predicate)
-        result = filter_statements(input.term.to_ntriples, predicate, inverse, lang)
+        result = filter_statements(to_string_wrap(input), predicate, inverse, lang)
         return unless !result.empty?
         if(list)
           return result

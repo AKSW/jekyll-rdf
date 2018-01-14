@@ -30,7 +30,7 @@ module Jekyll
         input = rdf_page_to_resource(input)
         return unless valid_resource?(input)
         sparql_client = Jekyll::JekyllRdf::Helper::RdfHelper::sparql
-        n_triples = input.term.to_ntriples
+        n_triples = to_string_wrap(input)
         if(!(valid_container?(n_triples, type)))
           Jekyll.logger.error "#{n_triples} is not recognized as a container"
           return []

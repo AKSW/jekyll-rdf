@@ -51,7 +51,7 @@ module Jekyll
           end
         else
           return unless valid_resource?(resource)
-          query.gsub!('?resourceUri', "<#{resource}>")
+          query.gsub!('?resourceUri', to_string_wrap(resource))
         end if query.include? '?resourceUri'  #the only purpose of the if statement is to substitute ?resourceUri
         if(!Jekyll::JekyllRdf::Helper::RdfHelper::page.data["rdf_prefixes"].nil?)
           query = query.prepend(" ").prepend(Jekyll::JekyllRdf::Helper::RdfHelper::page.data["rdf_prefixes"])
