@@ -71,13 +71,13 @@ module Jekyll
         end
 
         if(inverse)
-          query = "SELECT ?s WHERE{ ?s <#{predicate}> #{n_triples} }"
+          query = "SELECT ?s WHERE{ ?s #{predicate} #{n_triples} }"
           result = client.query(query).map do |solution|
             subject = RDF::URI(solution.s)
             Jekyll::JekyllRdf::Drops::RdfResource.new(subject, Jekyll::JekyllRdf::Helper::RdfHelper::site, Jekyll::JekyllRdf::Helper::RdfHelper::page, true)
           end
         else
-          query = "SELECT ?o ?dt ?lit ?lang WHERE{ #{n_triples} <#{predicate}> ?o BIND(datatype(?o) AS ?dt) BIND(isLiteral(?o) AS ?lit) BIND(lang(?o) AS ?lang) #{lang_query} }"
+          query = "SELECT ?o ?dt ?lit ?lang WHERE{ #{n_triples} #{predicate} ?o BIND(datatype(?o) AS ?dt) BIND(isLiteral(?o) AS ?lit) BIND(lang(?o) AS ?lang) #{lang_query} }"
           result = client.query(query).map do |solution|
             dist_literal_resource(solution)
           end

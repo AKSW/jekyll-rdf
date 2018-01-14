@@ -46,7 +46,7 @@ module Jekyll
             if(uri.class <= Jekyll::JekyllRdf::Drops::RdfResource)
               query.gsub!("?resourceUri_#{index}", uri.term.to_ntriples)
             else
-              query.gsub!("?resourceUri_#{index}", "<#{rdf_resolve_prefix(uri.to_s)}>")
+              query.gsub!("?resourceUri_#{index}", "#{rdf_resolve_prefix(uri.to_s)}")
             end
           end
         else

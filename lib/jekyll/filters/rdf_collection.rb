@@ -31,7 +31,7 @@ module Jekyll
         input = rdf_page_to_resource(input)
         return unless valid_resource?(input)
         query = "SELECT ?f WHERE{ #{input.term.to_ntriples} " <<
-          (predicate.nil? ? "" : " <#{rdf_resolve_prefix(predicate)}> ?coll . ?coll ") <<
+          (predicate.nil? ? "" : " #{rdf_resolve_prefix(predicate)} ?coll . ?coll ") <<
           " <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest>* ?r. ?r <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?f}"
         results = []
         Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(query).each{ |solution|

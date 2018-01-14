@@ -145,12 +145,12 @@ class TestRdfFilter < Test::Unit::TestCase
 
     should "resolve the prefix foaf to its full length" do
       answer = rdf_resolve_prefix('foaf:name')
-      assert_equal(answer, "http://xmlns.com/foaf/0.1/name")
+      assert_equal(answer, "<http://xmlns.com/foaf/0.1/name>")
     end
 
     should "return the uri of any correctly marked uri" do
       answer = rdf_resolve_prefix('<http://xmlns.com/foaf/0.1/name>')
-      assert_equal(answer, 'http://xmlns.com/foaf/0.1/name')
+      assert_equal(answer, '<http://xmlns.com/foaf/0.1/name>')
     end
 
     should "raise an UnMarkedUri exception if there is a full uri instead of a prefix" do
@@ -182,7 +182,7 @@ class TestRdfFilter < Test::Unit::TestCase
 
     should "resolve the prefix foaf to its full length" do
       answer = rdf_resolve_prefix('foaf:name')
-      assert_equal(answer, "http://xmlns.com/foaf/0.1/name")
+      assert_equal(answer, "<http://xmlns.com/foaf/0.1/name>")
     end
   end
 
