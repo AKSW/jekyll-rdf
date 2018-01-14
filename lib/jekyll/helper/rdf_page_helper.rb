@@ -40,7 +40,7 @@ module Jekyll
         # loads the prefix data passed in the layout yaml-frontmatter into page.data["rdf_prefixes"] and page.data["rdf_prefix_map"]
         def load_prefixes_yaml
           if !self.data["rdf_prefix_path"].nil?
-            load_prefixes(File.join(@base, 'rdf-data', self.data["rdf_prefix_path"].strip), self.data)
+            load_prefixes(File.join(@base, self.data["rdf_prefix_path"].strip), self.data)
           end
         end
       end
