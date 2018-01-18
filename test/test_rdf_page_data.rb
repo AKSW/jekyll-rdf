@@ -61,7 +61,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     setup do
       subresources = ["http://subres1", "http://subres2", "http://subres3"]
       @resource = res_helper.resource_with_subresources("http://www.ifi.uio.no/INF3580/simpsons#Homer", subresources)
-      @base = SOURCE_DIR = File.join(File.dirname(__FILE__), "source")
+      @base = File.join(File.dirname(__FILE__), "source")
     end
 
     should "should map prefixes from the file given through rdf_prefix_path in target templates frontmatter" do
@@ -78,10 +78,12 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     end
 
     should "raise an error if the given prefixfile is not accessible" do
+      TestHelper::setErrOutput
       res_helper.monkey_patch_wrong_page_data(self)
       self.read_yaml "arg1", "arg2"
       load_prefixes_yaml
       assert Jekyll.logger.messages.any?{|message| !!(message=~ /\s*file not found: .*\s*/)}, "missing error message: file not found: ****"
+      TestHelper::resetErrOutput
     end
   end
 

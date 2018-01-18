@@ -16,9 +16,11 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     end
 
     should "fail if jekyll-rdf is included but not configured" do
+      TestHelper::setErrOutput
       @site = res_helper.create_bad_fetch_site()
       assert !load_config(@site), "load_config does not return false"
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /You've included Jekyll-RDF, but it is not configured. Aborting the jekyll-rdf plugin./)}, "missing error message:\nYou've included Jekyll-RDF, but it is not configured. Aborting the jekyll-rdf plugin."
+      TestHelper::resetErrOutput
     end
   end
 
@@ -204,13 +206,17 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     end
 
     should "fail if it can't load _config.yml" do
+      TestHelper::setErrOutput
       assert !@generator.generate(@fail_fetch_site), "the gerate process should not have been cleanly exited"
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /You've included Jekyll-RDF, but it is not configured. Aborting the jekyll-rdf plugin./)}, "The should exit with the error message: ''You've included Jekyll-RDF, but it is not configured. Aborting the jekyll-rdf plugin.''"
+      TestHelper::resetErrOutput
     end
 
     should "fail if template_mapping is defined in _config.yml" do
+      TestHelper::setErrOutput
       assert !@generator.generate(@old_config_site), "the gerate process should not have been cleanly exited"
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /Outdated format in _config\.yml:\n  'template_mapping' detected but the following keys must be used now instead:\n    instance_template_mappings -> maps single resources to single layouts\n    class_template_mappings -> maps entire classes of resources to layouts\nJekyll-RDF wont render any pages for .*/)}, "The generate process should exit with the error message: \nOutdated format in _config.yml:\n  'template_mapping' detected but the following keys must be used now instead:\n    instance_template_mappings -> maps single resources to single layouts\n    class_template_mappings -> maps entire classes of resources to layouts\nJekyll-RDF wont render any pages for \*\*\*\*"
+      TestHelper::resetErrOutput
     end
   end
 end

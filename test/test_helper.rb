@@ -8,11 +8,13 @@ require 'ResourceHelper'
 require_relative '../lib/jekyll-rdf'
 Coveralls.wear!
 
+Jekyll.logger.log_level = :error
 class TestHelper
   BASE_URL   = "/INF3580"
   DOMAIN_NAME = "http://www.ifi.uio.no"
   SOURCE_DIR = File.join(File.dirname(__FILE__), "source")
   DEST_DIR   = File.join(SOURCE_DIR, "_site")
+  DUMMY_STDERR = StringIO.new
 
   TEST_OPTIONS = {
     'source'         => SOURCE_DIR,
@@ -39,6 +41,14 @@ class TestHelper
         'http://pcai042.informatik.uni-leipzig.de/~dtp16#SimpsonPerson'=> "simpsonPerson.html"
       }
     }
-  }
 
+  }
+  def self.setErrOutput
+    @@old_stderr = $stderr
+    $stderr = DUMMY_STDERR
+  end
+
+  def self.resetErrOutput
+    $stderr = @@old_stderr
+  end
 end
