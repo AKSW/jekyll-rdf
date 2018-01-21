@@ -6,7 +6,7 @@ class TestJekyllRdf < Test::Unit::TestCase
   site = Jekyll::Site.new(config)
   site.process
   simpson_page = site.pages.find{|p|
-    p.name == "/simpsons.html".gsub(TestHelper::BASE_URL, '')
+    p.name == "simpsons.html".gsub(TestHelper::BASE_URL, '')
   }
   context "Generating a site with RDF data" do
     should "create a file which mentions 'Lisa Simpson'" do

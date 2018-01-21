@@ -116,6 +116,12 @@ module Jekyll #:nodoc:
           @filename ||= generate_file_name(domain_name, baseurl)
         end
 
+        def filedir
+          return @filedir unless @filedir.nil?
+          generate_file_name(@site.config["url"], @site.config["baseurl"])  #TODO change to RdfHelper.... like page_url
+          @filedir
+        end
+
         def direct_classes
           @direct_classes ||= begin
             classes=[]
@@ -267,6 +273,7 @@ module Jekyll #:nodoc:
               # opaque jekyll produces static pages, so we do not dereferencing
               # query queries do not address resources
               # file_name << "#/#{uri[:fragment]}" unless uri[:fragment].nil? fragments are not evaluated by browsers, only by clients
+
             rescue Addressable::URI::InvalidURIError => x
               file_name = "invalids/#{term.to_s}"
               Jekyll.logger.error("Invalid resource found: #{term.to_s} is not a proper uri")
@@ -278,7 +285,7 @@ module Jekyll #:nodoc:
           if(file_name[-2..-1] == "#/")
             file_name = file_name[0..-3]
           end
-          if(file_name[-1] == '/' || (file_name.eql? ""))
+          if(file_name[-1].eql? '/' || (file_name.eql? ""))
             file_name << "index.html"
           else
             last_slash = file_name.rindex('/')
@@ -290,9 +297,14 @@ module Jekyll #:nodoc:
               file_name[last_slash..-1] = "#{file_name[last_slash..-1]}.html"
             end
           end
+
           @render_path = file_name
           @page_url = "#{file_name.chomp('index.html').chomp('.html')}#{ending}#{fragment_holder}"
-          file_name
+
+          last_slash = file_name.rindex('/').to_i
+          @filedir = file_name[0..last_slash].to_s
+          @filename = file_name[(last_slash + 1)..-1].to_s
+          @filename
         end
       end
 
