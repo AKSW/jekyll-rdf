@@ -240,7 +240,7 @@ class ResourceHelper
     end
     obj.data
     def obj.read_yaml(path, template)
-      @data["rdf_prefix_path"] = "simpsons.pref"
+      @data["rdf_prefix_path"] = "rdf-data/simpsons.pref"
       return true
     end
   end
