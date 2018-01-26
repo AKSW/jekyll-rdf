@@ -278,7 +278,7 @@ module Jekyll #:nodoc:
           if(file_name[-2..-1] == "#/")
             file_name = file_name[0..-3]
           end
-          if(file_name[-1] == '/')
+          if(file_name[-1] == '/' || (file_name.eql? ""))
             file_name << "index.html"
           else
             last_slash = file_name.rindex('/')
