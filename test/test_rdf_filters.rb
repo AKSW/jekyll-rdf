@@ -338,4 +338,33 @@ class TestRdfFilter < Test::Unit::TestCase
       assert_equal "http://www.ifi.uio.no/INF3580/main", test_resource.iri
     end
   end
+
+  context "Filter rdf_make_array" do
+    should "create an array out of a String" do
+      array_string = "[<http://www.ifi.uio.no/INF3580/main>, <http://placeholder.host.plh/placeholder2/subject>, <http://xmlns.com/foaf/0.1/Person>]"
+      iri_array = rdf_make_array(array_string)
+      assert_equal 3, iri_array.length
+      assert_equal "<http://www.ifi.uio.no/INF3580/main>", iri_array[0]
+      assert_equal "<http://placeholder.host.plh/placeholder2/subject>", iri_array[1]
+      assert_equal "<http://xmlns.com/foaf/0.1/Person>", iri_array[2]
+    end
+
+    should "raise an InvalidURI for missing <> or invalid URIs" do
+      array_string1 = "[http://www.ifi.uio.no/INF3580/main, <http://placeholder.host.plh/placeholder2/subject>, <http://xmlns.com/foaf/0.1/Person>]"
+      array_string2 = "[<www.ifi.uio.no/http://INF3580/main>, <http://placeholder.host.plh/placeholder2/subject>, <http://xmlns.com/foaf/0.1/Person>]"
+      assert_raise InvalidURI do
+        rdf_make_array(array_string1)
+      end
+      assert_raise InvalidURI do
+        rdf_make_array(array_string2)
+      end
+    end
+
+    should "raise an InvalidArrayString for missing []" do
+      array_string = "<http://www.ifi.uio.no/INF3580/main>, <http://placeholder.host.plh/placeholder2/subject>, <http://xmlns.com/foaf/0.1/Person>]"
+      assert_raise InvalidArrayString do
+        rdf_make_array(array_string)
+      end
+    end
+  end
 end
