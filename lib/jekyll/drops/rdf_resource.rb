@@ -228,6 +228,22 @@ module Jekyll #:nodoc:
           return RdfStatement.new(RDF::Statement( subject, predicate, object), @site)
         end
 
+        def identify_name_from_path(path)
+          begin
+            @filedir = ""
+            @filename = ""
+            return
+          end if((path.nil?)||(path.length <= 0)) # no path supplied
+          last_slash = path.rindex('/')
+          if(last_slash.nil?)
+            @filedir = ""
+            @filename = path
+          else
+            @filedir = path[0..last_slash]
+            @filename = path[(last_slash +1)..-1]
+          end
+        end
+
         ##
         # Generate a filename corresponding to the RDF resource represented by the receiver. The mapping between RDF resources and filenames should be bijective. If the url of the rdf is the same as of the hosting site it will be omitted.
         # * +domain_name+
@@ -273,7 +289,6 @@ module Jekyll #:nodoc:
               # opaque jekyll produces static pages, so we do not dereferencing
               # query queries do not address resources
               # file_name << "#/#{uri[:fragment]}" unless uri[:fragment].nil? fragments are not evaluated by browsers, only by clients
-
             rescue Addressable::URI::InvalidURIError => x
               file_name = "invalids/#{term.to_s}"
               Jekyll.logger.error("Invalid resource found: #{term.to_s} is not a proper uri")
@@ -300,10 +315,7 @@ module Jekyll #:nodoc:
 
           @render_path = file_name
           @page_url = "#{file_name.chomp('index.html').chomp('.html')}#{ending}#{fragment_holder}"
-
-          last_slash = file_name.rindex('/').to_i
-          @filedir = file_name[0..last_slash].to_s
-          @filename = file_name[(last_slash + 1)..-1].to_s
+          identify_name_from_path(file_name)
           @filename
         end
       end
