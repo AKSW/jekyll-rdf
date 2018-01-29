@@ -53,3 +53,4 @@ jekyll_rdf:
     "http://bug.test/duplicateContent1" : "contentDuplication2Layer.html"
     "http://bug.test/duplicateContent2" : "contentDuplication2Layer.html"
     "http://placeholder.host.plh/placeholder/Test" : "permalinkTest.html"
+    "http://www.ifi.uio.no/INF3580/Array" : "ArrayDemo.html"

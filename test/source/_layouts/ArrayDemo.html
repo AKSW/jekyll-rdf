@@ -1,0 +1,19 @@
+---
+  rdf_prefix_path: rdf-data/simpsons.pref
+---
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h4>This showcases the use of rdf_make_array together with sparql_query</h4>
+            {% assign query = "SELECT ?o WHERE{ ?resourceUri_0 ?resourceUri_1 ?o }" %}
+            {% assign resourceArray = "[plh:subject1, plh:predicate1]" %}
+            {% assign result = resourceArray | rdf_make_array | sparql_query: query %}
+            {% for res in result %}
+                <h6> {{res.o}}</h6>
+            {% endfor %}
+    </body>
+</html>

@@ -9,11 +9,12 @@ module Jekyll
         array_string.strip!
         array_string.rstrip!
         array_string = check_allowed(array_string)
-        array_string.split(",").each{|uri_string|
+        array_string.split(",").collect{|uri_string|
           uri_string.strip!
           uri_string.rstrip!
-          if ((uri_string[0].eql? "<")&&(uri_string[-1].eql? ">"))&&(uri_string[1..-2] =~ /\A#{URI::regexp}\z/) # uncomment if regex actually works
-            uri_string#[1..-2]
+          uri_string = rdf_resolve_prefix(uri_string)
+          if(uri_string[1..-2] =~ /\A#{URI::regexp}\z/) # uncomment if regex actually works
+            uri_string
           else
             raise InvalidURI.new(uri_string)
           end
