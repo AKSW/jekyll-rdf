@@ -46,12 +46,12 @@ module Jekyll
             if(uri.class <= Jekyll::JekyllRdf::Drops::RdfResource)
               query.gsub!("?resourceUri_#{index}", uri.term.to_ntriples)
             else
-              query.gsub!("?resourceUri_#{index}", "<#{rdf_resolve_prefix(uri.to_s)}>")
+              query.gsub!("?resourceUri_#{index}", "#{rdf_resolve_prefix(uri.to_s)}")
             end
           end
         else
           return unless valid_resource?(resource)
-          query.gsub!('?resourceUri', "<#{resource}>")
+          query.gsub!('?resourceUri', to_string_wrap(resource))
         end if query.include? '?resourceUri'  #the only purpose of the if statement is to substitute ?resourceUri
         if(!Jekyll::JekyllRdf::Helper::RdfHelper::page.data["rdf_prefixes"].nil?)
           query = query.prepend(" ").prepend(Jekyll::JekyllRdf::Helper::RdfHelper::page.data["rdf_prefixes"])

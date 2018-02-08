@@ -8,7 +8,7 @@ class TestRdfFilter < Test::Unit::TestCase
   context "Filter rdf_property from Jekyll::RdfProperty" do
     setup do
       Jekyll::JekyllRdf::Helper::RdfHelper.sparql = sparql
-      prefixes = {"rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs" => "http://www.w3.org/2000/01/rdf-schema#", "foaf" => "http://xmlns.com/foaf/0.1/", "fam" => "http://www.ifi.uio.no/INF3580/family#"}
+      prefixes = {"rdf" => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs" => "http://www.w3.org/2000/01/rdf-schema#", "foaf" => "http://xmlns.com/foaf/0.1/", "fam" => "http://www.ifi.uio.no/INF3580/family#", "sim" => "http://www.ifi.uio.no/INF3580/simpsons#"}
       @testResource = res_helper.resource_with_prefixes_config("http://www.ifi.uio.no/INF3580/simpsons#Homer", prefixes)
       Jekyll::JekyllRdf::Helper::RdfHelper.page = @testResource.page
       Jekyll::JekyllRdf::Helper::RdfHelper.page.data['rdf'] = @testResource
@@ -68,6 +68,11 @@ class TestRdfFilter < Test::Unit::TestCase
       assert_equal("http://www.ifi.uio.no/INF3580/simpsons#Marge", answer.to_s)
       answer = rdf_inverse_property(nil, "<http://xmlns.com/foaf/0.1/name>")
       assert_equal("http://placeholder.host.plh/placeholder#TPerson", answer.to_s)
+    end
+
+    should "accept Strings as first parameter" do
+      assert_equal(rdf_property("<http://www.ifi.uio.no/INF3580/simpsons#Homer>", "<http://www.ifi.uio.no/INF3580/family#hasSpouse>").to_s, "http://www.ifi.uio.no/INF3580/simpsons#Marge")
+      assert_equal(rdf_property("sim:Homer", "fam:hasSpouse").to_s, "http://www.ifi.uio.no/INF3580/simpsons#Marge")
     end
   end
 
@@ -132,6 +137,12 @@ class TestRdfFilter < Test::Unit::TestCase
       sparql_query(query)
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)}, "missing error message: client error experienced: ****"
     end
+
+    should "accept Strings as parameters for resourceUri" do
+      query = "SELECT ?y WHERE{ ?resourceUri foaf:age ?y}"
+      answer = sparql_query("<http://www.ifi.uio.no/INF3580/simpsons#Homer>", query)
+      assert(answer.any? {|solution| solution['y'].to_s.eql?  '36'}, "answer should return the age of Homer Simpson (36)")
+    end
   end
 
   context "rdf_resolve_prefix from Jekyll::RdfPrefixResolver" do
@@ -145,12 +156,12 @@ class TestRdfFilter < Test::Unit::TestCase
 
     should "resolve the prefix foaf to its full length" do
       answer = rdf_resolve_prefix('foaf:name')
-      assert_equal(answer, "http://xmlns.com/foaf/0.1/name")
+      assert_equal(answer, "<http://xmlns.com/foaf/0.1/name>")
     end
 
     should "return the uri of any correctly marked uri" do
       answer = rdf_resolve_prefix('<http://xmlns.com/foaf/0.1/name>')
-      assert_equal(answer, 'http://xmlns.com/foaf/0.1/name')
+      assert_equal(answer, '<http://xmlns.com/foaf/0.1/name>')
     end
 
     should "raise an UnMarkedUri exception if there is a full uri instead of a prefix" do
@@ -182,7 +193,7 @@ class TestRdfFilter < Test::Unit::TestCase
 
     should "resolve the prefix foaf to its full length" do
       answer = rdf_resolve_prefix('foaf:name')
-      assert_equal(answer, "http://xmlns.com/foaf/0.1/name")
+      assert_equal(answer, "<http://xmlns.com/foaf/0.1/name>")
     end
   end
 
@@ -206,6 +217,15 @@ class TestRdfFilter < Test::Unit::TestCase
 
     should "substitude nil with the page resource object" do
       answer = rdf_collection(nil)
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Homer")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Marge"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Marge")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Bart"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Bart")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Lisa")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Maggie"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Maggie")
+    end
+
+    should "accept a String as first parameter" do
+      answer = rdf_collection("<http://www.ifi.uio.no/INF3580/simpson-collection#Collection>")
       assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Homer")
       assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Marge"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Marge")
       assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Bart"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Bart")
@@ -280,6 +300,15 @@ class TestRdfFilter < Test::Unit::TestCase
 
     should "substitude nil with the page resource object" do
       answer = rdf_container(nil)
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Homer")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Marge"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Marge")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Bart"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Bart")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Lisa"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Lisa")
+      assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Maggie"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Maggie")
+    end
+
+    should "accept a string as first parameter" do
+      answer = rdf_container("<http://www.ifi.uio.no/INF3580/simpson-container#Seq>")
       assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Homer")
       assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Marge"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Marge")
       assert(answer.any? {|resource| resource.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Bart"}, "answerset does not contain http://www.ifi.uio.no/INF3580/simpsons#Bart")

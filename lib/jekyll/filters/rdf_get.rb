@@ -33,11 +33,11 @@ module Jekyll
     module Filter
       def rdf_get(request_uri)
         request_uri = "<#{Jekyll::JekyllRdf::Helper::RdfHelper::page.data['rdf'].term.to_s}>" if (rdf_page_to_resource?(request_uri))
-        request_uri = rdf_resolve_prefix(request_uri)
         return unless valid_resource?(request_uri)
-        ask_exist = "ASK WHERE {{<#{request_uri}> ?p ?o}UNION{?s <#{request_uri}> ?o}UNION{?s ?p <#{request_uri}>}} "
+        request_uri = rdf_resolve_prefix(request_uri)
+        ask_exist = "ASK WHERE {{#{request_uri} ?p ?o}UNION{?s #{request_uri} ?o}UNION{?s ?p #{request_uri}}} "
         return unless (Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(ask_exist).true?)
-        Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI(request_uri), Jekyll::JekyllRdf::Helper::RdfHelper::site, Jekyll::JekyllRdf::Helper::RdfHelper::page)
+        Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI(request_uri[1..-2]), Jekyll::JekyllRdf::Helper::RdfHelper::site, Jekyll::JekyllRdf::Helper::RdfHelper::page)
       end
     end
   end
