@@ -118,24 +118,30 @@ class TestRdfFilter < Test::Unit::TestCase
 
     # These 3 tests are prune to errors if rdf_resource changes to use sparql in its setup process
     should "log a SPARQL::Client::ClientError Exception" do
+      TestHelper::setErrOutput
       Jekyll::JekyllRdf::Helper::RdfHelper::sparql = res_helper.faulty_sparql_client(:ClientError)
       query = "SELECT ?x ?y WHERE{ ?x <http://www.ifi.uio.no/INF3580/family#hasFather> ?y}"
       sparql_query(query)
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)} , "missing error message: client error experienced: ****"
+      TestHelper::resetErrOutput
     end
 
     should "log a SPARQL::MalformedQuery Exception" do
+      TestHelper::setErrOutput
       Jekyll::JekyllRdf::Helper::RdfHelper::sparql = res_helper.faulty_sparql_client(:MalformedQuery)
       query = "SELECT ?x ?y WHERE{ ?x <http://www.ifi.uio.no/INF3580/family#hasFather> ?y}"
       sparql_query(query)
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)}, "missing error message: client error experienced: ****"
+      TestHelper::resetErrOutput
     end
 
     should "log a basic Exception if an unknown exception occurs" do
+      TestHelper::setErrOutput
       Jekyll::JekyllRdf::Helper::RdfHelper::sparql = res_helper.faulty_sparql_client(:Exception)
       query = "SELECT ?x ?y WHERE{ ?x <http://www.ifi.uio.no/INF3580/family#hasFather> ?y}"
       sparql_query(query)
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)}, "missing error message: client error experienced: ****"
+      TestHelper::resetErrOutput
     end
 
     should "accept Strings as parameters for resourceUri" do
