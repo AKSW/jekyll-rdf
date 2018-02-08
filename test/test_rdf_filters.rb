@@ -143,6 +143,13 @@ class TestRdfFilter < Test::Unit::TestCase
       answer = sparql_query("<http://www.ifi.uio.no/INF3580/simpsons#Homer>", query)
       assert(answer.any? {|solution| solution['y'].to_s.eql?  '36'}, "answer should return the age of Homer Simpson (36)")
     end
+
+    should "accept multiple Strings from rdf_make_array" do
+      array_string = "[<http://placeholder.host.plh/placeholder2/predicate>, <http://placeholder.host.plh/placeholder2/object>]"
+      query = "SELECT ?s WHERE{?s ?resourceUri_0 ?resourceUri_1}"
+      answer = sparql_query(rdf_make_array(array_string), query)
+      assert(answer.any? {|solution| solution['s'].to_s.eql?  'http://placeholder.host.plh/placeholder2/subject'}, "answer should return http://placeholder.host.plh/placeholder2/subject")
+    end
   end
 
   context "rdf_resolve_prefix from Jekyll::RdfPrefixResolver" do
@@ -336,6 +343,42 @@ class TestRdfFilter < Test::Unit::TestCase
       Jekyll::JekyllRdf::Helper::RdfHelper::page.data["rdf"] = res_helper.basic_resource("http://www.ifi.uio.no/INF3580/main")
       test_resource =  rdf_get(nil)
       assert_equal "http://www.ifi.uio.no/INF3580/main", test_resource.iri
+    end
+  end
+
+  context "Filter rdf_make_array" do
+    should "create an array out of a String" do
+      array_string = "[<http://www.ifi.uio.no/INF3580/main>, <http://placeholder.host.plh/placeholder2/subject>, <http://xmlns.com/foaf/0.1/Person>]"
+      iri_array = rdf_make_array(array_string)
+      assert_equal 3, iri_array.length
+      assert_equal "<http://www.ifi.uio.no/INF3580/main>", iri_array[0]
+      assert_equal "<http://placeholder.host.plh/placeholder2/subject>", iri_array[1]
+      assert_equal "<http://xmlns.com/foaf/0.1/Person>", iri_array[2]
+    end
+
+    should "use prefixes to resolve URIs" do
+      array_string = "[base:main, plh:subject, foaf:Person]"
+      Jekyll::JekyllRdf::Helper::RdfHelper::prefixes = File.join(Dir.pwd, "test/source/rdf-data/simpsons.pref")
+      Jekyll::JekyllRdf::Helper::RdfHelper::page = {}
+      iri_array = rdf_make_array(array_string)
+      assert_equal 3, iri_array.length
+      assert_equal "<http://www.ifi.uio.no/INF3580/main>", iri_array[0]
+      assert_equal "<http://placeholder.host.plh/placeholder#subject>", iri_array[1]
+      assert_equal "<http://xmlns.com/foaf/0.1/Person>", iri_array[2]
+    end
+
+    should "raise an InvalidURI for invalid URIs" do
+      array_string = "[<www.ifi.uio.no/http://INF3580/main>, <http://placeholder.host.plh/placeholder2/subject>, <http://xmlns.com/foaf/0.1/Person>]"
+      assert_raise InvalidURI do
+        rdf_make_array(array_string)
+      end
+    end
+
+    should "raise an InvalidArrayString for missing []" do
+      array_string = "<http://www.ifi.uio.no/INF3580/main>, <http://placeholder.host.plh/placeholder2/subject>, <http://xmlns.com/foaf/0.1/Person>]"
+      assert_raise InvalidArrayString do
+        rdf_make_array(array_string)
+      end
     end
   end
 end
