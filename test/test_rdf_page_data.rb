@@ -244,4 +244,27 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       assert_equal "c#beta", Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/c#beta"), @site).page_url
     end
   end
+
+  context "RdfResource" do
+    should "correctly disect its iri into file name and file directory" do
+      resource = Jekyll::JekyllRdf::Drops::RdfResource.new("http://ex.org/blog/bla/a")
+      assert_equal "a.html", resource.filename("http://ex.org", "/blog/")
+      assert_equal "bla/", resource.filedir
+      resource = Jekyll::JekyllRdf::Drops::RdfResource.new("http://ex.org/blog/bla/a")
+      assert_equal "a.html", resource.filename("http://ex.org", "")
+      assert_equal "/blog/bla/", resource.filedir
+    end
+
+    should "set the filedir to rdfsites/... if the site url and baseurl coincides with the resource iri" do
+      resource = Jekyll::JekyllRdf::Drops::RdfResource.new("http://ex.org/blog/bla/a")
+      assert_equal "a.html", resource.filename("", "")
+      assert_equal "/rdfsites/http/ex.org/blog/bla/", resource.filedir
+      resource = Jekyll::JekyllRdf::Drops::RdfResource.new("http://ex.org/blog/bla/a")
+      assert_equal "a.html", resource.filename("http://ex.orgs", "")
+      assert_equal "/rdfsites/http/ex.org/blog/bla/", resource.filedir
+      resource = Jekyll::JekyllRdf::Drops::RdfResource.new("http://ex.org/blog/bla/a")
+      assert_equal "a.html", resource.filename("http://ex.orgd", "/blog/s")
+      assert_equal "/rdfsites/http/ex.org/blog/bla/", resource.filedir
+    end
+  end
 end

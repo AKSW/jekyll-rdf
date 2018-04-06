@@ -118,7 +118,7 @@ module Jekyll #:nodoc:
 
         def filedir
           return @filedir unless @filedir.nil?
-          generate_file_name(@site.config["url"], @site.config["baseurl"])  #TODO change to RdfHelper.... like page_url
+          generate_file_name(Jekyll::JekyllRdf::Helper::RdfHelper::site.config["url"], Jekyll::JekyllRdf::Helper::RdfHelper::site.config["baseurl"])
           @filedir
         end
 
