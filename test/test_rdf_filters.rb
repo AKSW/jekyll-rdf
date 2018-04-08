@@ -343,5 +343,10 @@ class TestRdfFilter < Test::Unit::TestCase
       test_resource =  rdf_get(nil)
       assert_equal "http://www.ifi.uio.no/INF3580/main", test_resource.iri
     end
+
+    should "return the input if the input is a resource" do
+      resource = res_helper.basic_resource("http://example.com")
+      assert_equal resource, rdf_get(resource)
+    end
   end
 end
