@@ -318,4 +318,46 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       assert_equal "/rdfsites/http/ex.org/blog/bla/", resource.filedir
     end
   end
+
+  context "Conflicting pages" do
+    setup do
+      @resources_to_templates = {
+        "http://www.ifi.uio.no/INF3580/conflict/" => "conflictWrap.html"
+      }
+      @classes_to_templates = {
+      }
+      @default_template = "default.html"
+      res_helper.global_site = true
+      @resource = res_helper.basic_resource("http://www.ifi.uio.no/INF3580/conflict/")
+      @mapper = Jekyll::RdfTemplateMapper.new(@resources_to_templates, @classes_to_templates, @default_template, sparql)
+      config = Jekyll.configuration(TestHelper::TEST_OPTIONS)
+      site = Jekyll::Site.new(config)
+      site.data['resources'] = []
+      @page = Jekyll::RdfPageData.new(site, File.join(File.dirname(__FILE__), "source"), @resource, @mapper, config)
+    end
+
+    should "have no payload attached to it at initialization" do
+      assert_equal "", @page.payload_content
+    end
+
+    should "load new content from the other page as payload when loading before rendering" do
+      @page.change_output("New Content")
+      assert_equal "New Content", @page.payload_content
+    end
+
+    should "load new content from the other page directly into its output when loading after rendering" do
+      def @page.output
+        @output
+      end
+      def @page.output= content
+        @output = content
+      end
+      @page.output = "Test this {{content}}"
+      @page.payload_content
+
+      @page.change_output("New Content")
+      assert_equal "", @page.payload_content
+      assert_equal "Test this New Content", @page.output
+    end
+  end
 end

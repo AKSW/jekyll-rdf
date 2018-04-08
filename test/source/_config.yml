@@ -57,4 +57,4 @@ jekyll_rdf:
     "http://bug.test/duplicateContent2" : "contentDuplication2Layer"
     "http://placeholder.host.plh/placeholder/Test" : "permalinkTest"
     "http://placeholder.host.plh/placeholder/gem" : "ontology"
-
+    "http://www.ifi.uio.no/INF3580/conflict/" : "conflictWrap.html"

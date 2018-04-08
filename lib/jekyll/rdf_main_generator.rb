@@ -31,7 +31,7 @@ module Jekyll
   #
   class RdfMainGenerator < Jekyll::Generator
     safe true
-    priority :highest
+    priority :low
     include Jekyll::JekyllRdf::Helper::RdfGeneratorHelper
 
     ##

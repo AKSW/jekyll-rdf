@@ -45,6 +45,8 @@ module Jekyll
       @name = resource.filename
       @dir = resource.filedir
       @resource = resource
+      @rendered = false
+      @payload_content = ''
       if(base.nil?)
         Jekyll.logger.warn "Resource #{resource} not rendered: no base url found."
         @complete = false   #TODO: set a return here and adapt the test for displaying a warning for rendering a page without template
@@ -61,6 +63,21 @@ module Jekyll
       resource.page = self
       resource.site = site
       site.data['resources'] << resource
+      Jekyll::JekyllRdf::Helper::RdfHelper::page_path = self
+    end
+
+    def payload_content
+      @rendered = true    #TODO: place it somewhere else
+                          #checks are not possible without messing up rendering
+      @payload_content
+    end
+
+    def change_output(newContent)
+      if @rendered
+        self.output.gsub!(/{{\s*content\s*}}/, newContent)
+      else
+        @payload_content = newContent
+      end
     end
   end
 end
