@@ -36,5 +36,14 @@ class TestJekyllRdf < Test::Unit::TestCase
       assert simpson_page.data["sub_rdf"].any? {|sub| sub.to_s.eql? "http://www.ifi.uio.no/INF3580/simpsons#Homer"}, "The simpsons page should have http://www.ifi.uio.no/INF3580/simpsons#Homer as subresource"
     end
   end
+
+  context "Jekyll-Rdf" do
+    should "correctly distinguish between resources supported by the knowledgebase and not supported resources" do
+      c = File.read("#{TestHelper::DEST_DIR}#{TestHelper::BASE_URL}/rdfsites/http/example.org/super.html")
+      u = File.read("#{TestHelper::DEST_DIR}#{TestHelper::BASE_URL}/rdfsites/http/example.org/uncovered.html")
+      expect(u).to include "Resource covered?: false"
+      expect(c).to include "Resource covered?: true"
+    end
+  end
 end
 #test

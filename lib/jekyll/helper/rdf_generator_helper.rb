@@ -19,7 +19,7 @@ module Jekyll
           @pageResources={};
           @blanknodes=[]
           resources.each do |uri|
-            resource = Jekyll::JekyllRdf::Drops::RdfResource.new(uri)
+            resource = Jekyll::JekyllRdf::Drops::RdfResource.new(uri, nil, nil, true)
             if(uri.instance_of? RDF::URI)
               uriString = uri.to_s
               if((uriString.include? "#") && (uriString.index("#") < (uriString.length - 1)))   #sorting in uris with a #
