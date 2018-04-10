@@ -80,6 +80,14 @@ module Jekyll
           end
         end
 
+        def self.config= config
+          @@config = config
+        end
+
+        def self.config
+          @@config
+        end
+
         def self.prefixes
           if(@@usePage)
             return @@page.data

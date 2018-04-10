@@ -112,13 +112,15 @@ module Jekyll #:nodoc:
         ##
         # Return a filename corresponding to the RDF resource represented by the receiver. The mapping between RDF resources and filenames should be bijective.
         #
-        def filename(domain_name, baseurl)
-          @filename ||= generate_file_name(domain_name, baseurl)
+        def filename
+          return @filename unless @filename.nil?
+          generate_file_name()
+          @filename
         end
 
         def filedir
           return @filedir unless @filedir.nil?
-          generate_file_name(Jekyll::JekyllRdf::Helper::RdfHelper::site.config["url"], Jekyll::JekyllRdf::Helper::RdfHelper::site.config["baseurl"])
+          generate_file_name()
           @filedir
         end
 
@@ -139,7 +141,7 @@ module Jekyll #:nodoc:
         #
         def page_url
           return @page_url unless @page_url.nil?
-          generate_file_name(@site.config["url"], @site.config["baseurl"])
+          generate_file_name()
           @page_url
         end
 
@@ -148,7 +150,7 @@ module Jekyll #:nodoc:
         #
         def render_path
           return @render_path unless @page_url.nil?
-          generate_file_name(@site.config["url"], @site.config["baseurl"])
+          generate_file_name()
           @render_path
         end
 
@@ -248,10 +250,10 @@ module Jekyll #:nodoc:
         # Generate a filename corresponding to the RDF resource represented by the receiver. The mapping between RDF resources and filenames should be bijective. If the url of the rdf is the same as of the hosting site it will be omitted.
         # * +domain_name+
         #
-        def generate_file_name(domain_name, baseurl)
+        def generate_file_name()
           fragment_holder = nil
-          domain_name = domain_name.to_s
-          baseurl = baseurl.to_s
+          domain_name = URI::split(Jekyll::JekyllRdf::Helper::RdfHelper::config["url"])[2].to_s
+          baseurl = Jekyll::JekyllRdf::Helper::RdfHelper::config["baseurl"].to_s
           (("/".eql? baseurl[-1]) || (baseurl.empty? && ("/".eql? domain_name[-1]))) ? rdfsites="rdfsites/": rdfsites="/rdfsites/"
           if(term.to_s[0..1].eql? "_:")
             file_name = "#{rdfsites}blanknode/#{term.to_s.gsub('_:','blanknode_')}/" # ':' can not be used on windows
@@ -300,7 +302,7 @@ module Jekyll #:nodoc:
           if(file_name[-2..-1] == "#/")
             file_name = file_name[0..-3]
           end
-          if(file_name[-1].eql? '/' || (file_name.eql? ""))
+          if(file_name[-1] == '/' || (file_name.eql? ""))
             file_name << "index.html"
           else
             last_slash = file_name.rindex('/')
@@ -312,7 +314,6 @@ module Jekyll #:nodoc:
               file_name[last_slash..-1] = "#{file_name[last_slash..-1]}.html"
             end
           end
-
           @render_path = file_name
           @page_url = "#{file_name.chomp('index.html').chomp('.html')}#{ending}#{fragment_holder}"
           identify_name_from_path(file_name)

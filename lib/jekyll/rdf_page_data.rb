@@ -42,7 +42,7 @@ module Jekyll
     def initialize(site, base, resource, mapper, config)
       @site = site
       @base = base
-      @name = resource.filename(URI::split(config['url'])[2], config['baseurl'])
+      @name = resource.filename
       @dir = resource.filedir
       @resource = resource
       if(base.nil?)
