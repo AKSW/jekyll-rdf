@@ -183,3 +183,7 @@ plha:Test plh:predicate plh:object.
 <http://example.org/super#anchor> a <http://example.org/anchor> .
 plha:gem plh:predicate plh:object.
 
+<http://example.org/A> a <http://example.org/Thing> .
+<http://example.org/B> a <http://example.org/Thing> .
+<http://example.org/B#some> a <http://example.org/Thing> .
+<http://example.org/C#some> a <http://example.org/Thing> .

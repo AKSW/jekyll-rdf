@@ -348,5 +348,11 @@ class TestRdfFilter < Test::Unit::TestCase
       resource = res_helper.basic_resource("http://example.com")
       assert_equal resource, rdf_get(resource)
     end
+
+    should "return the resource of the current page if a hash is supplied" do
+      Jekyll::JekyllRdf::Helper::RdfHelper::page.data["rdf"] = res_helper.basic_resource("http://www.ifi.uio.no/INF3580/main")
+      test_resource = rdf_get({"template" => "", "url" => "", "path" => ""})
+      assert_equal "http://www.ifi.uio.no/INF3580/main", test_resource.iri
+    end
   end
 end

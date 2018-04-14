@@ -1,0 +1,17 @@
+---
+---
+<html>
+    <head>
+        <title>Testing rdf_get</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <p>
+            page get: {{ page | rdf_get }} <br/>
+            get: {{ page.rdf | rdf_get }} <br/>
+            {% capture iri %}<{{page.rdf}}>{% endcapture %} <br/>
+            get via iri: {{ iri | rdf_get }}
+        </p>
+    </body>
+</html>
