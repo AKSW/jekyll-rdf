@@ -14,6 +14,7 @@ module Jekyll
           if(@template.nil?)
             Jekyll.logger.warn("Resource #{resource} not rendered: No fitting template or default template found.")
             @complete = false
+            return
           end
         end
 
@@ -21,9 +22,15 @@ module Jekyll
         # loads the data from the yaml-frontmatter and extends page.data with three key value pairs:
         # -title -> contains the resource.iri
         # -rdf -> contains the resource itself
-        # -template -> contains the path to the currenly used template
+        # -template -> contains the path to the currently used template
         def load_data(site)
-          self.read_yaml(File.join(@base, '_layouts'), @template)
+          if(@site.layouts[@template].nil?)
+            Jekyll.logger.error "Template #{@template} was not loaded by Jekyll for #{self.name}.\n Skipping Page."
+            @complete = false
+            return
+          end
+          @path = @site.layouts[@template].path
+          self.read_yaml(@site.layouts[@template].instance_variable_get(:@base_dir), @site.layouts[@template].name)
           self.data['title'] = @resource.iri
           self.data['rdf'] = @resource
           self.data['template'] = @template
@@ -40,7 +47,7 @@ module Jekyll
         # loads the prefix data passed in the layout yaml-frontmatter into page.data["rdf_prefixes"] and page.data["rdf_prefix_map"]
         def load_prefixes_yaml
           if !self.data["rdf_prefix_path"].nil?
-            load_prefixes(File.join(@base, self.data["rdf_prefix_path"].strip), self.data)
+            load_prefixes(File.join(@site.layouts[@template].instance_variable_get(:@base_dir), self.data["rdf_prefix_path"].strip), self.data)
           end
         end
       end

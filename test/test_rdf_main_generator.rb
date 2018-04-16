@@ -27,15 +27,15 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
   context "create_page from rdf_main_generator" do
     should "create a page with the right title" do
       @resources_to_templates = {
-        "http://www.ifi.uio.no/INF3580/simpsons#Homer" => "homer.html",
+        "http://www.ifi.uio.no/INF3580/simpsons#Homer" => "homer",
         "http://placeholder.host.plh/placeholder#Placeholder" => "Placeholder"
         }
       @classes_to_templates = {
-        "http://xmlns.com/foaf/0.1/Person" => "person.html",
+        "http://xmlns.com/foaf/0.1/Person" => "person",
         "http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson" => "SpecialPerson",
         "http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson" => "AnotherSpecialPerson"
       }
-      @default_template = "default.html"
+      @default_template = "default"
       res_helper.global_site = true
       @resource1 = res_helper.basic_resource("http://www.ifi.uio.no/INF3580/simpsons#Homer")
       @resource2 = res_helper.basic_resource("http://www.ifi.uio.no/INF3580/simpsons#Maggie")
@@ -45,6 +45,9 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       config = Jekyll.configuration(TestHelper::TEST_OPTIONS)
       site = Jekyll::Site.new(config)
       site.data['resources'] = []
+      site.layouts["homer"] = Jekyll::Layout.new(site, site.source, "homer.html")
+      site.layouts["person"] = Jekyll::Layout.new(site, site.source, "person.html")
+      site.layouts["default"] = Jekyll::Layout.new(site, site.source, "default.html")
       create_page(site, @resource1, @mapper, config)
       create_page(site, @resource2, @mapper, config)
       create_page(site, @resource3, @mapper, config)
@@ -99,14 +102,14 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       @blanknodes << Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::Node.new, sparql)
       @blanknodes << Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::Node.new, sparql)
       @resources_to_templates = {
-        "http://www.ifi.uio.no/INF3580/simpsons#Homer" => "homer.html",
+        "http://www.ifi.uio.no/INF3580/simpsons#Homer" => "homer",
         "http://placeholder.host.plh/placeholder#Placeholder" => "Placeholder",
-        "http://www.ifi.uio.no/INF3580/simpsons" => "page.html"
+        "http://www.ifi.uio.no/INF3580/simpsons" => "page"
       }
       @classes_to_templates = {
-        "http://xmlns.com/foaf/0.1/Person" => "person.html"
+        "http://xmlns.com/foaf/0.1/Person" => "person"
       }
-      @default_template = "default.html"
+      @default_template = "default"
     end
 
     should "prepare pages for each resource given" do
@@ -114,25 +117,28 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       @config = Jekyll.configuration({'render_orphaned_uris' => true})
       site = Jekyll::Site.new(@global_config)
       site.data['resources'] = []
+      site.layouts["page"] = Jekyll::Layout.new(site, File.join(File.dirname(__FILE__), "source"), "page.html")
+      site.layouts["default"] = Jekyll::Layout.new(site, File.join(File.dirname(__FILE__), "source"), "default.html")
+      site.layouts["person"] = Jekyll::Layout.new(site, File.join(File.dirname(__FILE__), "source"), "person.html")
       @mapper = Jekyll::RdfTemplateMapper.new(@resources_to_templates, @classes_to_templates, @default_template, sparql)
       prepare_pages(site, @mapper)
       index = site.pages.find_index {|page| page.data['title'] == "http://www.ifi.uio.no/INF3580/simpsons"}
       assert !index.nil?, "page http://www.ifi.uio.no/INF3580/simpsons not found"
-      assert_equal "page.html", site.pages[index].data['template']
+      assert_equal "page", site.pages[index].data['template']
       index = site.pages.find_index {|page|
         page.data['rdf'].subResources.any?{|key, resource|
           (key.eql? "Max")&&(resource.to_s.eql? "http://www.ifi.uio.no/INF3580/family#Max")
         } unless page.data['rdf'].subResources.nil?
       }
       assert !index.nil?, "page http://www.ifi.uio.no/INF3580/family#Max not found"
-      assert_equal "default.html", site.pages[index].data['template']
+      assert_equal "default", site.pages[index].data['template']
       index = site.pages.find_index {|page|
         page.data['rdf'].subResources.any?{|key, resource|
           (key.eql? "Jeanne")&&(resource.to_s.eql? "http://www.ifi.uio.no/INF3580/family#Jeanne")
         }unless page.data['rdf'].subResources.nil?
       }
       assert !index.nil?, "page http://www.ifi.uio.no/INF3580/family/Jeanne not found"
-      assert_equal "default.html", site.pages[index].data['template']
+      assert_equal "default", site.pages[index].data['template']
       assert_equal 4, site.pages.size
     end
   end
@@ -195,6 +201,15 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       @fail_fetch_site = res_helper.create_bad_fetch_site()
       @old_config_site = Jekyll::Site.new Jekyll.configuration({"jekyll_rdf" => {"template_mapping" => ""}})
       @generator = Jekyll::RdfMainGenerator.new
+      @site.layouts["rdf_index"] = Jekyll::Layout.new(@site, @site.source, "rdf_index.html")
+      @site.layouts["contentDuplication2Layer"] = Jekyll::Layout.new(@site, @site.source, "contentDuplication2Layer.html")
+      @site.layouts["family"] = Jekyll::Layout.new(@site, @site.source, "family.html")
+      @site.layouts["show_rdf_get"] = Jekyll::Layout.new(@site, @site.source, "show_rdf_get.html")
+      @site.layouts["person"] = Jekyll::Layout.new(@site, @site.source, "person.html")
+      @site.layouts["permalinkTest"] = Jekyll::Layout.new(@site, @site.source, "permalinkTest.html")
+      @site.layouts["UsePageDemo"] = Jekyll::Layout.new(@site, @site.source, "UsePageDemo.html")
+      @site.layouts["ontology"] = Jekyll::Layout.new(@site, @site.source, "ontology.html")
+      @site.layouts["covered"] = Jekyll::Layout.new(@site, @site.source, "covered.html")
     end
 
     should "work without any interupts" do

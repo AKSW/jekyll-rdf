@@ -17,6 +17,7 @@ url: "http://www.ifi.uio.no" # the base hostname & protocol for your site
 twitter_username: jekyllrb
 github_username:  jekyll
 permalink: pretty
+theme: jekyll-theme-jod
 
 # Build settings
 markdown: kramdown
@@ -30,28 +31,30 @@ jekyll_rdf:
   include_blank: true
   render_orphaned_uris: true
   restriction: "SELECT ?resourceUri WHERE {?resourceUri ?p ?o}"
-  default_template: "rdf_index.html"
+  default_template: "rdf_index"
   class_template_mappings:
-    "http://xmlns.com/foaf/0.1/Person": "person.html"
-    "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson" : "person.html"
-    "http://pcai042.informatik.uni-leipzig.de/~dtp16/#ThirdSpecialPerson" : "person.html"
-    "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson" : "person.html"
-    "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SimpsonPerson" : "simpsonPerson.html"
-    "http://this.class/does/not/exist" : "person.html"
+    "http://xmlns.com/foaf/0.1/Person": "person"
+    "http://pcai042.informatik.uni-leipzig.de/~dtp16/#AnotherSpecialPerson" : "person"
+    "http://pcai042.informatik.uni-leipzig.de/~dtp16/#ThirdSpecialPerson" : "person"
+    "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SpecialPerson" : "person"
+    "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SimpsonPerson" : "simpsonPerson"
+    "http://this.class/does/not/exist" : "person"
   instance_template_mappings:
-    "http://www.ifi.uio.no/INF3580/main" : "main.html"
-    "http://www.ifi.uio.no/INF3580/simpsons#Abraham" : "abraham.html"
-    "http://www.ifi.uio.no/INF3580/simpsons#Homer" : "homer.html"
-    "http://www.ifi.uio.no/INF3580/simpsons" : "family.html"
-    "http://www.ifi.uio.no/INF3580/simpson-collection#Collection" : "collectionDemo.html"
-    "http://www.ifi.uio.no/INF3580/simpson-container#Container" : "containerDemo.html"
-    "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SparqlClient" : "sparqlDemo.html"
-    "http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestEntity" : "collectionPropertyDemo.html"
-    "http://placeholder.host.plh/placeholder#subject1" : "propertyChainingDemo.html"
-    "http://example.org/super" : "covered.html"
-    "http://example.org/uncovered" : "covered.html"
-    "http://www.ifi.uio.no/INF3580/main" : "show_rdf_get.html"
-    "http://placeholder.host.plh/placeholder2/subject" : "UsePageDemo.html"
-    "http://bug.test/duplicateContent1" : "contentDuplication2Layer.html"
-    "http://bug.test/duplicateContent2" : "contentDuplication2Layer.html"
-    "http://placeholder.host.plh/placeholder/Test" : "permalinkTest.html"
+    "http://www.ifi.uio.no/INF3580/main" : "main"
+    "http://www.ifi.uio.no/INF3580/simpsons#Abraham" : "abraham"
+    "http://www.ifi.uio.no/INF3580/simpsons#Homer" : "homer"
+    "http://www.ifi.uio.no/INF3580/simpsons" : "family"
+    "http://www.ifi.uio.no/INF3580/simpson-collection#Collection" : "collectionDemo"
+    "http://www.ifi.uio.no/INF3580/simpson-container#Container" : "containerDemo"
+    "http://pcai042.informatik.uni-leipzig.de/~dtp16/#SparqlClient" : "sparqlDemo"
+    "http://pcai042.informatik.uni-leipzig.de/~dtp16/#TestEntity" : "collectionPropertyDemo"
+    "http://placeholder.host.plh/placeholder#subject1" : "propertyChainingDemo"
+    "http://example.org/super" : "covered"
+    "http://example.org/uncovered" : "covered"
+    "http://www.ifi.uio.no/INF3580/main" : "show_rdf_get"
+    "http://placeholder.host.plh/placeholder2/subject" : "UsePageDemo"
+    "http://bug.test/duplicateContent1" : "contentDuplication2Layer"
+    "http://bug.test/duplicateContent2" : "contentDuplication2Layer"
+    "http://placeholder.host.plh/placeholder/Test" : "permalinkTest"
+    "http://placeholder.host.plh/placeholder/gem" : "ontology"
+

@@ -53,10 +53,9 @@ module Jekyll
       end
       self.process(@name)
       map_template(resource, mapper)
-      if(!@complete)
-        return        #return if something went wrong
-      end
+      return unless @complete
       load_data(site)
+      return unless @complete
       load_prefixes_yaml()
       self.data['permalink'] = @name    #overwrite permalinks to stop them from interfering with JekyllRdfs rendersystem
       resource.page = self
