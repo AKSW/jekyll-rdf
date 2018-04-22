@@ -24,7 +24,7 @@
 
 
 Jekyll::Hooks.register :pages, :pre_render do |page, payload|
-  if(page.class <= Jekyll::RdfPageData)
+  unless(page.data['rdf'].nil?)
     payload["content"] = ""
   end
   if(page.data["rdf_prefixes"].nil? && !page.data["rdf_prefix_path"].nil?)

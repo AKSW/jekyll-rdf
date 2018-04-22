@@ -199,3 +199,4 @@ plha:gem plh:predicate plh:object.
 <http://example.org/date> <http://example.org/dateTimeSec> "2018-06-12T12:42:55+02:00"^^xsd:dateTime .
 
 base:pages a base:page .
+<http://www.ifi.uio.no/INF3580/ex/hybrid/> rdfs:label "Some label".

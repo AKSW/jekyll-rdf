@@ -160,7 +160,7 @@ class ResourceHelper
     end
 
     def fake_page.class
-      return Jekyll::RdfPageData
+      return Jekyll::Page
     end
 
     def fake_page.is_a? t_class
