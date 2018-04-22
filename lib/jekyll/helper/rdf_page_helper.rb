@@ -2,6 +2,18 @@ module Jekyll
   module JekyllRdf
     module Helper
       module RdfPageHelper
+
+        def assimilate_page page
+          self.data.merge!(page.data)
+          setData()
+          if self.content.nil?
+            self.content = page.content
+          else
+            self.content.gsub!(/{{\s*content\s*}}/, page.content)
+          end
+          self
+        end
+
         private
         include Jekyll::JekyllRdf::Helper::RdfPrefixHelper
         ##
@@ -32,9 +44,7 @@ module Jekyll
           end
           @path = @site.layouts[@template].path
           self.read_yaml(@site.layouts[@template].instance_variable_get(:@base_dir), @site.layouts[@template].name)
-          self.data['title'] = @resource.iri
-          self.data['rdf'] = @resource
-          self.data['template'] = @template
+          setData()
           if(!@resource.subResources.nil?)
             self.data['sub_rdf'] = @resource.subResources.values
             self.data['sub_rdf'].each { |res|
@@ -42,6 +52,13 @@ module Jekyll
               res.site = site
             }
           end
+        end
+
+        def setData
+          self.data['title'] = @resource.iri
+          self.data['rdf'] = @resource
+          self.data['template'] = @template
+          self.data['layout'] = @site.layouts[@template].data['layout']
         end
 
         ##
