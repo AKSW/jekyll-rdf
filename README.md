@@ -367,7 +367,7 @@ http://www.ifi.uio.no/INF3580/simpsons
 ```
 
 ### rdf_property
-**Synopsis:** `<rdf_resource> | rdf_property: <property>, [<lang>] OR [<lang>, <list>] OR [nil, <list>]`
+**Synopsis:** `<rdf_resource> OR <rdf_resource_string> | rdf_property: <property>, [<lang>] OR [<lang>, <list>] OR [nil, <list>]`
 
 **Parameters:**
 - `<rdf_resource>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
@@ -382,6 +382,14 @@ The returned object can by any of the kind, resource, literal, or blanknode.
 ```
 {assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
 {{ resource | rdf_property: '<http://xmlns.com/foaf/0.1/job>' }}
+```
+**Result:**
+```html
+"unknown"
+```
+**Example (string):**
+```
+{{ '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_property: '<http://xmlns.com/foaf/0.1/job>' }}
 ```
 **Result:**
 ```html
@@ -415,7 +423,7 @@ The returned object can by any of the kind, resource, literal, or blanknode.
 ```
 
 ### rdf_inverse_property
-**Synopsis:** `<rdf_resource> | rdf_inverse_property: <property>, [<list>]`
+**Synopsis:** `<rdf_resource> OR <rdf_resource_string>| rdf_inverse_property: <property>, [<list>]`
 
 **Parameters:**
 - `<rdf_resource>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
@@ -436,6 +444,16 @@ The returned object can by any of the kind, resource, or blanknode.
 http://www.ifi.uio.no/INF3580/simpsons#Bart
 ```
 
+**Examples (string):**
+```
+{{ '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_inverse_property: '<http://www.ifi.uio.no/INF3580/family#hasFather>' }}
+```
+**Result:**
+```html
+http://www.ifi.uio.no/INF3580/simpsons#Bart
+```
+
+
 **Example (as list):**
 ```
 {assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
@@ -452,7 +470,7 @@ http://www.ifi.uio.no/INF3580/simpsons#Maggie
 ```
 
 ### sparql_query
-**Synopsis:** `<rdf_resource> | sparql_query: <query>` **OR** `<reference_array> | sparql_query: <query>`
+**Synopsis:** `<rdf_resource> | sparql_query: <query>` **OR** `<reference_array> | sparql_query: <query>` **OR** `<query> | sparql_query`
 
 **Parameters:**
 - `<rdf_resource>` is an RdfResource which will replace `?resourceUri` in the query. To omit this parameter or reference the resource of the current page use `page.rdf`, `page`, or `nil`.
@@ -486,7 +504,7 @@ You can use `?resourceUri` inside the query to reference the resource which is g
 **Example (array)**
 ```
 {% assign query = 'SELECT ?x WHERE {?resourceUri_0 ?x ?resourceUri_1}' %}
-<!-- something that creates array = ["<http://www.ifi.uio.no/INF3580/simpsons#Homer>", "<http://www.ifi.uio.no/INF3580/simpsons#Marge>"] -->
+{% assign array = "<http://www.ifi.uio.no/INF3580/simpsons#Homer>,<http://www.ifi.uio.no/INF3580/simpsons#Marge>" | split: %}
 {% assign resultset = array | sparql_query: query %}
 <table>
 {% for result in resultset %}
@@ -501,8 +519,26 @@ You can use `?resourceUri` inside the query to reference the resource which is g
 </table>
 ```
 
+**Example (query)**
+```
+{% assign query = 'SELECT ?x WHERE {<http://www.ifi.uio.no/INF3580/simpsons#Homer> ?x <http://www.ifi.uio.no/INF3580/simpsons#Marge>}' %}
+{% assign resultset = query | sparql_query %}
+<table>
+{% for result in resultset %}
+  <tr><td>{{ result.x }}</td></tr>
+{% endfor %}
+</table>
+```
+
+**Result:**
+```
+<table>
+  <tr><td>http://www.ifi.uio.no/INF3580/family#hasSpouse</td></tr>
+</table>
+```
+
 ### rdf_container
-**Synopsis:** `<rdf_container_head> | rdf_container`
+**Synopsis:** `<rdf_container_head> **OR** <rdf_container_head_string> | rdf_container`
 
 **Parameters:**
 - `<rdf_container_head>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
@@ -527,8 +563,25 @@ http://www.ifi.uio.no/INF3580/simpsons#Maggie
 
 ```
 
+**Examples: (string)**
+```
+{% assign array = '<http://www.ifi.uio.no/INF3580/simpson-container#Container>' | rdf_container %}
+{% for item in array %}
+{{ item }}
+{% endfor %}
+```
+###### Result:
+```html
+http://www.ifi.uio.no/INF3580/simpsons#Homer
+http://www.ifi.uio.no/INF3580/simpsons#Marge
+http://www.ifi.uio.no/INF3580/simpsons#Bart
+http://www.ifi.uio.no/INF3580/simpsons#Lisa
+http://www.ifi.uio.no/INF3580/simpsons#Maggie
+
+```
+
 ### rdf_collection
-**Synopsis:** `<rdf_collection_head> | rdf_collection` or `<rdf_resource> | rdf_collection: "<property>"`
+**Synopsis:** `<rdf_collection_head> OR <rdf_collection_head_string> | rdf_collection` **OR** `<rdf_resource> | rdf_collection: "<property>"`
 
 **Parameters:**
 - `<rdf_collection_head>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
@@ -555,7 +608,21 @@ http://www.ifi.uio.no/INF3580/simpsons#Bart
 http://www.ifi.uio.no/INF3580/simpsons#Lisa
 http://www.ifi.uio.no/INF3580/simpsons#Maggie
 ```
-
+**Example (specify head string):**
+```
+{% assign array = '<http://www.ifi.uio.no/INF3580/simpson-collection#Collection>' | rdf_collection %}
+{% for item in array %}
+{{ item }}
+{% endfor %}
+```
+**Result:**
+```html
+http://www.ifi.uio.no/INF3580/simpsons#Homer
+http://www.ifi.uio.no/INF3580/simpsons#Marge
+http://www.ifi.uio.no/INF3580/simpsons#Bart
+http://www.ifi.uio.no/INF3580/simpsons#Lisa
+http://www.ifi.uio.no/INF3580/simpsons#Maggie
+```
 **Example (specify via property):**
 ```
 {% assign resource = '<http://www.ifi.uio.no/INF3580/simpsons>' | rdf_get %}
