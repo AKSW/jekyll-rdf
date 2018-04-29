@@ -10,7 +10,7 @@ module Jekyll
         # * +resource+ - the resource that will be mapped to a template
         # * +mapper+ - the mapper that provides the resource mappings
         def map_template(resource, mapper)
-          @template = mapper.map(resource)
+          @template = mapper.map(resource).gsub(".html", "") unless mapper.map(resource).nil? #gsub only for downward compatibility // remove gsub + unless on next version update
           if(@template.nil?)
             Jekyll.logger.warn("Resource #{resource} not rendered: No fitting template or default template found.")
             @complete = false
