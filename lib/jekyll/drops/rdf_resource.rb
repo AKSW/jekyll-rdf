@@ -252,8 +252,8 @@ module Jekyll #:nodoc:
         #
         def generate_file_name()
           fragment_holder = nil
-          domain_name = URI::split(Jekyll::JekyllRdf::Helper::RdfHelper::config["url"])[2].to_s
-          baseurl = Jekyll::JekyllRdf::Helper::RdfHelper::config["baseurl"].to_s
+          domain_name = URI::split(Jekyll::JekyllRdf::Helper::RdfHelper::domainiri)[2].to_s
+          baseurl = Jekyll::JekyllRdf::Helper::RdfHelper::pathiri.to_s
           (("/".eql? baseurl[-1]) || (baseurl.empty? && ("/".eql? domain_name[-1]))) ? rdfsites="rdfsites/": rdfsites="/rdfsites/"
           if(term.to_s[0..1].eql? "_:")
             file_name = "#{rdfsites}blanknode/#{term.to_s.gsub('_:','blanknode_')}/" # ':' can not be used on windows

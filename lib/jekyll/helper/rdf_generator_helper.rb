@@ -53,13 +53,25 @@ module Jekyll
           end
 
           @global_config = Jekyll.configuration({})
-
           #small fix because global_config doesn't work in a test enviorment
           if(!@global_config.key? "url")
             @global_config["url"] = site.config["url"]
             @global_config["baseurl"] = site.config["baseurl"]
           end
-          Jekyll::JekyllRdf::Helper::RdfHelper::config = @global_config
+
+          if(@config["baseiri"].nil?)
+            Jekyll::JekyllRdf::Helper::RdfHelper::domainiri = @global_config["url"]
+            Jekyll::JekyllRdf::Helper::RdfHelper::pathiri = @global_config["baseurl"]
+          else
+            uri = Addressable::URI.parse(@config["baseiri"]).to_hash
+            domainuri = ""
+            domainuri << "#{uri[:scheme]}://" unless uri[:scheme].nil?
+            domainuri << "#{uri[:userinfo]}@" unless uri[:userinfo].nil?
+            domainuri << "#{uri[:host]}" unless uri[:host].nil?
+            domainuri << ":#{uri[:port]}" unless uri[:port].nil?
+            Jekyll::JekyllRdf::Helper::RdfHelper::domainiri = domainuri
+            Jekyll::JekyllRdf::Helper::RdfHelper::pathiri = uri[:path][0..-1].to_s unless uri[:path].nil?
+          end
           return true
         end
         ##

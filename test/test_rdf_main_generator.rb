@@ -15,6 +15,15 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       assert_equal("/INF3580", @global_config["baseurl"])
     end
 
+    should "load baseiri if available" do
+      Jekyll.logger.warn "enter"
+      test_config = Jekyll.configuration({"url" => "http://www.ifi.uio.no", "baseurl" => "/INF3580", "jekyll_rdf" => {"baseiri" => "http://www.example.org/path/to/our/special/resource"}})
+      site = Jekyll::Site.new(test_config)
+      load_config(site)
+      assert_equal "http://www.example.org", Jekyll::JekyllRdf::Helper::RdfHelper::domainiri
+      assert_equal "/path/to/our/special/resource", Jekyll::JekyllRdf::Helper::RdfHelper::pathiri
+    end
+
     should "fail if jekyll-rdf is included but not configured" do
       TestHelper::setErrOutput
       @site = res_helper.create_bad_fetch_site()

@@ -129,7 +129,6 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     end
 
     should "should create pages with page.name and page.dir reflecting their resources iri" do
-      Jekyll::JekyllRdf::Helper::RdfHelper::config = Jekyll.configuration({'url' => "http://ex.org", 'baseurl' => "/blog" })
       config = Jekyll.configuration(TestHelper::TEST_OPTIONS)
       site = Jekyll::Site.new(config)
       site.data['resources'] = []
@@ -145,10 +144,10 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     end
   end
 
-  context "Jekyll::JekyllRdf::Drops::RdfResource.render_path with empty baseurl"do
+  context "Jekyll::JekyllRdf::Drops::RdfResource.render_path with empty baseurl" do
     setup do
-      Jekyll::JekyllRdf::Helper::RdfHelper::config = Jekyll.configuration({'url' => "http://ex.org", 'baseurl' => "" })
-
+      Jekyll::JekyllRdf::Helper::RdfHelper::domainiri = "http://ex.org"
+      Jekyll::JekyllRdf::Helper::RdfHelper::pathiri = ""
     end
 
     should "correctly render simple urls" do
@@ -174,7 +173,8 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
 
   context "Jekyll::JekyllRdf::Drops::RdfResource.render_path with '/' as baseurl"do
     setup do
-      Jekyll::JekyllRdf::Helper::RdfHelper::config = Jekyll.configuration({'url' => "http://ex.org", 'baseurl' => "/" })
+      Jekyll::JekyllRdf::Helper::RdfHelper::domainiri = "http://ex.org"
+      Jekyll::JekyllRdf::Helper::RdfHelper::pathiri = "/"
     end
 
     should "correctly render simple urls" do
@@ -200,7 +200,8 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
 
   context "Jekyll::JekyllRdf::Drops::RdfResource.render_path with subdirectory baseurl"do
     setup do
-      Jekyll::JekyllRdf::Helper::RdfHelper::config = Jekyll.configuration({'url' => "http://ex.org", 'baseurl' => "/blog" })
+      Jekyll::JekyllRdf::Helper::RdfHelper::domainiri = "http://ex.org"
+      Jekyll::JekyllRdf::Helper::RdfHelper::pathiri = "/blog"
     end
 
     should "correctly render simple urls" do
@@ -230,7 +231,8 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
 
   context "Jekyll::JekyllRdf::Drops::RdfResource.render_path with subdirectory baseurl ending with slash"do
     setup do
-      Jekyll::JekyllRdf::Helper::RdfHelper::config = Jekyll.configuration({'url' => "http://ex.org", 'baseurl' => "/blog/" })
+      Jekyll::JekyllRdf::Helper::RdfHelper::domainiri = "http://ex.org"
+      Jekyll::JekyllRdf::Helper::RdfHelper::pathiri = "/blog/"
     end
 
     should "correctly render simple urls" do
@@ -259,37 +261,33 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
   end
 
   context "RdfResource" do
-    setup do
-      Jekyll::JekyllRdf::Helper::RdfHelper::config = Jekyll.configuration({'url' => "http://ex.org", 'baseurl' => '/blog/'})
-    end
-
     should "correctly disect its iri into file name and file directory" do
       resource = Jekyll::JekyllRdf::Drops::RdfResource.new("http://ex.org/blog/bla/a")
-      Jekyll::JekyllRdf::Helper::RdfHelper::config['url'] = "http://ex.org"
-      Jekyll::JekyllRdf::Helper::RdfHelper::config['baseurl'] = "/blog/"
+      Jekyll::JekyllRdf::Helper::RdfHelper::domainiri = "http://ex.org"
+      Jekyll::JekyllRdf::Helper::RdfHelper::pathiri = "/blog/"
       assert_equal "a.html", resource.filename
       assert_equal "bla/", resource.filedir
       resource = Jekyll::JekyllRdf::Drops::RdfResource.new("http://ex.org/blog/bla/a")
-      Jekyll::JekyllRdf::Helper::RdfHelper::config['url'] = "http://ex.org"
-      Jekyll::JekyllRdf::Helper::RdfHelper::config['baseurl'] = ""
+      Jekyll::JekyllRdf::Helper::RdfHelper::domainiri = "http://ex.org"
+      Jekyll::JekyllRdf::Helper::RdfHelper::pathiri = ""
       assert_equal "a.html", resource.filename
       assert_equal "/blog/bla/", resource.filedir
     end
 
     should "set the filedir to rdfsites/... if the site url and baseurl coincides with the resource iri" do
       resource = Jekyll::JekyllRdf::Drops::RdfResource.new("http://ex.org/blog/bla/a")
-      Jekyll::JekyllRdf::Helper::RdfHelper::config['url'] = ""
-      Jekyll::JekyllRdf::Helper::RdfHelper::config['baseurl'] = ""
+      Jekyll::JekyllRdf::Helper::RdfHelper::domainiri = ""
+      Jekyll::JekyllRdf::Helper::RdfHelper::pathiri = ""
       assert_equal "a.html", resource.filename
       assert_equal "/rdfsites/http/ex.org/blog/bla/", resource.filedir
       resource = Jekyll::JekyllRdf::Drops::RdfResource.new("http://ex.org/blog/bla/a")
-      Jekyll::JekyllRdf::Helper::RdfHelper::config['url'] = "http://ex.org"
-      Jekyll::JekyllRdf::Helper::RdfHelper::config['baseurl'] = "t"
+      Jekyll::JekyllRdf::Helper::RdfHelper::domainiri = "http://ex.org"
+      Jekyll::JekyllRdf::Helper::RdfHelper::pathiri = "t"
       assert_equal "a.html", resource.filename
       assert_equal "/rdfsites/http/ex.org/blog/bla/", resource.filedir
       resource = Jekyll::JekyllRdf::Drops::RdfResource.new("http://ex.org/blog/bla/a")
-      Jekyll::JekyllRdf::Helper::RdfHelper::config['url'] = "http://ex.org"
-      Jekyll::JekyllRdf::Helper::RdfHelper::config['baseurl'] = "/blog/s"
+      Jekyll::JekyllRdf::Helper::RdfHelper::domainiri = "http://ex.org"
+      Jekyll::JekyllRdf::Helper::RdfHelper::pathiri = "/blog/s"
       assert_equal "a.html", resource.filename
       assert_equal "/rdfsites/http/ex.org/blog/bla/", resource.filedir
     end
