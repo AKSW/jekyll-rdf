@@ -59,6 +59,7 @@ module Jekyll
             @global_config["url"] = site.config["url"]
             @global_config["baseurl"] = site.config["baseurl"]
           end
+          Jekyll::JekyllRdf::Helper::RdfHelper::config = @global_config
           return true
         end
         ##

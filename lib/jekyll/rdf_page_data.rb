@@ -42,8 +42,8 @@ module Jekyll
     def initialize(site, base, resource, mapper, config)
       @site = site
       @base = base
-      @dir = ""
-      @name = resource.filename(URI::split(config['url'])[2], config['baseurl'])
+      @name = resource.filename
+      @dir = resource.filedir
       @resource = resource
       if(base.nil?)
         Jekyll.logger.warn "Resource #{resource} not rendered: no base url found."
@@ -58,7 +58,7 @@ module Jekyll
       end
       load_data(site)
       load_prefixes_yaml()
-      self.data['permalink'] = @name    #overwrite permalinks to stop them from interfering with JekyllRdfs rendersystem
+      self.data['permalink'] = File.join(@dir, @name)    #overwrite permalinks to stop them from interfering with JekyllRdfs rendersystem
       resource.page = self
       resource.site = site
       site.data['resources'] << resource
