@@ -181,3 +181,5 @@ plha:Test plh:predicate plh:object.
 <http://example.org/uncovered#a> a <http://example.org/anchor> .
 <http://example.org/super> a <http://example.org/res> .
 <http://example.org/super#anchor> a <http://example.org/anchor> .
+plha:gem plh:predicate plh:object.
+

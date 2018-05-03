@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 gem 'jekyll'
 gem 'rdf'
 gem 'linkeddata'
+gem 'jekyll-theme-jod', '~> 0.1.5'
 
 group :jekyll_plugins do
   gem 'jekyll-rdf', :path => '../../'
