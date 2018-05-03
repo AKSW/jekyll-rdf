@@ -289,7 +289,6 @@ It is possible to declare a set of prefixes which can be used in the `rdf_proper
 This allows to shorten the amount of text required for each liquid-filter.
 The syntax of the prefix declarations the same as for [SPARQL 1.1](https://www.w3.org/TR/2013/REC-sparql11-query-20130321/).
 Just put your prefixes in a separate file and include the key `rdf_prefix_path` together with a relative path in the [YAML Front Matter](https://jekyllrb.com/docs/frontmatter/) of a file where your prefixes should be used.
-The path gets resolved to `<your jekyll-directory>/rdf-data/<rdf_prefix_path>`.
 
 For the prefixes the same rules apply as for other variables defined in the YAML Front Matter.
 “These variables will then be available to you to access using Liquid tags both further down in the file and also in any layouts or includes that the page or post in question relies on.” (source: [YAML Front Matter](https://jekyllrb.com/docs/frontmatter/)).
