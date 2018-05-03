@@ -80,20 +80,28 @@ module Jekyll
           end
         end
 
-        def self.config= config
-          @@config = config
-        end
-
-        def self.config
-          @@config
-        end
-
         def self.prefixes
           if(@@usePage)
             return @@page.data
           else
             return @@prefixes
           end
+        end
+
+        def self.domainiri= domain
+          @@domainiri = domain
+        end
+
+        def self.domainiri
+          @@domainiri
+        end
+
+        def self.pathiri= path
+          @@baseiri = path
+        end
+
+        def self.pathiri
+          @@baseiri
         end
       end
 
