@@ -131,7 +131,7 @@ jekyll_rdf:
 
 ### Using in Combination with Permalinks
 
-If you have configured [permalinks](https://jekyllrb.com/docs/permalinks/) in your `_config.yml` as it is the case for the initial example page of Jekyll whit might interfere with the way JekyllRDF is generating URLs.
+If you have configured [permalinks](https://jekyllrb.com/docs/permalinks/) in your `_config.yml`, as it is the case for the initial example page of Jekyll, you might experience major interfereces with the way JekyllRDF is generating URLs.
 A rule of thumb seems to be, that permalinks not ending with a slash (`/`, e.g. `data`, `ordinal`, and `none`) are safe, while permalinks ending with a slash (e.g. `pretty`) cause strange URLs for RDF resources.
 This issue is discussed in [issue#131](https://github.com/white-gecko/jekyll-rdf/issues/131).
 
