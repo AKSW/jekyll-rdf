@@ -26,6 +26,7 @@ module Jekyll
         def load_data(site)
           if(@site.layouts[@template].nil?)
             Jekyll.logger.error "Template #{@template} was not loaded by Jekyll for #{self.name}.\n Skipping Page."
+            self.data = {}
             @complete = false
             return
           end

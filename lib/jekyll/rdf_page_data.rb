@@ -55,9 +55,9 @@ module Jekyll
       map_template(resource, mapper)
       return unless @complete
       load_data(site)
+      self.data['permalink'] = File.join(@dir, @name)    #overwrite permalinks to stop them from interfering with JekyllRdfs rendersystem
       return unless @complete
       load_prefixes_yaml()
-      self.data['permalink'] = File.join(@dir, @name)    #overwrite permalinks to stop them from interfering with JekyllRdfs rendersystem
       resource.page = self
       resource.site = site
       site.data['resources'] << resource
