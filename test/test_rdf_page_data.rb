@@ -57,8 +57,9 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       assert self.data['sub_rdf'].any?{|res| res.to_s.eql? "http://subres2"}, "the testpage did not load the resource http://subres2"
       assert self.data['sub_rdf'].any?{|res| res.to_s.eql? "http://subres3"}, "the testpage did not load the resource http://subres3"
     end
-    
+
     should "exit page generation if Jekyll did not load its mapped layout" do
+      res_helper.monkey_patch_page_data(self)
       TestHelper::setErrOutput
       @site = Jekyll::Site.new(Jekyll.configuration({}))
       @template = "homer"
@@ -152,6 +153,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     end
 
     should "should create pages with page.name and page.dir reflecting their resources iri" do
+      TestHelper::setErrOutput
       config = Jekyll.configuration(TestHelper::TEST_OPTIONS)
       site = Jekyll::Site.new(config)
       site.data['resources'] = []
@@ -164,6 +166,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       page3 = Jekyll::RdfPageData.new(site, File.join(File.dirname(__FILE__), "source"), Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/b/y/")), @mapper, config)
       assert_equal "index.html", page3.name
       assert_equal "/rdfsites/http/ex.org/b/y/", page3.dir
+      TestHelper::resetErrOutput
     end
   end
 

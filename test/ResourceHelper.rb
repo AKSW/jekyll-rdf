@@ -238,7 +238,13 @@ class ResourceHelper
       end
       return @data
     end
-    obj.data
+
+    def obj.data= hash
+      @data = hash
+    end
+
+    obj.data = {}
+
     def obj.read_yaml(path, template)
       @data["rdf_prefix_path"] = "rdf-data/simpsons.pref"
       return true
