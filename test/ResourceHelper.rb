@@ -239,7 +239,7 @@ class ResourceHelper
       return @data
     end
 
-    def obj.data = hash
+    def obj.data= hash
       @data = hash
     end
 
