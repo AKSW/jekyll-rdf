@@ -371,6 +371,7 @@ http://www.ifi.uio.no/INF3580/simpsons
 
 **Parameters:**
 - `<rdf_resource>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
+- `<rdf_resource_string>` is a String representing the IRI of `<rdf_resource>`.
 - `<property>` is a string representing an RDF predicate, with prefix (`prefix:name`) or a full IRI (`<http://ex.org/name>`).
 - `<lang>` is a language tag (e.g. `de`). If this parameter is omitted replace it by `nil`.
 - `<list>` is a boolean value (`true`, `false`).
@@ -427,6 +428,7 @@ The returned object can by any of the kind, resource, literal, or blanknode.
 
 **Parameters:**
 - `<rdf_resource>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
+- `<rdf_resource_string>` is a String representing the IRI of `<rdf_resource>`.
 - `<property>` is a string representing an RDF predicate, with prefix (`prefix:name`) or a full IRI (`<http://ex.org/name>`).
 - `<list>` is a boolean value (`true`, `false`).
 
@@ -542,6 +544,7 @@ You can use `?resourceUri` inside the query to reference the resource which is g
 
 **Parameters:**
 - `<rdf_container_head>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
+- `<rdf_container_head_string>` is a String representing the IRI of `<rdf_container_head>`.
 
 **Description:** Returns an array with resources for each element in the container whose head is referenced by `rdf_container_head`.
 
@@ -585,7 +588,7 @@ http://www.ifi.uio.no/INF3580/simpsons#Maggie
 
 **Parameters:**
 - `<rdf_collection_head>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
-
+- `<rdf_collection_head_string>` is a String representing the IRI of `<rdf_collection_head>`.
 - `<rdf_resource>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
 - `<property>` is a string representing an RDF predicate, with prefix (`prefix:name`) or a full IRI (`<http://ex.org/name>`).
 
