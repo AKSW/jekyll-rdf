@@ -31,7 +31,11 @@ class TestHelper
       'instance_template_mappings' => {
         'http://www.ifi.uio.no/INF3580/simpsons#Abraham' => 'abraham',
         'http://www.ifi.uio.no/INF3580/simpsons#Homer' => 'homer',
-        'http://www.ifi.uio.no/INF3580/simpsons' => "family"
+        'http://www.ifi.uio.no/INF3580/simpsons' => "family",
+        "http://example.org/A" => "test_rdf_get",
+        "http://example.org/B" => "test_rdf_get",
+        "http://example.org/B#some" => "test_rdf_get",
+        "http://example.org/C" => "test_rdf_get"
       },
       'class_template_mappings' => {
         'http://xmlns.com/foaf/0.1/Person' => 'person',

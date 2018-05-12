@@ -345,8 +345,13 @@ class TestRdfFilter < Test::Unit::TestCase
     end
 
     should "return the input if the input is a resource" do
-      resource = res_helper.basic_resource("http://example.com")
+      resource = Jekyll::JekyllRdf::Drops::RdfResource.new("http://example.com", nil, nil, true)
       assert_equal resource, rdf_get(resource)
+    end
+
+    should "return nothing if the input is a resource not rooted in the knowledgebase" do
+      resource = Jekyll::JekyllRdf::Drops::RdfResource.new("Not/from/this/knowledge/base")
+      assert rdf_get(resource).nil?, "rdf_get shouldn't have returned anything for resource Not/from/this/knowledge/base"
     end
 
     should "return the resource of the current page if a hash is supplied" do

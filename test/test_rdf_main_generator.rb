@@ -219,6 +219,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       @site.layouts["UsePageDemo"] = Jekyll::Layout.new(@site, @site.source, "UsePageDemo.html")
       @site.layouts["ontology"] = Jekyll::Layout.new(@site, @site.source, "ontology.html")
       @site.layouts["covered"] = Jekyll::Layout.new(@site, @site.source, "covered.html")
+      @site.layouts["test_rdf_get"] = Jekyll::Layout.new(@site, @site.source, "test_rdf_get.html")
     end
 
     should "work without any interupts" do

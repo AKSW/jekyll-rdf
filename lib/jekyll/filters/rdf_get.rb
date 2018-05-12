@@ -32,7 +32,13 @@ module Jekyll
     #
     module Filter
       def rdf_get(request_uri)
-        return request_uri if request_uri.class <= Jekyll::JekyllRdf::Drops::RdfResource
+        if (request_uri.class <= Jekyll::JekyllRdf::Drops::RdfResource)
+          if(request_uri.covered)
+            return request_uri
+          else
+            return
+          end
+        end
         request_uri = "<#{Jekyll::JekyllRdf::Helper::RdfHelper::page.data['rdf'].term.to_s}>" if (rdf_page_to_resource?(request_uri))
         return unless valid_resource?(request_uri)
         request_uri = rdf_resolve_prefix(request_uri)
