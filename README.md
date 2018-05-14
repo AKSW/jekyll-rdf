@@ -12,10 +12,13 @@ The API Documentation is available at [RubyDoc.info](http://www.rubydoc.info/gem
 
 1. [Installation](#installation)
 2. [Usage](#usage)
-    1. [Integrate with Jekyll](#integrate-with-jekyll)
-    2. [Make use of RDF data](#make-use-of-rdf-data)
-    3. [Configuration](#configuration)
+    1. [Configuration](#configuration)
+    2. [Building the Jekyll Site](#building-the-jekyll-site)
+    3. [Defining Templates](#defining-templates)
 3. [Parameters and configuration options at a glance](#parameters-and-configuration-options-at-a-glance)
+    1. [Resource Attributes](#resource-attributed)
+    2. [Liquid Filters](#liquid-filters)
+    3. [Plugin Configuration (\_config.yml)](#plugin-configuration-_configyml)
 4. [Development](#development)
 5. [License](#license)
 
@@ -24,26 +27,39 @@ The API Documentation is available at [RubyDoc.info](http://www.rubydoc.info/gem
 As a prerequisite for *Jekyll RDF* you of course need to install [*Jekyll*](https://jekyllrb.com/).
 Please take a look at the installations instructions at https://jekyllrb.com/docs/installation/.
 
-## Installation as a gem
-The easiest and fastest way to install our project is the installation as a gem. The following command automatically installs the project and all required components such as Jekyll and the RDF-library
+If you already have a working Jekyll installation you can add the the Jekyll-RDF plugin.
+Probably you already using [Bundler](https://bundler.io/) and there is a [`Gemfile`](https://bundler.io/gemfile.html) in your Jekyll directory.
+Add Jekyll-RDF to the plugins section:
+
+```
+group :jekyll_plugins do
+    gem "jekyll-rdf", '~> 3.0.0.pre.a'
+    …
+end
+```
+
+Replace the version string with the currently available stable release as listed on [rubygems.org](https://rubygems.org/gems/jekyll-rdf).
+After updating your `Gemfile` you probably want to run `bundle install` (or `bundle install --path vendor/bundle`) or `bundle update`.
+
+If you are not using a `Gemfile` to manage your jekyll/ruby packages install Jekyll-RDF using `gem`:
+
 ```
 gem install jekyll-rdf
 ```
 
-## Installation from source
-To install the project with the git-repository you will need `git` on your system. The first step is just cloning the repository:
-```
-git clone git@github.com:white-gecko/jekyll-rdf.git
-```
-A folder named `jekyll-rdf` will be automatically generated. You need to switch into this folder and compile the ruby gem to finish the installation:
-```
-cd jekyll-rdf
-gem build jekyll-rdf.gemspec
-gem install jekyll-rdf -*.gem
-```
+If you want to build the plugin from source, please have a look at our [Development](#development) section.
 
 # Usage
-## Integrate with Jekyll
+
+This section explains how to use Jekyll-RDF in three steps:
+
+1. [Configuration](#configuration)
+2. [Building the Jekyll Site](#building-the-jekyll-site)
+3. [Defining Templates](#defining-templates)
+
+All filters and methods to use in templates and configuration options are documented in the section “[Parameters and configuration options at a glance](#parameters-and-configuration-options-at-a-glance)”.
+
+## Configuration
 First, you need a jekyll page. In order to create one, just do:
 ```
 jekyll new my_page
@@ -53,33 +69,73 @@ cd my_page
 Further there are some parameters required in your `_config.yml` for `jekyll-rdf`. I.e. the `url` and `baseurl` parameters are used for including the resource pages into the root of the site, the plug-in has to be configured, and the path to the RDF file has to be present.
 
 ```yaml
-url: "http://www.ifi.uio.no"
-baseurl: "/INF3580"
+baseurl: "/simpsons"
+url: "http://example.org"
 
 plugins:
     - jekyll-rdf
 
 jekyll_rdf:
-    path: "simpsons.ttl"
+    path: "_data/data.ttl"
+    default_template: "default.html"
+    restriction: "SELECT ?s WHERE { ?s ?p ?o . FILTER regex(str(?s), "http://example.org/simpsons")  }"
+    class_template_mappings:
+        "http://xmlns.com/foaf/0.1/Person": "person.html"
+    instance_template_mappings:
+        "http://example.org/simpsons/Abraham": "abraham.html"
 ```
 
-Running `jekyll build` will render the RDF resources to the `_site/…` directory.
+### Map resources to templates
+It is possible to map a specific class (resp. RDF-type) or individual resources to a template.
+```yaml
+  class_template_mappings:
+      "http://xmlns.com/foaf/0.1/Person": "person.html"
+  instance_template_mappings:
+      "http://aksw.org/Team": "team.html"
+```
+
+A template mapped to a class will be used to render each instance of that class and its subclasses.
+Each instance is rendered with its most specific class mapped to a template.
+If the mapping is ambiguous for a resource, a warning will be output to your command window, so watch out!
+
+It is also possible to define a default template, which is used for all resources, which are not covered by the `class_template_mappings` or `instance_template_mappings`.
+
+```yaml
+  default_template: "default.html"
+```
+
+### Restrict resource selection
+Additionally, you can restrict the overall resource selection by adding a SPARQL query as `restriction` parameter to `_config.yml`. Please use ?resourceUri as the placeholder for the resulting literal:
+```yaml
+  restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"
+```
+
+There are 3 pre-defined keywords for restrictions implemented:
+* `subjects` will load all subject URIs
+* `predicates` will load all predicate URIs
+* `objects` will load all object URIs
+
+### Blank Nodes
+Furthermore you can decide if you want to render blank nodes or not. You just need to add `include_blank`to `_config.yml`:
+```yaml
+jekyll_rdf:
+  include_blank: true
+```
+
+### Preferred Language
+Finally it is also possible to set a preferred language for the RDF-literals with the option `language`:
+```yaml
+jekyll_rdf:
+  language: "en"
+```
+
+## Building the Jekyll Site
+
+Running `jekyll build` will render the RDF resources to the `_site/…` directory. Running `jekyll serve` will render the RDF resources and provide you with an instant HTTP-Server usually accessible at `http://localhost:4000/`.
 RDF resources whose IRIs don't start with the configured jekyll `url` and `baseurl` are rendered to the `_site/rdfsites/…` subdirectory.
 
-***Note:*** Since Jekyll 3.3.0 there is a special behavior of the **`jekyll serve`** command in a development environment.
-Jekyll overwrites the `site.url` variable with your host and port reference, as [described in the Jekyll documentation](https://jekyllrb.com/docs/variables/#site-variables).
-The behavior breaks the jekyll-rdf resource creation.
-If you want to use `jekyll serve` you have to set the environment variable `JEKYLL_ENV=production`.
-
-## Using in Combination with Permalinks
-
-If you have configured [permalinks](https://jekyllrb.com/docs/permalinks/) in your `_config.yml` as it is the case for the initial example page of Jekyll whit might interfere with the way JekyllRDF is generating URLs.
-A rule of thumb seems to be, that permalinks not ending with a slash (`/`, e.g. `data`, `ordinal`, and `none`) are safe, while permalinks ending with a slash (e.g. `pretty`) cause strange URLs for RDF resources.
-This issue is discussed in [issue#131](https://github.com/white-gecko/jekyll-rdf/issues/131).
-
-## Make use of RDF data
-### Templates
-Now, create one or more files (e.g `rdf_index.html` or `person.html`) in the `_layouts`-directory to edit the temaplate for rdf-pages. For each resource a page will be rendered. See example below:
+## Defining Templates
+To make use of the RDF data, create one or more files (e.g `rdf_index.html` or `person.html`) in the `_layouts`-directory. For each resource a page will be rendered. See example below:
 
 ```html
 ---
@@ -117,7 +173,6 @@ Is the currently rendered resource.
 
 Returns the IRI of the currently rendered resource.
 
-### Liquid Filters
 To access objects which are connected to the current subject via a predicate you can use our custom liquid filters. For single objects or lists of objects use the `rdf_property`-filter (see [1](#single-objects) and [2](#multiple-objects)).
 
 ### Single Objects
@@ -222,32 +277,10 @@ It is possible to declare a set of prefixes which can be used in the `rdf_proper
 This allows to shorten the amount of text required for each liquid-filter.
 The syntax of the prefix declarations the same as for [SPARQL 1.1](https://www.w3.org/TR/2013/REC-sparql11-query-20130321/).
 Just put your prefixes in a separate file and include the key `rdf_prefix_path` together with a relative path in the [YAML Front Matter](https://jekyllrb.com/docs/frontmatter/) of a file where your prefixes should be used.
-The path gets resolved to `<your jekyll-directory>/rdf-data/<rdf_prefix_path>`.
 
 For the prefixes the same rules apply as for other variables defined in the YAML Front Matter.
 “These variables will then be available to you to access using Liquid tags both further down in the file and also in any layouts or includes that the page or post in question relies on.” (source: [YAML Front Matter](https://jekyllrb.com/docs/frontmatter/)).
 This is especially relevant if you are using prefixes in includes.
-
-## Configuration
-
-### Map resources to templates
-It is possible to map a specific class (resp. RDF-type) or individual resources to a template.
-```yaml
-  class_template_mappings:
-      "http://xmlns.com/foaf/0.1/Person": "person.html"
-  instance_template_mappings:
-      "http://aksw.org/Team": "team.html"
-```
-
-A template mapped to a class will be used to render each instance of that class and its subclasses.
-Each instance is rendered with its most specific class mapped to a template.
-If the mapping is ambiguous for a resource, a warning will be output to your command window, so watch out!
-
-It is also possible to define a default template, which is used for all resources, which are not covered by the `class_template_mappings` or `instance_template_mappings`.
-
-```yaml
-  default_template: "default.html"
-```
 
 ### Dealing with Fragment Identifiers
 If the URI of a resource contains a [fragment identifier (`#…`)](https://en.wikipedia.org/wiki/Fragment_identifier) the resource can be hosted together with other resources with the same base URI up to the fragment identifier on a single page.
@@ -271,49 +304,9 @@ In `_layouts/family.html`:
 The example uses the template `family.html` to render a single page containing every resource whose URI begins with `http://www.ifi.uio.no/INF3580/simpsons#`, was well as the resource `http://www.ifi.uio.no/INF3580/simpsons` itself.
 Jekyll-rdf collects all resources with a fragment identifier in their URI (from here on called `subResources`) and passes them through `page.sub_rdf` into the templates of its `superResource` (resources whose base URI is the same as of its `subResources` except for the fragment identifier).
 
-### Restrict resource selection
-Additionally, you can restrict the overall resource selection by adding a SPARQL query as `restriction` parameter to `_config.yml`. Please use ?resourceUri as the placeholder for the resulting literal:
-```yaml
-  restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"
-```
-
-There are 3 pre-defined keywords for restrictions implemented:
-* `subjects` will load all subject URIs
-* `predicates` will load all predicate URIs
-* `objects` will load all object URIs
-
-### Blank Nodes
-Furthermore you can decide if you want to render blank nodes or not. You just need to add `include_blank`to `_config.yml`:
-```yaml
-jekyll_rdf:
-  include_blank: true
-```
-
-### Preferred Language
-Finally it is also possible to set a preferred language for the RDF-literals with the option `language`:
-```yaml
-jekyll_rdf:
-  language: "en"
-```
-
-### Example configuration
-An example configuration could look like this:
-```yaml
-jekyll_rdf:
-  path: "rdf-data/simpsons.ttl"
-  language: "en"
-  include_blank: true
-  restriction: "SELECT ?s WHERE { ?s ?p ?o}"
-  default_template: "rdf_index.html"
-  class_template_mappings:
-    "http://xmlns.com/foaf/0.1/Person": "person.html"
-  instance_template_mappings:
-    "http://www.ifi.uio.no/INF3580/simpsons#Abraham": "abraham.html"
-```
-
 # Parameters and configuration options at a glance
 
-## Resource
+## Resource Attributes
 Every resource returned by one of `jekyll-rdf`s filters is an object that liquid can also handle like a string. They all have the following methods usable in Liquid.
 
 ### Resource.statements_as_subject
@@ -362,10 +355,11 @@ http://www.ifi.uio.no/INF3580/simpsons
 ```
 
 ### rdf_property
-**Synopsis:** `<rdf_resource> | rdf_property: <property>, [<lang>] OR [<lang>, <list>] OR [nil, <list>]`
+**Synopsis:** `<rdf_resource> OR <rdf_resource_string> | rdf_property: <property>, [<lang>] OR [<lang>, <list>] OR [nil, <list>]`
 
 **Parameters:**
 - `<rdf_resource>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
+- `<rdf_resource_string>` is a String representing the IRI of `<rdf_resource>`.
 - `<property>` is a string representing an RDF predicate, with prefix (`prefix:name`) or a full IRI (`<http://ex.org/name>`).
 - `<lang>` is a language tag (e.g. `de`). If this parameter is omitted replace it by `nil`.
 - `<list>` is a boolean value (`true`, `false`).
@@ -377,6 +371,14 @@ The returned object can by any of the kind, resource, literal, or blanknode.
 ```
 {assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
 {{ resource | rdf_property: '<http://xmlns.com/foaf/0.1/job>' }}
+```
+**Result:**
+```html
+"unknown"
+```
+**Example (string):**
+```
+{{ '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_property: '<http://xmlns.com/foaf/0.1/job>' }}
 ```
 **Result:**
 ```html
@@ -410,10 +412,11 @@ The returned object can by any of the kind, resource, literal, or blanknode.
 ```
 
 ### rdf_inverse_property
-**Synopsis:** `<rdf_resource> | rdf_inverse_property: <property>, [<list>]`
+**Synopsis:** `<rdf_resource> OR <rdf_resource_string>| rdf_inverse_property: <property>, [<list>]`
 
 **Parameters:**
 - `<rdf_resource>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
+- `<rdf_resource_string>` is a String representing the IRI of `<rdf_resource>`.
 - `<property>` is a string representing an RDF predicate, with prefix (`prefix:name`) or a full IRI (`<http://ex.org/name>`).
 - `<list>` is a boolean value (`true`, `false`).
 
@@ -431,6 +434,16 @@ The returned object can by any of the kind, resource, or blanknode.
 http://www.ifi.uio.no/INF3580/simpsons#Bart
 ```
 
+**Examples (string):**
+```
+{{ '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_inverse_property: '<http://www.ifi.uio.no/INF3580/family#hasFather>' }}
+```
+**Result:**
+```html
+http://www.ifi.uio.no/INF3580/simpsons#Bart
+```
+
+
 **Example (as list):**
 ```
 {assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
@@ -447,7 +460,7 @@ http://www.ifi.uio.no/INF3580/simpsons#Maggie
 ```
 
 ### sparql_query
-**Synopsis:** `<rdf_resource> | sparql_query: <query>` **OR** `<reference_array> | sparql_query: <query>`
+**Synopsis:** `<rdf_resource> | sparql_query: <query>` **OR** `<reference_array> | sparql_query: <query>` **OR** `<query> | sparql_query`
 
 **Parameters:**
 - `<rdf_resource>` is an RdfResource which will replace `?resourceUri` in the query. To omit this parameter or reference the resource of the current page use `page.rdf`, `page`, or `nil`.
@@ -481,7 +494,7 @@ You can use `?resourceUri` inside the query to reference the resource which is g
 **Example (array)**
 ```
 {% assign query = 'SELECT ?x WHERE {?resourceUri_0 ?x ?resourceUri_1}' %}
-<!-- something that creates array = ["<http://www.ifi.uio.no/INF3580/simpsons#Homer>", "<http://www.ifi.uio.no/INF3580/simpsons#Marge>"] -->
+{% assign array = "<http://www.ifi.uio.no/INF3580/simpsons#Homer>,<http://www.ifi.uio.no/INF3580/simpsons#Marge>" | split: %}
 {% assign resultset = array | sparql_query: query %}
 <table>
 {% for result in resultset %}
@@ -496,11 +509,30 @@ You can use `?resourceUri` inside the query to reference the resource which is g
 </table>
 ```
 
+**Example (query)**
+```
+{% assign query = 'SELECT ?x WHERE {<http://www.ifi.uio.no/INF3580/simpsons#Homer> ?x <http://www.ifi.uio.no/INF3580/simpsons#Marge>}' %}
+{% assign resultset = query | sparql_query %}
+<table>
+{% for result in resultset %}
+  <tr><td>{{ result.x }}</td></tr>
+{% endfor %}
+</table>
+```
+
+**Result:**
+```
+<table>
+  <tr><td>http://www.ifi.uio.no/INF3580/family#hasSpouse</td></tr>
+</table>
+```
+
 ### rdf_container
-**Synopsis:** `<rdf_container_head> | rdf_container`
+**Synopsis:** `<rdf_container_head> **OR** <rdf_container_head_string> | rdf_container`
 
 **Parameters:**
 - `<rdf_container_head>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
+- `<rdf_container_head_string>` is a String representing the IRI of `<rdf_container_head>`.
 
 **Description:** Returns an array with resources for each element in the container whose head is referenced by `rdf_container_head`.
 
@@ -522,12 +554,29 @@ http://www.ifi.uio.no/INF3580/simpsons#Maggie
 
 ```
 
+**Examples: (string)**
+```
+{% assign array = '<http://www.ifi.uio.no/INF3580/simpson-container#Container>' | rdf_container %}
+{% for item in array %}
+{{ item }}
+{% endfor %}
+```
+###### Result:
+```html
+http://www.ifi.uio.no/INF3580/simpsons#Homer
+http://www.ifi.uio.no/INF3580/simpsons#Marge
+http://www.ifi.uio.no/INF3580/simpsons#Bart
+http://www.ifi.uio.no/INF3580/simpsons#Lisa
+http://www.ifi.uio.no/INF3580/simpsons#Maggie
+
+```
+
 ### rdf_collection
-**Synopsis:** `<rdf_collection_head> | rdf_collection` or `<rdf_resource> | rdf_collection: "<property>"`
+**Synopsis:** `<rdf_collection_head> OR <rdf_collection_head_string> | rdf_collection` **OR** `<rdf_resource> | rdf_collection: "<property>"`
 
 **Parameters:**
 - `<rdf_collection_head>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
-
+- `<rdf_collection_head_string>` is a String representing the IRI of `<rdf_collection_head>`.
 - `<rdf_resource>` is an RdfResource. To reference the resource of the current page use `page.rdf`, `page`, or `nil`.
 - `<property>` is a string representing an RDF predicate, with prefix (`prefix:name`) or a full IRI (`<http://ex.org/name>`).
 
@@ -550,7 +599,21 @@ http://www.ifi.uio.no/INF3580/simpsons#Bart
 http://www.ifi.uio.no/INF3580/simpsons#Lisa
 http://www.ifi.uio.no/INF3580/simpsons#Maggie
 ```
-
+**Example (specify head string):**
+```
+{% assign array = '<http://www.ifi.uio.no/INF3580/simpson-collection#Collection>' | rdf_collection %}
+{% for item in array %}
+{{ item }}
+{% endfor %}
+```
+**Result:**
+```html
+http://www.ifi.uio.no/INF3580/simpsons#Homer
+http://www.ifi.uio.no/INF3580/simpsons#Marge
+http://www.ifi.uio.no/INF3580/simpsons#Bart
+http://www.ifi.uio.no/INF3580/simpsons#Lisa
+http://www.ifi.uio.no/INF3580/simpsons#Maggie
+```
 **Example (specify via property):**
 ```
 {% assign resource = '<http://www.ifi.uio.no/INF3580/simpsons>' | rdf_get %}
@@ -580,6 +643,18 @@ http://www.ifi.uio.no/INF3580/simpsons#Maggie
 |class_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files for rendering all instances of that class|```class_template_mappings: "http://xmlns.com/foaf/0.1/Person": "person.html"```|
 
 # Development
+
+## Installation from source
+To install the project with the git-repository you will need `git` on your system. The first step is just cloning the repository:
+```
+git clone git@github.com:white-gecko/jekyll-rdf.git
+```
+A folder named `jekyll-rdf` will be automatically generated. You need to switch into this folder and compile the ruby gem to finish the installation:
+```
+cd jekyll-rdf
+gem build jekyll-rdf.gemspec
+gem install jekyll-rdf -*.gem
+```
 
 ## Run tests
 ```
