@@ -31,6 +31,7 @@ module Jekyll
       #
       module RdfHelper
         @@prefixes = {}
+        @@page_path = {}
 
         def self.sparql= sparql
           @@sparql = sparql
@@ -102,6 +103,15 @@ module Jekyll
 
         def self.pathiri
           @@baseiri
+        end
+        #store the filename and the filedir into a set to check later if a conflict
+        #occurs
+        def self.page_path= page
+          @@page_path[File.join(page.dir, page.name)] = page
+        end
+
+        def self.page_path? page
+          @@page_path[File.join(page.dir, page.name)]
         end
       end
 

@@ -25,7 +25,17 @@
 
 Jekyll::Hooks.register :pages, :pre_render do |page, payload|
   if(page.class <= Jekyll::RdfPageData)
-    payload["content"] = ""
+    payload["content"] = page.payload_content
   end
+#  if page.data["title"].eql? "RenderConflict"
+#    pp page
+#  end
   Jekyll::JekyllRdf::Helper::RdfHelper::page = page
+end
+
+Jekyll::Hooks.register :pages, :post_render do |page, payload|
+  rdf_page = Jekyll::JekyllRdf::Helper::RdfHelper::page_path?(page)
+  unless (rdf_page.nil?) || (page.eql? rdf_page)
+    rdf_page.change_output(page.output)
+  end
 end

@@ -45,5 +45,13 @@ class TestJekyllRdf < Test::Unit::TestCase
       expect(c).to include "Resource covered?: true"
     end
   end
+  
+  context "A page confilicting with a rdf-resource page" do
+    should "create a hybrid of both pages" do
+      s = File.read("#{TestHelper::DEST_DIR}#{TestHelper::BASE_URL}/conflict/index.html")
+      expect(s).to include "<h1>This page is a conflict wrapper for the following page:</h1>"
+      expect(s).to include "<div>conflict</div>"
+    end
+  end
 end
 #test
