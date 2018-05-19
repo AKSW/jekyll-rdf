@@ -11,6 +11,12 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        Resource covered?: {{page.rdf.covered}}
+        Resource covered?: {{page.rdf.covered}} <br/>
+        Resource per Page:{{page | rdf_get}}<br/>
+            {% assign rdf = page | rdf_get %}
+            |--> covered: {{rdf.covered}}<br/>
+        Example resource per String: {{"<http://this/uncovered/resource>" | rdf_get}}<br/>
+            {% assign rdf = "<http://this/uncovered/resource>" | rdf_get %}
+            |--> covered: {{rdf.covered}}
     </body>
 </html>
