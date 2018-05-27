@@ -354,9 +354,9 @@ class TestRdfFilter < Test::Unit::TestCase
       assert rdf_get(resource).nil?, "rdf_get shouldn't have returned anything for resource Not/from/this/knowledge/base"
     end
 
-    should "return the resource of the current page if a hash is supplied" do
+    should "return the resource of the input page hash if a hash is supplied" do
       Jekyll::JekyllRdf::Helper::RdfHelper::page.data["rdf"] = res_helper.basic_resource("http://www.ifi.uio.no/INF3580/main")
-      test_resource = rdf_get({"template" => "", "url" => "", "path" => ""})
+      test_resource = rdf_get({"template" => "", "url" => "", "path" => "", "rdf" => res_helper.basic_resource("http://www.ifi.uio.no/INF3580/main")})
       assert_equal "http://www.ifi.uio.no/INF3580/main", test_resource.iri
     end
   end

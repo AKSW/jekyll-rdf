@@ -3,12 +3,17 @@ module Jekyll
     module Filter
       private
       def rdf_page_to_resource(input)
-        return Jekyll::JekyllRdf::Helper::RdfHelper::page.data['rdf'] if(rdf_page_to_resource?(input))
+        return Jekyll::JekyllRdf::Helper::RdfHelper::page.data['rdf'] if rdf_substitude_nil?(input)
+        return input['rdf'] if rdf_page_to_resource?(input)
         return input
       end
 
       def rdf_page_to_resource?(input)
-        return (!Jekyll::JekyllRdf::Helper::RdfHelper::page.data['rdf'].nil?)&&(input.nil? ||  input.class <= (Jekyll::RdfPageData) || (input.class <= Hash && input.key?("template") && input.key?("url") && input.key?("path") ))
+        return input.class <= Hash && input.key?("template") && input.key?("url") && input.key?("path") &&!input["rdf"].nil?
+      end
+
+      def rdf_substitude_nil?(input)
+        return (!Jekyll::JekyllRdf::Helper::RdfHelper::page.data['rdf'].nil?)&&input.nil?
       end
 
       def valid_resource?(input)

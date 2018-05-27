@@ -9,5 +9,9 @@ rdf_prefix_path: rdf-data/simpsons.pref
     <body>
         <h1>Instance URI: </h1>{{page.rdf}}
         <h1>Access http://www.ifi.uio.no/INF3580/main: </h1>{{"base:main" | rdf_get}}
+        <h1>Access another page Resource: </h1>
+        {% for node in site.pages %}
+        {{ node | rdf_get}} <br/>
+        {% endfor %}
     </body>
 </html>

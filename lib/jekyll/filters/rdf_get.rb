@@ -28,7 +28,7 @@ module Jekyll
   module JekyllRdf
 
     ##
-    # Internal module to hold the medthod #rdf_get
+    # Internal module to hold the method #rdf_get
     #
     module Filter
       def rdf_get(request_uri)
@@ -39,8 +39,8 @@ module Jekyll
             return
           end
         end
-        request_uri = "<#{Jekyll::JekyllRdf::Helper::RdfHelper::page.data['rdf'].term.to_s}>" if (rdf_page_to_resource?(request_uri))
-        return unless valid_resource?(request_uri)
+        request_uri = to_string_wrap(rdf_page_to_resource(request_uri))
+        return unless valid_resource?(request_uri) && (!request_uri[0..1].eql? "_:")
         request_uri = rdf_resolve_prefix(request_uri)
         ask_exist = "ASK WHERE {{#{request_uri} ?p ?o}UNION{?s #{request_uri} ?o}UNION{?s ?p #{request_uri}}} "
         return unless (Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(ask_exist).true?)
