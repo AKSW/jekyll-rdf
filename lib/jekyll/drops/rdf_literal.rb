@@ -39,6 +39,14 @@ module Jekyll
           term.to_s
         end
 
+        ##
+        # Return literal value to allow liquid filters to compute
+        # rdf literals as well
+        #
+        def to_liquid
+          return term.to_s
+        end
+
       end
     end
   end
