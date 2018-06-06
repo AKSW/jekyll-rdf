@@ -44,6 +44,28 @@ class TestJekyllRdf < Test::Unit::TestCase
       expect(u).to include "Resource covered?: false"
       expect(c).to include "Resource covered?: true"
     end
+
+    should "work with math filters" do
+      content = []
+      file = File.read("#{TestHelper::DEST_DIR}/ex/math/math_filters/index.html")
+      content = file[/\<div\>(.|\s)*\<\/div>/][5..-7].strip.split("<br/>").map do |entry|
+        entry.strip
+      end
+      assert "15".eql?(content[0]), "Wrong result on liquid standard math filter: plus"
+      assert "5".eql?(content[1]), "Wrong result on liquid standard math filter: minus"
+      assert "50".eql?(content[2]), "Wrong result on liquid standard math filter: times"
+      assert "3".eql?(content[3]), "Wrong result on liquid standard math filter: divided_by"
+      assert "0".eql?(content[4]), "Wrong result on liquid standard math filter: modulo: 5"
+      assert "1".eql?(content[5]), "Wrong result on liquid standard math filter: modulo: 3"
+      assert "7".eql?(content[6]), "Wrong result on liquid standard math filter: round"
+      assert "8".eql?(content[7]), "Wrong result on liquid standard math filter: ceil"
+      assert "7".eql?(content[8]), "Wrong result on liquid standard math filter: floor"
+ #     assert "5".eql?(content[9]), "Wrong result on liquid standard math filter: at_most"  these standard filters are bugged in my enviorment
+ #     assert "10".eql?(content[10]), "Wrong result on liquid standard math filter: at_most"
+ #     assert "12".eql?(content[11]), "Wrong result on liquid standard math filter: at_least"
+ #     assert "10".eql?(content[12]), "Wrong result on liquid standard math filter: at_least"
+      assert "3".eql?(content[13]), "Wrong result on liquid standard math filter: abs"
+    end
   end
 end
 #test

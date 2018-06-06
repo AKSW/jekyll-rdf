@@ -188,4 +188,8 @@ plha:gem plh:predicate plh:object.
 <http://example.org/B#some> a <http://example.org/Thing> .
 <http://example.org/C#some> a <http://example.org/Thing> .
 
+<http://example.org/math> <http://example.org/int> "10"^^xsd:int .
+<http://example.org/math> <http://example.org/float> "7.25"^^xsd:float .
+<http://example.org/math> <http://example.org/negative> "-3"^^xsd:int .
+
 base:pages a base:page .
