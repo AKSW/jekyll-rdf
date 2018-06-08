@@ -78,7 +78,7 @@ plugins:
 jekyll_rdf:
     path: "_data/data.ttl"
     default_template: "default.html"
-    restriction: "SELECT ?s WHERE { ?s ?p ?o . FILTER regex(str(?s), "http://example.org/simpsons")  }"
+    restriction: "SELECT ?s WHERE { ?s ?p ?o . FILTER regex(str(?s), 'http://example.org/simpsons')  }"
     class_template_mappings:
         "http://xmlns.com/foaf/0.1/Person": "person.html"
     instance_template_mappings:
@@ -287,11 +287,11 @@ We implemented a liquid filter `sparql_query` to run custom SPARQL queries. Each
 ### Defining Prefixes for RDF
 It is possible to declare a set of prefixes which can be used in the `rdf_property` and `sparql_query` liquid-filters.
 This allows to shorten the amount of text required for each liquid-filter.
-The syntax of the prefix declarations the same as for [SPARQL 1.1](https://www.w3.org/TR/2013/REC-sparql11-query-20130321/).
+The syntax of the prefix declarations is the same as for [SPARQL 1.1](https://www.w3.org/TR/2013/REC-sparql11-query-20130321/).
 Just put your prefixes in a separate file and include the key `rdf_prefix_path` together with a relative path in the [YAML Front Matter](https://jekyllrb.com/docs/frontmatter/) of a file where your prefixes should be used.
 
 For the prefixes the same rules apply as for other variables defined in the YAML Front Matter.
-“These variables will then be available to you to access using Liquid tags both further down in the file and also in any layouts or includes that the page or post in question relies on.” (source: [YAML Front Matter](https://jekyllrb.com/docs/frontmatter/)).
+*These variables will then be available to you to access using Liquid tags both further down in the file and also in any layouts or includes that the page or post in question relies on.* (source: [YAML Front Matter](https://jekyllrb.com/docs/frontmatter/)).
 This is especially relevant if you are using prefixes in includes.
 
 ### Dealing with Fragment Identifiers
