@@ -45,5 +45,20 @@ class TestJekyllRdf < Test::Unit::TestCase
       expect(c).to include "Resource covered?: true"
     end
   end
+
+  context "Prefixes" do
+    should "work on non Rdf Pages too" do
+      file = File.read("#{TestHelper::DEST_DIR}/INF3580/ex/prefixes/prefixes/index.html")
+      content = file[/\<div\>(.|\s)*\<\/div>/][5..-7].strip.split("<br/>").map do |entry|
+        entry.strip
+      end
+      assert "<h6>Prefix foaf:Person</h6>".eql?(content[0]), "Headline should be <h6>Prefix foaf:Person</h6>\nIt was: #{content[0]}"
+      assert "http://xmlns.com/foaf/0.1/Person".eql?(content[1]), "This line should be >>>http://xmlns.com/foaf/0.1/Person<<< \nIt was :#{content[1]}"
+      assert "<h6>Prefix rdf:type</h6>".eql?(content[2]), "Headline should be <h6>Prefix rdf:type</h6>\nIt was: #{content[2]}"
+      assert "http://www.w3.org/1999/02/22-rdf-syntax-ns#type".eql?(content[3]), "This line should be >>>http://www.w3.org/1999/02/22-rdf-syntax-ns#type<<< \nIt was :#{content[3]}"
+      assert "<h6>Prefix rdfs:Container</h6>".eql?(content[4]), "Headline should be <h6>Prefix rdf:type</h6>\nIt was: #{content[4]}"
+      assert "http://www.w3.org/2000/01/rdf-schema#Container".eql?(content[5]), "This line should be >>>http://www.w3.org/2000/01/rdf-schema#Container<<< \nIt was :#{content[5]}"
+    end
+  end
 end
 #test
