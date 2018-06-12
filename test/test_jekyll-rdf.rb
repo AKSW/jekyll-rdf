@@ -65,6 +65,20 @@ class TestJekyllRdf < Test::Unit::TestCase
  #     assert "12".eql?(content[11]), "Wrong result on liquid standard math filter: at_least"
  #     assert "10".eql?(content[12]), "Wrong result on liquid standard math filter: at_least"
       assert "3".eql?(content[13]), "Wrong result on liquid standard math filter: abs"
+      assert "2018".eql?(content[14]), "Wrong result on liquid standard date filter: xsd:time %Y"
+      assert "12".eql?(content[15]), "Wrong result on liquid standard date filter: xsd:time %H"
+      assert "45".eql?(content[16]), "Wrong result on liquid standard date filter: xsd:time %M"
+      assert "2018".eql?(content[17]), "Wrong result on liquid standard date filter: xsd:date %Y"
+      assert "06".eql?(content[18]), "Wrong result on liquid standard date filter: xsd:date %m"
+      assert "2018".eql?(content[19]), "Wrong result on liquid standard date filter: xsd:dateTime %Y"
+      assert "06".eql?(content[20]), "Wrong result on liquid standard date filter: xsd:dateTime %m"
+      assert "12".eql?(content[21]), "Wrong result on liquid standard date filter: xsd:dateTime %H"
+      assert "2018".eql?(content[22]), "Wrong result on liquid standard date filter: xsd:dateTime (Zone: Z) %Y"
+      assert "12".eql?(content[23]), "Wrong result on liquid standard date filter: xsd:dateTime (Zone: Z) %H"
+      assert "42".eql?(content[24]), "Wrong result on liquid standard date filter: xsd:dateTime (Zone: Z) %M"
+      assert "2018".eql?(content[25]), "Wrong result on liquid standard date filter: xsd:dateTime (Zone: +02:00) %Y"
+      assert "12".eql?(content[26]), "Wrong result on liquid standard date filter: xsd:dateTime (Zone: +02:00) %H"
+      assert "42".eql?(content[27]), "Wrong result on liquid standard date filter: xsd:dateTime (Zone: +02:00) %M"
     end
   end
 end
