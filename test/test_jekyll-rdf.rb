@@ -47,7 +47,7 @@ class TestJekyllRdf < Test::Unit::TestCase
 
     should "work with math filters" do
       content = []
-      file = File.read("#{TestHelper::DEST_DIR}/ex/math/math_filters/index.html")
+      file = File.read("#{TestHelper::DEST_DIR}/INF3580/ex/math/math_filters/index.html")
       content = file[/\<div\>(.|\s)*\<\/div>/][5..-7].strip.split("<br/>").map do |entry|
         entry.strip
       end
