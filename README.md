@@ -78,7 +78,7 @@ plugins:
 jekyll_rdf:
     path: "_data/data.ttl"
     default_template: "default.html"
-    restriction: "SELECT ?s WHERE { ?s ?p ?o . FILTER regex(str(?s), 'http://example.org/simpsons')  }"
+    restriction: "SELECT ?resourceUri WHERE { ?resourceUri ?p ?o . FILTER regex(str(?resourceUri), 'http://example.org/simpsons')  }"
     class_template_mappings:
         "http://xmlns.com/foaf/0.1/Person": "person.html"
     instance_template_mappings:
@@ -105,7 +105,7 @@ It is also possible to define a default template, which is used for all resource
 ```
 
 ### Restrict resource selection
-Additionally, you can restrict the overall resource selection by adding a SPARQL query as `restriction` parameter to `_config.yml`. Please use ?resourceUri as the placeholder for the resulting literal:
+Additionally, you can restrict the overall resource selection by adding a SPARQL query as `restriction` parameter to `_config.yml`. Please use `?resourceUri` as the placeholder for the resulting URIs:
 ```yaml
   restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"
 ```
@@ -579,7 +579,7 @@ http://www.ifi.uio.no/INF3580/simpsons#Maggie
 |path|Relative path to the RDF-File|no default|Specifies the path to the RDF file you want to render the website for|```path: "rdf-data/simpsons.ttl"```|
 |language|Language-Tag as String|no default|Specifies the preferred language when you select objects using our Liquid filters|```language: "en"```|
 |include_blank|Boolean-Expression|false|Specifies whether blank nodes should also be rendered or not|```include_blank: true```|
-|restriction|SPARQL-Query as String or subjects / objects / predicates|no default|Restricts the resource-selection with a given SPARQL-Query or the three keywords subjects (only subject URIs), objects, predicates|```restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"```|
+|restriction|SPARQL-Query as String or subjects/objects/predicates|no default|Restricts the resource-selection with a given SPARQL-Query to the results bound to the special variable `?resourceUri` or the three keywords `subjects` (only subject URIs), `objects`, `predicates`|```restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"```|
 |default_template|Filename of the default RDF-template in _layouts directory|no default|Specifies the template-file you want Jekyll to use to render all RDF resources|```default_template: "rdf_index.html"```|
 |instance_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files for rendering an individual instance|```instance_template_mappings: "http://www.ifi.uio.no/INF3580/simpsons#Abraham": "abraham.html"```|
 |class_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files for rendering all instances of that class|```class_template_mappings: "http://xmlns.com/foaf/0.1/Person": "person.html"```|
