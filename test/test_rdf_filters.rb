@@ -194,7 +194,7 @@ class TestRdfFilter < Test::Unit::TestCase
   context "rdf_resolve_prefix on global prefixes from Jekyll::RdfPrefixResolver" do
     setup do
       Jekyll::JekyllRdf::Helper::RdfHelper::prefixes = File.join(Dir.pwd, "test/source/rdf-data/simpsons.pref")
-      Jekyll::JekyllRdf::Helper::RdfHelper::page = {}
+      Jekyll::JekyllRdf::Helper::RdfHelper::page = res_helper.create_fake_page
     end
 
     should "resolve the prefix foaf to its full length" do
