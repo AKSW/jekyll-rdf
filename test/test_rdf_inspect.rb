@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class TestRdfResource < Test::Unit::TestCase
-  graph = RDF::Graph.load(TestHelper::TEST_OPTIONS['jekyll_rdf']['path'])
+  graph = RDF::Graph.load(File.join(TestHelper::TEST_OPTIONS['source'], TestHelper::TEST_OPTIONS['jekyll_rdf']['path']))
   sparql = SPARQL::Client.new(graph)
   context "rdfResource.inspect" do
     setup do
