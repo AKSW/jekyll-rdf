@@ -22,7 +22,7 @@ class TestHelper
     'baseurl'        => BASE_URL,
     'url'            => DOMAIN_NAME,
     'jekyll_rdf'     => {
-      'path' => "#{SOURCE_DIR}/rdf-data/simpsons.ttl",
+      'path' => "/rdf-data/simpsons.ttl",
       'language' => 'en',
       'render_orphaned_uris' => true,
       'include_blank' => true,

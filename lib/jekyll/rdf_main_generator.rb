@@ -49,7 +49,7 @@ module Jekyll
         return false
       end
 
-      graph = RDF::Graph.load(@config['path'])
+      graph = RDF::Graph.load( File.join( site.config['source'], @config['path']))
       sparql = SPARQL::Client.new(graph)
 
       Jekyll::JekyllRdf::Helper::RdfHelper::sparql = sparql
