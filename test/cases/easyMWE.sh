@@ -137,6 +137,6 @@ cd ..
 echo "source 'https://rubygems.org'" >> Gemfile
 
 echo "group :jekyll_plugins do" >> Gemfile
-echo "  gem 'jekyll-rdf', '>= 3.0.0.pre.develop.461'   #, :path => '../../../'" >> Gemfile
+echo "  gem 'jekyll-rdf', '>= 3.0.0.a'   #, :path => '../../../'" >> Gemfile
 echo "end" >> Gemfile
 
