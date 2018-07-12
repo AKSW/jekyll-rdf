@@ -44,6 +44,31 @@ module Jekyll
         # rdf literals as well
         #
         def to_liquid
+          # Convert scientific notation
+
+          regex = /^(-?)(\d+)\.(\d+)E(-?)(\d+)$/
+          numberStr = term.to_s.upcase
+          if regex.match(numberStr)
+
+            number = numberStr.to_f
+
+            negative = number < 0
+
+            if negative
+              number = number * (-1)
+            end
+
+            e = [-1 * (Math.log10(number).floor - (numberStr.to_s.index('E') - numberStr.to_s.index('.'))), 0].max
+
+            vz = ""
+            if negative
+              vz = "-"
+            end
+
+            return vz.to_s + sprintf("%." + e.to_s +  "f\n", number)
+
+          end
+
           return term.to_s
         end
 
