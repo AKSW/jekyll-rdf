@@ -42,6 +42,7 @@ module Jekyll
         ##
         # Return literal value to allow liquid filters to compute
         # rdf literals as well
+        # source: https://github.com/eccenca/jekyll-rdf/commit/704dd98c5e457a81e97fcd011562f1f39fc3f813
         #
         def to_liquid
           # Convert scientific notation
@@ -65,7 +66,7 @@ module Jekyll
               vz = "-"
             end
 
-            return vz.to_s + sprintf("%." + e.to_s +  "f\n", number)
+            return vz.to_s + sprintf("%." + e.to_s +  "f", number)
 
           end
 

@@ -1,0 +1,160 @@
+---
+---
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>This tests math filters</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>
+            {%- assign inumber = page.rdf | rdf_property: "<http://example.org/instance/mInteger>" -%}
+            {%- assign fnumber = page.rdf | rdf_property: "<http://example.org/instance/mFloat>" -%}
+            {%- assign dnumber = page.rdf | rdf_property: "<http://example.org/instance/mDouble>" -%}
+            {%- assign denumber = page.rdf | rdf_property: "<http://example.org/instance/mDoubleNE>" -%}
+            {%- assign ninumber = page.rdf | rdf_property: "<http://example.org/instance/nInteger>" -%}
+            {%- assign nfnumber = page.rdf | rdf_property: "<http://example.org/instance/nFloat>" -%}
+            {%- assign ndnumber = page.rdf | rdf_property: "<http://example.org/instance/nDouble>" -%}
+            {%- assign ndenumber = page.rdf | rdf_property: "<http://example.org/instance/nDoubleNE>" -%}
+            <h5>---Numbers---</h5> <br/>
+            {{ inumber }} <br/>
+            {{ fnumber }} <br/>
+            {{ dnumber }} <br/>
+            {{ denumber }} <br/>
+            {{ ninumber }} <br/>
+            {{ nfnumber }} <br/>
+            {{ ndnumber }} <br/>
+            {{ ndenumber }} <br/>
+            <h5>---math Numbers---</h5> <br/>
+            {{ inumber | plus: 0 }} <br/>
+            {{ fnumber | plus: 0 }} <br/>
+            {{ dnumber | plus: 0 }} <br/>
+            {{ denumber | plus: 0 }} <br/>
+            {{ ninumber | plus: 0 }} <br/>
+            {{ nfnumber | plus: 0 }} <br/>
+            {{ ndnumber | plus: 0 }} <br/>
+            {{ ndenumber | plus: 0 }} <br/>
+            <h5>---Integer---</h5> <br/>
+            {{ inumber | plus: 5 }} <br/>
+            {{ inumber | minus: 5 }} <br/>
+            {{ inumber | times: 5 }} <br/>
+            {{ inumber | divided_by: 3 }} <br/>
+            {{ inumber | modulo: 5 }} <br/>
+            {{ inumber | modulo: 3 }} <br/>
+            {{ inumber | round }} <br/>
+            {{ inumber | ceil }} <br/>
+            {{ inumber | floor }} <br/>
+            {{ inumber | at_most: 5 }} <br/>
+            {{ inumber | at_most: 12 }} <br/>
+            {{ inumber | at_least: 12 }} <br/>
+            {{ inumber | at_least: 8 }} <br/>
+            {{ inumber | abs }} <br/>
+            <h5>---Float---</h5> <br/>
+            {{ fnumber | plus: 5 }} <br/>
+            {{ fnumber | minus: 5 }} <br/>
+            {{ fnumber | times: 5 }} <br/>
+            {{ fnumber | divided_by: 3 }} <br/>
+            {{ fnumber | modulo: 5 }} <br/>
+            {{ fnumber | modulo: 3 }} <br/>
+            {{ fnumber | round }} <br/>
+            {{ fnumber | ceil }} <br/>
+            {{ fnumber | floor }} <br/>
+            {{ fnumber | at_most: 5 }} <br/>
+            {{ fnumber | at_most: 12 }} <br/>
+            {{ fnumber | at_least: 12 }} <br/>
+            {{ fnumber | at_least: 8 }} <br/>
+            {{ fnumber | abs }} <br/>
+            <h5>---Double---</h5> <br/>
+            {{ dnumber | plus: 5 }} <br/>
+            {{ dnumber | minus: 5 }} <br/>
+            {{ dnumber | times: 5 }} <br/>
+            {{ dnumber | divided_by: 3 }} <br/>
+            {{ dnumber | modulo: 5 }} <br/>
+            {{ dnumber | modulo: 3 }} <br/>
+            {{ dnumber | round }} <br/>
+            {{ dnumber | ceil }} <br/>
+            {{ dnumber | floor }} <br/>
+            {{ dnumber | at_most: 5 }} <br/>
+            {{ dnumber | at_most: 12 }} <br/>
+            {{ dnumber | at_least: 12 }} <br/>
+            {{ dnumber | at_least: 8 }} <br/>
+            {{ dnumber | abs }} <br/>
+            <h5>---Double nexp---</h5> <br/>
+            {{ denumber | plus: 5 }} <br/>
+            {{ denumber | minus: 5 }} <br/>
+            {{ denumber | times: 5 }} <br/>
+            {{ denumber | divided_by: 3 }} <br/>
+            {{ denumber | modulo: 5 }} <br/>
+            {{ denumber | modulo: 3 }} <br/>
+            {{ denumber | round }} <br/>
+            {{ denumber | ceil }} <br/>
+            {{ denumber | floor }} <br/>
+            {{ denumber | at_most: 5 }} <!-- at_most at_least don't seem to work --> <br/>
+            {{ denumber | at_most: 12 }} <br/>
+            {{ denumber | at_least: 12.0 }} <br/>
+            {{ denumber | at_least: 8.0 }} <br/>
+            {{ denumber | abs }} <br/>
+            <h5>---neg Integer---</h5> <br/>
+            {{ ninumber | plus: 5 }} <br/>
+            {{ ninumber | minus: 5 }} <br/>
+            {{ ninumber | times: 5 }} <br/>
+            {{ ninumber | divided_by: 3 }} <br/>
+            {{ ninumber | modulo: 5 }} <br/>
+            {{ ninumber | modulo: 3 }} <br/>
+            {{ ninumber | round }} <br/>
+            {{ ninumber | ceil }} <br/>
+            {{ ninumber | floor }} <br/>
+            {{ ninumber | at_most: 5 }} <br/>
+            {{ ninumber | at_most: 12 }} <br/>
+            {{ ninumber | at_least: 12 }} <br/>
+            {{ ninumber | at_least: 8 }} <br/>
+            {{ ninumber | abs }} <br/>
+            <h5>---neg Float---</h5> <br/>
+            {{ nfnumber | plus: 5 }} <br/>
+            {{ nfnumber | minus: 5 }} <br/>
+            {{ nfnumber | times: 5 }} <br/>
+            {{ nfnumber | divided_by: 3 }} <br/>
+            {{ nfnumber | modulo: 5 }} <br/>
+            {{ nfnumber | modulo: 3 }} <br/>
+            {{ nfnumber | round }} <br/>
+            {{ nfnumber | ceil }} <br/>
+            {{ nfnumber | floor }} <br/>
+            {{ nfnumber | at_most: 5 }} <br/>
+            {{ nfnumber | at_most: 12 }} <br/>
+            {{ nfnumber | at_least: 12 }} <br/>
+            {{ nfnumber | at_least: 8 }} <br/>
+            {{ nfnumber | abs }} <br/>
+            <h5>---neg Double---</h5> <br/>
+            {{ ndnumber | plus: 5 }} <br/>
+            {{ ndnumber | minus: 5 }} <br/>
+            {{ ndnumber | times: 5 }} <br/>
+            {{ ndnumber | divided_by: 3 }} <br/>
+            {{ ndnumber | modulo: 5 }} <br/>
+            {{ ndnumber | modulo: 3 }} <br/>
+            {{ ndnumber | round }} <br/>
+            {{ ndnumber | ceil }} <br/>
+            {{ ndnumber | floor }} <br/>
+            {{ ndnumber | at_most: 5 }} <br/>
+            {{ ndnumber | at_most: 12 }} <br/>
+            {{ ndnumber | at_least: 12 }} <br/>
+            {{ ndnumber | at_least: 8 }} <br/>
+            {{ ndnumber | abs }} <br/>
+            <h5>---neg Double nexp---</h5> <br/>
+            {{ ndenumber | plus: 5 }} <br/>
+            {{ ndenumber | minus: 5 }} <br/>
+            {{ ndenumber | times: 5 }} <br/>
+            {{ ndenumber | divided_by: 3 }} <br/>
+            {{ ndenumber | modulo: 5 }} <br/>
+            {{ ndenumber | modulo: 3 }} <br/>
+            {{ ndenumber | round }} <br/>
+            {{ ndenumber | ceil }} <br/>
+            {{ ndenumber | floor }} <br/>
+            {{ ndenumber | at_most: 5 }} <!-- at_most at_least don't seem to work --> <br/>
+            {{ ndenumber | at_most: 12 }} <br/>
+            {{ ndenumber | at_least: 12.0 }} <br/>
+            {{ ndenumber | at_least: 8.0 }} <br/>
+            {{ ndenumber | abs }}
+        </div>
+    </body>
+</html>
