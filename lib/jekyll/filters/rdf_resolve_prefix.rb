@@ -31,7 +31,7 @@ module Jekyll
         if(predicate[0] == "<" && predicate[-1] == ">")
           return predicate
         end
-        arr=predicate.split(":",2)  #bad regex, would also devide 'http://example....' into 'http' and '//example....',even though it is already a complete URI; if 'PREFIX http: <http://...> is defined, 'http' in 'http://example....' could be mistaken for a prefix
+        arr = predicate.split(":", 2) #bad regex, would also devide 'http://example....' into 'http' and '//example....',even though it is already a complete URI; if 'PREFIX http: <http://...> is defined, 'http' in 'http://example....' could be mistaken for a prefix
         if((arr[1].include? (":")) || (arr[1][0..1].eql?("//")))
           raise UnMarkedUri.new(predicate, Jekyll::JekyllRdf::Helper::RdfHelper::page.data['template']) #TODO .data['template'] is only defined on RdfPages
         end

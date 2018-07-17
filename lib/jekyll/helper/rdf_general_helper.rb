@@ -50,7 +50,7 @@ module Jekyll
 
         def self.page= page
           @@page = page
-          unless (@@page.data["rdf_prefixes"].nil?)
+          unless @@page.data["rdf_prefixes"].nil?
             @@usePage = true
           else
             @@usePage = false
