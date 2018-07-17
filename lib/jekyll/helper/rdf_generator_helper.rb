@@ -128,7 +128,7 @@ module Jekyll
           if(page.complete)
             changes = false
             site.pages.map!{|old_page|
-              if (File.join(old_page.dir, old_page.name) == File.join(page.dir, page.name))
+              if (old_page.url == page.url)
                 changes||=true
                 page.assimilate_page(old_page)
                 page
