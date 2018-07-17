@@ -6,7 +6,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
   sparql = SPARQL::Client.new(graph)
   res_helper = ResourceHelper.new(sparql)
 
-  context "template mapper from RdfPageData" do
+  context "template mapper from RdfPageHelper" do
     setup do
       @resources_to_templates = {
         "http://www.ifi.uio.no/INF3580/simpsons#Lisa" => "Lisa",
@@ -38,7 +38,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     end
   end
 
-  context "load_data form RdfPageData" do
+  context "load_data form RdfPageHelper" do
     should "load data correctly into the file" do
       res_helper.monkey_patch_page_data(self)
       subresources = ["http://subres1", "http://subres2", "http://subres3"]
@@ -49,7 +49,6 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       @site.layouts["homer"] = Jekyll::Layout.new(@site, @base, "homer.html")
       load_data(nil)
 
-      assert_equal("http://www.ifi.uio.no/INF3580/simpsons#Homer", self.data["title"])
       assert_equal("http://www.ifi.uio.no/INF3580/simpsons#Homer", self.data["rdf"].to_s)
       assert_equal("Jekyll::JekyllRdf::Drops::RdfResource", self.data["rdf"].class.to_s)
       assert_equal("homer", self.data["template"])
@@ -70,7 +69,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     end
   end
 
-  context "load_prefixes form RdfPageData" do
+  context "load_prefixes form RdfPageHelper" do
     setup do
       subresources = ["http://subres1", "http://subres2", "http://subres3"]
       @resource = res_helper.resource_with_subresources("http://www.ifi.uio.no/INF3580/simpsons#Homer", subresources)
@@ -110,7 +109,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
     end
   end
 
-  context "RdfPageData" do
+  context "Jekyll" do
     setup do
       @resources_to_templates = {
         "http://www.ifi.uio.no/INF3580/simpsons#Homer" => "homer",
@@ -133,37 +132,46 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       @site.layouts["homer"] = Jekyll::Layout.new(@site, @site.source, "homer.html")
       @site.layouts["person"] = Jekyll::Layout.new(@site, @site.source, "person.html")
       @site.layouts["default"] = Jekyll::Layout.new(@site, @site.source, "default.html")
+      Jekyll::Page.prepend Jekyll::JekyllRdf::Helper::RdfPageHelper
     end
 
     should "create complete Page" do
-      #config = res_helper.basic_config("http://www.ifi.uio.no", "/INF3580")
       @site.data['resources'] = []
-      page1 = Jekyll::RdfPageData.new(@site, File.join(File.dirname(__FILE__), "source"), @resource1, @mapper, @config)
-      page2 = Jekyll::RdfPageData.new(@site, File.join(File.dirname(__FILE__), "source"), @resource2, @mapper, @config)
-      page3 = Jekyll::RdfPageData.new(@site, File.join(File.dirname(__FILE__), "source"), @resource3, @mapper, @config)
+      Jekyll::JekyllRdf::Helper::RdfPageHelper.prepare_resource @resource1, @mapper
+      page1 = Jekyll::Page.new(@site, File.join(File.dirname(__FILE__), "source"), @resource1.filedir, @resource1.filename)
+      page1.re_init_as_rdf(@resource1, @mapper)
+      Jekyll::JekyllRdf::Helper::RdfPageHelper.prepare_resource @resource2, @mapper
+      page2 = Jekyll::Page.new(@site, File.join(File.dirname(__FILE__), "source"), @resource2.filedir, @resource2.filename)
+      page2.re_init_as_rdf(@resource2, @mapper)
+      Jekyll::JekyllRdf::Helper::RdfPageHelper.prepare_resource @resource3, @mapper
+      page3 = Jekyll::Page.new(@site, File.join(File.dirname(__FILE__), "source"), @resource3.filedir, @resource3.filename)
+      page3.re_init_as_rdf(@resource3, @mapper)
       assert_equal "http://www.ifi.uio.no/INF3580/simpsons#Homer", @resource1.site.data['resources'][0].to_s
       assert_equal "http://www.ifi.uio.no/INF3580/simpsons#Maggie",  @resource1.site.data['resources'][1].to_s
       assert_equal "http://resource3", @resource1.site.data['resources'][2].to_s
     end
 
-    should "exit early if no base is provided" do
-      @site.data['resources'] = []
-      page1 = Jekyll::RdfPageData.new(@site, nil, @resource1, @mapper, @config)
-      assert !page1.complete, "exit parameter was expected to be false, but it is true"
-    end
-
     should "should create pages with page.name and page.dir reflecting their resources iri" do
       TestHelper::setErrOutput
-      config = Jekyll.configuration(TestHelper::TEST_OPTIONS)
-      site = Jekyll::Site.new(config)
-      site.data['resources'] = []
-      page1 = Jekyll::RdfPageData.new(site, File.join(File.dirname(__FILE__), "source"), Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/y/")), @mapper, config)
+      @site.data['resources'] = []
+      Jekyll::JekyllRdf::Helper::RdfHelper::domainiri = "http://ex.org"
+      Jekyll::JekyllRdf::Helper::RdfHelper::pathiri = "/blog/"
+      resource = Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/b/y/"))
+      Jekyll::JekyllRdf::Helper::RdfPageHelper.prepare_resource resource, @mapper
+      page1 = Jekyll::Page.new(@site, File.join(File.dirname(__FILE__), "source"), resource.filedir, resource.filename)
+      page1.re_init_as_rdf(resource, @mapper)
       assert_equal "index.html", page1.name
       assert_equal "/b/y/", page1.dir
-      page2 = Jekyll::RdfPageData.new(site, File.join(File.dirname(__FILE__), "source"), Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/bla/a")), @mapper, config)
+      resource = Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/blog/bla/a"))
+      Jekyll::JekyllRdf::Helper::RdfPageHelper.prepare_resource resource, @mapper
+      page2 = Jekyll::Page.new(@site, File.join(File.dirname(__FILE__), "source"), resource.filedir, resource.filename)
+      page2.re_init_as_rdf(resource, @mapper)
       assert_equal "a.html", page2.name
       assert_equal "/bla/", page2.dir
-      page3 = Jekyll::RdfPageData.new(site, File.join(File.dirname(__FILE__), "source"), Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/b/y/")), @mapper, config)
+      resource = Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://ex.org/b/y/"))
+      Jekyll::JekyllRdf::Helper::RdfPageHelper.prepare_resource resource, @mapper
+      page3 = Jekyll::Page.new(@site, File.join(File.dirname(__FILE__), "source"), resource.filedir, resource.filename)
+      page3.re_init_as_rdf(resource, @mapper)
       assert_equal "index.html", page3.name
       assert_equal "/rdfsites/http/ex.org/b/y/", page3.dir
       TestHelper::resetErrOutput

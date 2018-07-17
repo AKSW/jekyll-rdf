@@ -58,5 +58,4 @@ require 'jekyll/filters/rdf_page_to_resource'
 
 Liquid::Template.register_filter(Jekyll::JekyllRdf::Filter)
 require 'jekyll/rdf_main_generator'
-require 'jekyll/rdf_page_data'
 require 'jekyll/rdf_template_mapper'

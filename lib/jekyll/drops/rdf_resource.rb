@@ -38,7 +38,7 @@ module Jekyll #:nodoc:
         attr_accessor :site
 
         ##
-        # The Jekyll::RdfPageData of this Jekyll::JekyllRdf::Drops::RdfResource
+        # The Jekyll::Page of this Jekyll::JekyllRdf::Drops::RdfResource
         #
         attr_accessor :page
 

@@ -62,3 +62,4 @@ jekyll_rdf:
     "http://example.org/B#some" : "test_rdf_get"
     "http://example.org/C" : "test_rdf_get"
     "http://www.ifi.uio.no/INF3580/pages" : "sites_covered"
+    "http://www.ifi.uio.no/INF3580/ex/hybrid/" : "conflictWrap"

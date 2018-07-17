@@ -34,7 +34,7 @@ module Jekyll
         def load_prefixes(path, prefHolder)
           Jekyll::JekyllRdf::Helper::RdfHelper.load_prefixes(path, prefHolder)
         rescue Errno::ENOENT => ex
-          Jekyll.logger.error("--> context resource: #{@resource}  template: #{@template}") if self.class <= Jekyll::RdfPageData
+          Jekyll.logger.error("--> context resource: #{@resource}  template: #{@template}") unless self.data["rdf"].nil?
         end
       end
 

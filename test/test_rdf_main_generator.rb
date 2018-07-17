@@ -34,11 +34,15 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
   end
 
   context "create_page from rdf_main_generator" do
-    should "create a page with the right title" do
+    setup do
       @resources_to_templates = {
-        "http://www.ifi.uio.no/INF3580/simpsons#Homer" => "homer",
-        "http://placeholder.host.plh/placeholder#Placeholder" => "Placeholder"
-        }
+        "http://www.ifi.uio.no/INF3580/simpsons/Homer" => "homer",
+        "http://placeholder.host.plh/placeholder#Placeholder" => "Placeholder",
+        "this://should/merge/merge" => "merge",
+        "this://should/also/merge/merge" => "merge",
+        "this://should/not/merge/merge" => "nMerge",
+        "this://should/be/copied/merge/merge" => "nil"
+      }
       @classes_to_templates = {
         "http://xmlns.com/foaf/0.1/Person" => "person",
         "http://pcai042.informatik.uni-leipzig.de/~dtp16#SpecialPerson" => "SpecialPerson",
@@ -46,23 +50,46 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       }
       @default_template = "default"
       res_helper.global_site = true
-      @resource1 = res_helper.basic_resource("http://www.ifi.uio.no/INF3580/simpsons#Homer")
-      @resource2 = res_helper.basic_resource("http://www.ifi.uio.no/INF3580/simpsons#Maggie")
+      @resource1 = res_helper.basic_resource("http://www.ifi.uio.no/INF3580/simpsons/Homer")
+      @resource2 = res_helper.basic_resource("http://www.ifi.uio.no/INF3580/simpsons/Maggie")
       @resource3 = res_helper.basic_resource("http://resource3")
       res_helper.global_site = false
       @mapper = Jekyll::RdfTemplateMapper.new(@resources_to_templates, @classes_to_templates, @default_template, sparql)
-      config = Jekyll.configuration(TestHelper::TEST_OPTIONS)
-      site = Jekyll::Site.new(config)
-      site.data['resources'] = []
-      site.layouts["homer"] = Jekyll::Layout.new(site, site.source, "homer.html")
-      site.layouts["person"] = Jekyll::Layout.new(site, site.source, "person.html")
-      site.layouts["default"] = Jekyll::Layout.new(site, site.source, "default.html")
-      create_page(site, @resource1, @mapper, config)
-      create_page(site, @resource2, @mapper, config)
-      create_page(site, @resource3, @mapper, config)
-      assert_equal "http://www.ifi.uio.no/INF3580/simpsons#Homer", site.pages[0].data['title']
-      assert_equal "http://www.ifi.uio.no/INF3580/simpsons#Maggie", site.pages[1].data['title']
-      assert_equal "http://resource3", site.pages[2].data['title']
+      @config = Jekyll.configuration(TestHelper::TEST_OPTIONS)
+      @site = Jekyll::Site.new(@config)
+      @site.data['resources'] = []
+      @site.layouts["homer"] = Jekyll::Layout.new(@site, @site.source, "homer.html")
+      @site.layouts["person"] = Jekyll::Layout.new(@site, @site.source, "person.html")
+      @site.layouts["default"] = Jekyll::Layout.new(@site, @site.source, "default.html")
+      @site.layouts["merge"] = Jekyll::Layout.new(@site, File.join(@site.source, "_layouts"), "merge.html")
+      @site.layouts["merge"].content = "outer part of a merged page \n {{ content }}"
+      @site.layouts["nMerge"] = Jekyll::Layout.new(@site, File.join(@site.source, "_layouts"), "nMerge.html")
+      @site.layouts["nMerge"].content = "an unmerged page \n {{ content }}"
+      @site.layouts["nil"] = Jekyll::Layout.new(@site, File.join(@site.source, "_layouts"), "nil.html")
+      @site.layouts["nil"].content = "this is nil content"
+      @site.pages = []
+    end
+
+    should "assimilate already existing pages if they share the same path" do
+      @site.pages << Jekyll::Page.new(@site, @site.source, "rdfsites/this/should", "merge.html")
+      @site.pages.last.content = "this is the first normal part"
+      @site.pages << Jekyll::Page.new(@site, @site.source, "rdfsites/this/should/also", "merge.html")
+      @site.pages.last.content = "this is the second normal part"
+      @site.pages << Jekyll::Page.new(@site, @site.source, "rdfsites/this/should/wont", "merge.html")
+      @site.pages.last.content = "this is the third normal part"
+      @site.pages << Jekyll::Page.new(@site, @site.source, "rdfsites/this/should/be/copied", "merge.html")
+      @site.pages.last.content = "this should be the only line in this file"
+      @site.pages.last.data['layout'] = ""
+      create_page(@site, Jekyll::JekyllRdf::Drops::RdfResource.new("this://should/merge/merge"), @mapper)
+      create_page(@site, Jekyll::JekyllRdf::Drops::RdfResource.new("this://should/also/merge/merge"), @mapper)
+      create_page(@site, Jekyll::JekyllRdf::Drops::RdfResource.new("this://should/not/merge/merge"), @mapper)
+      create_page(@site, Jekyll::JekyllRdf::Drops::RdfResource.new("this://should/be/copied/merge/merge"), @mapper)
+      assert (@site.pages.length.eql? 5), "The page count should be 4 it was #{@site.pages.length}"
+      assert (!!(@site.pages[0].content =~ /outer part of a merged page \n this is the first normal part/)), "content should be:>>>>>\nouter part of a merged page \n this is the first normal part\nbut was:>>>>>\n#{@site.pages[0].content}"
+      assert (!!(@site.pages[1].content =~ /outer part of a merged page \n this is the second normal part/)), "content should be:>>>>>\nouter part of a merged page \n this is the second normal part\nbut was:>>>>>\n#{@site.pages[1].content}"
+      assert (!!(@site.pages[2].content =~ /this is the third normal part/)), "content should be:>>>>>\nthis is the third normal part\nbut was:>>>>>\n#{@site.pages[2].content}"
+      assert (!!(@site.pages[4].content =~ /an unmerged page/)), "content should be:>>>>>\nan unmerged page\nbut was:>>>>>\n#{@site.pages[4].content}"
+      assert (!!(@site.pages[3].content =~ /this should be the only line in this file/)), "This page should only contain >>>this should be the only line in this file<<<\ncontained: #{@site.pages[3].content}"
     end
   end
 
@@ -131,7 +158,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       site.layouts["person"] = Jekyll::Layout.new(site, File.join(File.dirname(__FILE__), "source"), "person.html")
       @mapper = Jekyll::RdfTemplateMapper.new(@resources_to_templates, @classes_to_templates, @default_template, sparql)
       prepare_pages(site, @mapper)
-      index = site.pages.find_index {|page| page.data['title'] == "http://www.ifi.uio.no/INF3580/simpsons"}
+      index = site.pages.find_index {|page| page.data['rdf'].to_s == "http://www.ifi.uio.no/INF3580/simpsons"}
       assert !index.nil?, "page http://www.ifi.uio.no/INF3580/simpsons not found"
       assert_equal "page", site.pages[index].data['template']
       index = site.pages.find_index {|page|
@@ -220,6 +247,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       @site.layouts["ontology"] = Jekyll::Layout.new(@site, @site.source, "ontology.html")
       @site.layouts["covered"] = Jekyll::Layout.new(@site, @site.source, "covered.html")
       @site.layouts["test_rdf_get"] = Jekyll::Layout.new(@site, @site.source, "test_rdf_get.html")
+      @site.layouts["conflictWrap"] = Jekyll::Layout.new(@site, @site.source, "conflictWrap.html")
       @site.layouts["sites_covered"] = Jekyll::Layout.new(@site, @site.source, "sites_covered.html")
     end
 

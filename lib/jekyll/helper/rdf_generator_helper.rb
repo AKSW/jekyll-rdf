@@ -4,14 +4,15 @@ module Jekyll
       module RdfGeneratorHelper
         private
         def prepare_pages (site, mapper)
+          Jekyll::Page.prepend Jekyll::JekyllRdf::Helper::RdfPageHelper
           @pageResources.each{|uri, entry|
             resource = entry.delete('./')
             resource.subResources = entry
-            create_page(site, resource, mapper, @global_config)
+            create_page(site, resource, mapper)
           }
 
           @blanknodes.each{|resource|
-            create_page(site, resource, mapper, @global_config)
+            create_page(site, resource, mapper)
           }
         end
 
@@ -120,10 +121,24 @@ module Jekyll
           end.uniq
         end
 
-        def create_page(site, resource, mapper, global_config)
-          page = RdfPageData.new(site, site.source, resource, mapper, global_config)
+        def create_page(site, resource, mapper)
+          Jekyll::JekyllRdf::Helper::RdfPageHelper.prepare_resource resource, mapper
+          page = Jekyll::Page.new(site, site.source, resource.filedir, resource.filename)
+          page.re_init_as_rdf(resource, mapper)
           if(page.complete)
-            site.pages << page
+            changes = false
+            site.pages.map!{|old_page|
+              if (File.join(old_page.dir, old_page.name) == File.join(page.dir, page.name))
+                changes||=true
+                page.assimilate_page(old_page)
+                page
+              else
+                old_page
+              end
+            }
+            unless changes
+              site.pages << page
+            end
             resource.add_necessities(site, page)
             resource.subResources.each {|key, value|
               value.add_necessities(site, page)
