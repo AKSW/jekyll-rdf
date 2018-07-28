@@ -49,18 +49,20 @@ module Jekyll
 
 
           number_str = term.to_s.upcase
+          term_str = term.to_s
           if(term.has_datatype?)
             case term.datatype
             when Jekyll::JekyllRdf::Types::XsdInteger
-              return Jekyll::JekyllRdf::Types::XsdInteger.to_type term.to_s if Jekyll::JekyllRdf::Types::XsdInteger.match? number_str
+              return Jekyll::JekyllRdf::Types::XsdInteger.to_type term_str if Jekyll::JekyllRdf::Types::XsdInteger.match? term_str
             when Jekyll::JekyllRdf::Types::XsdDecimal
-              return Jekyll::JekyllRdf::Types::XsdDecimal.to_type term.to_s if Jekyll::JekyllRdf::Types::XsdDecimal.match? number_str
+              return Jekyll::JekyllRdf::Types::XsdDecimal.to_type term_str if Jekyll::JekyllRdf::Types::XsdDecimal.match? term_str
             when Jekyll::JekyllRdf::Types::XsdDouble
-              return Jekyll::JekyllRdf::Types::XsdDouble.to_type term.to_s if Jekyll::JekyllRdf::Types::XsdDouble.match? number_str
+              return Jekyll::JekyllRdf::Types::XsdDouble.to_type number_str if Jekyll::JekyllRdf::Types::XsdDouble.match? number_str
             when Jekyll::JekyllRdf::Types::XsdBoolean
-              return Jekyll::JekyllRdf::Types::XsdBoolean.to_type term.to_s if Jekyll::JekyllRdf::Types::XsdBoolean.match? number_str
+              return Jekyll::JekyllRdf::Types::XsdBoolean.to_type term_str if Jekyll::JekyllRdf::Types::XsdBoolean.match? term_str
             else
-              Jekyll.logger.info ">>> #{term.datatype}"
+              custom_type = Jekyll::JekyllRdf::Helper::Types::find(term.datatype)
+              return custom_type.to_type term_str if (!custom_type.nil?) && (custom_type.match? term_str)
             end
           end
           return term.to_s
