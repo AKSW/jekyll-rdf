@@ -33,6 +33,10 @@ require 'set'
 require 'addressable/uri'
 require 'pp'
 
+require 'jekyll/types/XsdInteger'
+require 'jekyll/types/XsdDecimal'
+require 'jekyll/types/XsdDouble'
+require 'jekyll/types/XsdBoolean'
 require 'jekyll/drops/rdf_term'
 require 'jekyll/drops/rdf_statement'
 require 'jekyll/drops/rdf_literal'
@@ -55,6 +59,7 @@ require 'jekyll/filters/rdf_container'
 require 'jekyll/filters/rdf_get'
 require 'jekyll/filters/rdf_message'
 require 'jekyll/filters/rdf_page_to_resource'
+
 
 Liquid::Template.register_filter(Jekyll::JekyllRdf::Filter)
 require 'jekyll/rdf_main_generator'

@@ -47,29 +47,22 @@ module Jekyll
         def to_liquid
           # Convert scientific notation
 
-          regex = /^(-?)(\d+)\.(\d+)E(-?)(\d+)$/
-          numberStr = term.to_s.upcase
-          if regex.match(numberStr)
 
-            number = numberStr.to_f
-
-            negative = number < 0
-
-            if negative
-              number = number * (-1)
+          number_str = term.to_s.upcase
+          if(term.has_datatype?)
+            case term.datatype
+            when Jekyll::JekyllRdf::Types::XsdInteger
+              return Jekyll::JekyllRdf::Types::XsdInteger.to_type term.to_s if Jekyll::JekyllRdf::Types::XsdInteger.match? number_str
+            when Jekyll::JekyllRdf::Types::XsdDecimal
+              return Jekyll::JekyllRdf::Types::XsdDecimal.to_type term.to_s if Jekyll::JekyllRdf::Types::XsdDecimal.match? number_str
+            when Jekyll::JekyllRdf::Types::XsdDouble
+              return Jekyll::JekyllRdf::Types::XsdDouble.to_type term.to_s if Jekyll::JekyllRdf::Types::XsdDouble.match? number_str
+            when Jekyll::JekyllRdf::Types::XsdBoolean
+              return Jekyll::JekyllRdf::Types::XsdBoolean.to_type term.to_s if Jekyll::JekyllRdf::Types::XsdBoolean.match? number_str
+            else
+              Jekyll.logger.info ">>> #{term.datatype}"
             end
-
-            e = [-1 * (Math.log10(number).floor - (numberStr.to_s.index('E') - numberStr.to_s.index('.'))), 0].max
-
-            vz = ""
-            if negative
-              vz = "-"
-            end
-
-            return vz.to_s + sprintf("%." + e.to_s +  "f", number)
-
           end
-
           return term.to_s
         end
 
