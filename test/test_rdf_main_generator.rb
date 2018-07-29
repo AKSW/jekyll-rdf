@@ -38,10 +38,10 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       @resources_to_templates = {
         "http://www.ifi.uio.no/INF3580/simpsons/Homer" => "homer",
         "http://placeholder.host.plh/placeholder#Placeholder" => "Placeholder",
-        "this://should/merge/merge" => "merge",
-        "this://should/also/merge/merge" => "merge",
-        "this://should/not/merge/merge" => "nMerge",
-        "this://should/be/copied/merge/merge" => "nil"
+        "this://should/merge/" => "merge",
+        "this://should/also/merge/" => "merge",
+        "this://should/not/merge/" => "nMerge",
+        "this://should/be/copied/merge/" => "nil"
       }
       @classes_to_templates = {
         "http://xmlns.com/foaf/0.1/Person" => "person",
@@ -80,10 +80,11 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       @site.pages << Jekyll::Page.new(@site, @site.source, "rdfsites/this/should/be/copied", "merge.html")
       @site.pages.last.content = "this should be the only line in this file"
       @site.pages.last.data['layout'] = ""
-      create_page(@site, Jekyll::JekyllRdf::Drops::RdfResource.new("this://should/merge/merge"), @mapper)
-      create_page(@site, Jekyll::JekyllRdf::Drops::RdfResource.new("this://should/also/merge/merge"), @mapper)
-      create_page(@site, Jekyll::JekyllRdf::Drops::RdfResource.new("this://should/not/merge/merge"), @mapper)
-      create_page(@site, Jekyll::JekyllRdf::Drops::RdfResource.new("this://should/be/copied/merge/merge"), @mapper)
+      create_page(@site, Jekyll::JekyllRdf::Drops::RdfResource.new("this://should/merge/"), @mapper)
+      create_page(@site, Jekyll::JekyllRdf::Drops::RdfResource.new("this://should/also/merge/"), @mapper)
+      create_page(@site, Jekyll::JekyllRdf::Drops::RdfResource.new("this://should/not/merge/"), @mapper)
+      create_page(@site, Jekyll::JekyllRdf::Drops::RdfResource.new("this://should/be/copied/merge/"), @mapper)
+
       assert (@site.pages.length.eql? 5), "The page count should be 4 it was #{@site.pages.length}"
       assert (!!(@site.pages[0].content =~ /outer part of a merged page \n this is the first normal part/)), "content should be:>>>>>\nouter part of a merged page \n this is the first normal part\nbut was:>>>>>\n#{@site.pages[0].content}"
       assert (!!(@site.pages[1].content =~ /outer part of a merged page \n this is the second normal part/)), "content should be:>>>>>\nouter part of a merged page \n this is the second normal part\nbut was:>>>>>\n#{@site.pages[1].content}"

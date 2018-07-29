@@ -32,6 +32,8 @@ module Jekyll
           resource.page = self
           resource.site = @site
           @site.data['resources'] << resource
+          @url = resource.page_url
+          @url = "/" + @url unless @url[0].eql? "/"   #by default jekyll renders with a leading /
         end
 
         def self.prepare_resource resource, mapper
