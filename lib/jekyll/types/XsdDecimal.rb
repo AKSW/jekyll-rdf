@@ -25,6 +25,8 @@ module Jekyll
           return @@class_uri
         end
       end
+
+      Jekyll::JekyllRdf::Helper::Types::register XsdDecimal
     end
   end
 

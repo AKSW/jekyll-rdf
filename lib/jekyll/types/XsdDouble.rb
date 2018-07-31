@@ -5,7 +5,7 @@ module Jekyll
         @@class_uri = "http://www.w3.org/2001/XMLSchema#double"
 
         def self.match? string
-          return regex.match string
+          return regex.match string.upcase
         end
 
         def self.regex
@@ -14,6 +14,7 @@ module Jekyll
         end
 
         def self.to_type string
+          string = string.upcase
           number = string.to_f
           negative = number < 0
           if negative
@@ -37,6 +38,8 @@ module Jekyll
           return @@class_uri
         end
       end
+
+      Jekyll::JekyllRdf::Helper::Types::register XsdDouble
     end
   end
 
