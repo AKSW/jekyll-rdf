@@ -1,8 +1,7 @@
 ##
 # MIT License
 #
-# Copyright (c) 2016 Elias Saalmann, Christian Frommert, Simon Jakobi,
-# Arne Jonas Präger, Maxi Bornmann, Georg Hackel, Eric Füg
+# Copyright (c) 2017 Sebastian Zänker
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,37 +24,24 @@
 
 module Jekyll
   module JekyllRdf
-    module Drops
+    module Helper
 
       ##
-      # Represents an RDF literal to the Liquid template engine
+      # Internal module for registering custom types
       #
-      class RdfLiteral < RdfTerm
-
-        ##
-        # Return a user-facing string representing this RdfLiteral
-        #
-        def literal
-          term.to_s
+      module Types
+        @@types = []
+        def self.register type
+          @@types.push type
         end
 
-        ##
-        # Return literal value to allow liquid filters to compute
-        # rdf literals as well
-        # source: https://github.com/eccenca/jekyll-rdf/commit/704dd98c5e457a81e97fcd011562f1f39fc3f813
-        #
-        def to_liquid
-          # Convert scientific notation
-
-          term_str = term.to_s
-          if(term.has_datatype?)
-            custom_type = Jekyll::JekyllRdf::Helper::Types::find(term.datatype)
-            return custom_type.to_type term_str if (!custom_type.nil?) && (custom_type.match? term_str)
-          end
-          return term.to_s
+        def self.find type
+          index = @@types.find_index {|x| x === type.to_s}
+          return @@types[index] unless index.nil?
+          return nil
         end
-
       end
     end
   end
 end
+

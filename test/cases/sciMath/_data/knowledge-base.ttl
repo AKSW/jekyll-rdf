@@ -1,0 +1,14 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix eg: <http://example.org/instance/> .
+
+eg:math eg:mInteger "7"^^xsd:integer .
+eg:math eg:mFloat "8.9"^^xsd:decimal .
+eg:math eg:mDouble "4.2E9"^^xsd:double .
+eg:math eg:mDoubleNE "2.0E-2"^^xsd:double .
+eg:math eg:nInteger "-7"^^xsd:integer .
+eg:math eg:nFloat "-8.9"^^xsd:decimal .
+eg:math eg:nDouble "-4.2E9"^^xsd:double .
+eg:math eg:nDoubleNE "-2.0E-2"^^xsd:double .

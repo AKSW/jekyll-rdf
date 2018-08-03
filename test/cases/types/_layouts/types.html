@@ -1,0 +1,23 @@
+---
+---
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>This tests math filters</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>
+            {%- assign replace = page.rdf | rdf_property: "<http://example.org/instance/value1>" -%}
+            {%- assign revert = page.rdf | rdf_property: "<http://example.org/instance/value2>" -%}
+            {%- assign upperCase = page.rdf | rdf_property: "<http://example.org/instance/value3>" -%}
+            <h6>Replace</h6> <br/>
+            {{replace}} <br/>
+            <h6>Revert</h6> <br/>
+            {{revert}} <br/>
+            <h6>Upper Case</h6> <br/>
+            {{upperCase}}
+        </div>
+    </body>
+</html>
