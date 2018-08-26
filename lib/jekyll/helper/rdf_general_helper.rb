@@ -72,8 +72,9 @@ module Jekyll
             prefHolder["rdf_prefixes"] = prefix_file.join(" ")
             prefHolder["rdf_prefix_map"] = Hash[ *(prefix_file.collect { |v|
                   arr = v.split(":",2)
+                  next [nil, nil] if arr[1].nil?
                   [arr[0][7..-1].strip, arr[1].strip[1..-2]]
-                }.flatten)]
+                }.flatten.select {|x| !x.nil?})]
           rescue Errno::ENOENT => ex
             Jekyll.logger.error("Prefix file not found: #{path}")
             raise

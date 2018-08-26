@@ -253,4 +253,14 @@ class TestCases < Test::Unit::TestCase
       assert_equal "THIS WAS ALL LOWER CASE", content[5]
     end
   end
+
+  context "cases/emptyLinePrefixFile" do
+    should "not raise an exception on encountering an empty line in the prefix file" do
+      @source = File.join(File.dirname(__FILE__), "cases/emptyLinePrefixFile")
+      config = Jekyll.configuration(YAML.load_file(File.join(@source, '_config.yml')).merge!({'source' => @source, 'destination' => File.join(@source, "_site")}))
+      assert_nothing_raised do
+        site = Jekyll::Site.new(config)
+      end
+    end
+  end
 end
