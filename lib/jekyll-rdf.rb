@@ -60,6 +60,7 @@ require 'jekyll/filters/rdf_container'
 require 'jekyll/filters/rdf_get'
 require 'jekyll/filters/rdf_message'
 require 'jekyll/filters/rdf_page_to_resource'
+require 'jekyll/tags/rdf_link'
 
 
 Liquid::Template.register_filter(Jekyll::JekyllRdf::Filter)
