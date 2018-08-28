@@ -12,6 +12,8 @@ This should contain a working link:
     {%- assign myLink = "anc:anchor1" | rdf_get -%}
   <a href="{{ site.baseurl }}{% rdf_link myLink %}">link</a> <br/>
     {%- assign myLink = "anc:anchor2" | rdf_get -%}
-  <a href="{{ site.baseurl }}{% rdf_link myLink %}">link</a>
+  <a href="{{ site.baseurl }}{% rdf_link myLink %}">link</a> <br/>
+  <a href="{{ site.baseurl }}{% rdf_link <http://example.org/instance/resource1> %}">link</a> <br/>
+  <a href="{{ site.baseurl }}{% rdf_link eg:resource2 %}">link</a>
 </div>
 

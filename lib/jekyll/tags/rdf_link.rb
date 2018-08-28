@@ -32,15 +32,18 @@ module Jekyll
     #
     module Tag
       class RdfLink < Liquid::Tag
+        include Jekyll::JekyllRdf::Filter
         def initialize(tag_name, input, tokens)
           super
           @input = input.strip
         end
 
         def render(context)
-          resource = context[@input]
+          resource = Jekyll::JekyllRdf::Drops::RdfResource.new(@input[1..-2]) if (@input[0].eql?("<") && @input[-1].eql?(">"))
+          resource ||= Jekyll::JekyllRdf::Drops::RdfResource.new(rdf_resolve_prefix(@input)[1..-2]) if @input.include?(':')
+          resource ||= context[@input]
           raise ArgumentError.new("No resource found for the given variable #{@input}.") if resource.nil?
-          site = resource.site
+          site = Jekyll::JekyllRdf::Helper::RdfHelper::site
           site.each_site_file do |item|
             return item.url if item.relative_path.eql? resource.render_path
             # This takes care of the case for static files that have a leading /

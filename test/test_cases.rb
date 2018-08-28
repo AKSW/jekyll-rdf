@@ -265,11 +265,13 @@ class TestCases < Test::Unit::TestCase
       content = file[/\<div\>(.|\s)*\<\/div>/][5..-7].strip.split("<br/>").map do |entry|
         entry.strip
       end
-      assert '<a href="/instance/resource1.html">link</a>'.eql?(content[0]), "expected: >7< was: >#{content[0]}<"
+      assert '<a href="/instance/resource1.html">link</a>'.eql?(content[0]), "expected: ><a href=\"/instance/resource1.html\">link</a>< was: >#{content[0]}<"
       assert '<a href="/instance/resource2.html">link</a>'.eql?(content[1]), "expected: ><a href=\"/instance/resource2.html\">link</a>< was: >#{content[1]}<"
       assert '<a href="/instance/rdfsites/http/www.linked.org/links.html">link</a>'.eql?(content[2]), "expected: ><a href=\"/instance/rdfsites/http/www.linked.org/links.html\">link</a>< was: >#{content[2]}<"
       assert '<a href="/instance/anchor.html">link</a>'.eql?(content[3]), "expected: ><a href=\"/instance/anchor.html\">link</a>< was: >#{content[3]}<"
       assert '<a href="/instance/anchor.html">link</a>'.eql?(content[4]), "expected: ><a href=\"/instance/anchor.html\">link</a>< was: >#{content[4]}<"
+      assert '<a href="/instance/resource1.html">link</a>'.eql?(content[5]), "expected: ><a href=\"/instance/resource1.html\">link</a>< was: >#{content[5]}<"
+      assert '<a href="/instance/resource2.html">link</a>'.eql?(content[6]), "expected: ><a href=\"/instance/resource2.html\">link</a>< was: >#{content[6]}<"
     end
 
     should "raise an Argumenterror if the variable in rdf_link is not used" do
