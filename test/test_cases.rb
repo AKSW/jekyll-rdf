@@ -253,4 +253,47 @@ class TestCases < Test::Unit::TestCase
       assert_equal "THIS WAS ALL LOWER CASE", content[5]
     end
   end
+
+  context "cases/linkTag" do
+    should "let rdf_link link resources to their rendered page." do
+      @source = File.join(File.dirname(__FILE__), "cases/linkTag")
+      config = Jekyll.configuration(YAML.load_file(File.join(@source, '_config.yml')).merge!({'source' => @source, 'destination' => File.join(@source, "_site")}))
+      site = Jekyll::Site.new(config)
+      site.process
+      content = []
+      file = File.read("#{@source}/_site/link/link.html")
+      content = file[/\<div\>(.|\s)*\<\/div>/][5..-7].strip.split("<br/>").map do |entry|
+        entry.strip
+      end
+      assert '<a href="/instance/resource1.html">link</a>'.eql?(content[0]), "expected: ><a href=\"/instance/resource1.html\">link</a>< was: >#{content[0]}<"
+      assert '<a href="/instance/resource2.html">link</a>'.eql?(content[1]), "expected: ><a href=\"/instance/resource2.html\">link</a>< was: >#{content[1]}<"
+      assert '<a href="/instance/rdfsites/http/www.linked.org/links.html">link</a>'.eql?(content[2]), "expected: ><a href=\"/instance/rdfsites/http/www.linked.org/links.html\">link</a>< was: >#{content[2]}<"
+      assert '<a href="/instance/anchor.html">link</a>'.eql?(content[3]), "expected: ><a href=\"/instance/anchor.html\">link</a>< was: >#{content[3]}<"
+      assert '<a href="/instance/anchor.html">link</a>'.eql?(content[4]), "expected: ><a href=\"/instance/anchor.html\">link</a>< was: >#{content[4]}<"
+      assert '<a href="/instance/resource1.html">link</a>'.eql?(content[5]), "expected: ><a href=\"/instance/resource1.html\">link</a>< was: >#{content[5]}<"
+      assert '<a href="/instance/resource2.html">link</a>'.eql?(content[6]), "expected: ><a href=\"/instance/resource2.html\">link</a>< was: >#{content[6]}<"
+    end
+
+    should "raise an Argumenterror if the variable in rdf_link is not used" do
+      assert_raise(ArgumentError, "No resource found for the given variable.") do
+        TestHelper::setErrOutput
+        @source = File.join(File.dirname(__FILE__), "cases/linkTag")
+        config = Jekyll.configuration(YAML.load_file(File.join(@source, '_config.yml')).merge!({'source' => @source, 'destination' => File.join(@source, "_site")}).merge!({"jekyll_rdf" => {'restriction' => 'SELECT ?resourceUri WHERE {?resourceUri ?p ?o. FILTER (?resourceUri != <http://example.org/instance/faultyResource2>) }'}}))
+        site = Jekyll::Site.new(config)
+        site.process
+        TestHelper::resetErrOutput
+      end
+    end
+
+    should "raise an Argumenterror if the variable in rdf_link refereces a resource whose page was not rendered" do
+      assert_raise(ArgumentError, "No file found for http://this/does/not/exist.") do
+        TestHelper::setErrOutput
+        @source = File.join(File.dirname(__FILE__), "cases/linkTag")
+        config = Jekyll.configuration(YAML.load_file(File.join(@source, '_config.yml')).merge!({'source' => @source, 'destination' => File.join(@source, "_site")}).merge!({"jekyll_rdf" => {'restriction' => 'SELECT ?resourceUri WHERE {?resourceUri ?p ?o. FILTER (?resourceUri != <http://example.org/instance/faultyResource1>) }'}}))
+        site = Jekyll::Site.new(config)
+        site.process
+        TestHelper::resetErrOutput
+      end
+    end
+  end
 end

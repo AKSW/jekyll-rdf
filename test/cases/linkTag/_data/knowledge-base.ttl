@@ -1,0 +1,18 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix eg: <http://example.org/instance/> .
+@prefix link: <http://www.linked.org/> .
+@prefix anc: <http://example.org/instance/anchor#> .
+
+eg:resource1 eg:predicate eg:object .
+eg:resource2 eg:predicate eg:object .
+link:links eg:predicate eg:object .
+anc:anchor1 eg:predicate eg:object .
+anc:anchor2 eg:predicate eg:object .
+eg:faultyResource1 eg:faultyPredicate eg:faultyObject .
+eg:faultyResource2 eg:faultyPredicate eg:faultyObject .
+eg:person a foaf:Person .
+eg:person foaf:age "28"^^xsd:int .
+eg:person foaf:name "Jeanne Doe" .
