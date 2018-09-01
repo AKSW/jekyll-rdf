@@ -1,5 +1,6 @@
 baseurl: "/instance"
 url: "http://example.org/"
+
 plugins:
 - jekyll-rdf
 jekyll_rdf:
@@ -7,4 +8,5 @@ jekyll_rdf:
   restriction: "SELECT ?resourceUri WHERE {?resourceUri ?p ?o}"
   default_template: "default"
   instance_template_mappings:
-    "http://example.org/instance/types": "types"
+    "http://example.org/instance/resource": "exampleInstance"
+    "http://example.org/instance" : "multipleResources"

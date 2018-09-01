@@ -1,0 +1,22 @@
+---
+rdf_prefix_path: _data/Prefixes.pref
+---
+<!DOCTYPE>
+<html>
+  <head>
+  </head>
+  <body>
+    <div class="prefixes">
+      {%- assign res = "eg:_" | rdf_get -%}
+      eg: {{res}} <br/>
+      {%- assign res = "rdf:_" | rdf_get -%}
+      rdf: {{res}} <br/>
+      {%- assign res = "rdfs:_" | rdf_get -%}
+      rdfs: {{res}} <br/>
+      {%- assign res = "xsd:_" | rdf_get -%}
+      xsd: {{res}} <br/>
+      {%- assign res = "foaf:_" | rdf_get -%}
+      foaf: {{res}}
+    </div>
+  </body>
+</html>

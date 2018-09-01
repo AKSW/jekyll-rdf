@@ -1,0 +1,14 @@
+baseurl: "/instance"
+url: "http://example.org/"
+plugins:
+- jekyll-rdf
+jekyll_rdf:
+  path: "_data/knowledge-base.ttl"
+  restriction: "SELECT ?resourceUri WHERE {?resourceUri ?p ?o}"
+  default_template: "default"
+  class_template_mappings:
+    "http://xmlns.com/foaf/0.1/Person" : "firstClassTemplate"
+    "http://example.org/instance/superClass" : "secondClassTemplate"
+  instance_template_mappings:
+    "http://example.org/instance/instance1": "firstInstanceTemplate"
+    "http://example.org/instance/instance2": "secondInstanceTemplate"

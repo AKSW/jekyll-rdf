@@ -1,0 +1,15 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix eg: <http://example.org/instance/> .
+
+eg:baseClass rdfs:subClassOf eg:Master .
+eg:advanced rdfs:subClassOf eg:baseClass .
+eg:baseClass rdfs:subClassOf eg:lowerMaster .
+eg:lowerMaster rdfs:subClassOf eg:Master .
+eg:lowerMaster rdfs:subClassOf eg:Supreme .
+eg:Master rdfs:subClassOf eg:Supreme .
+
+eg:baseRes a eg:baseClass .
+eg:advaRes a eg:advanced .
+eg:suprRes a eg:Supreme .
+eg:mastRes a eg:Master .
+
