@@ -326,4 +326,22 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
       assert_equal "/rdfsites/http/ex.org/blog/bla/", resource.filedir
     end
   end
+
+  context "The liquid tag link" do
+    should "" do
+      @source = File.join(File.dirname(__FILE__), "cases/LinkTag")
+      config = Jekyll.configuration(YAML.load_file(File.join(@source, '_config.yml')).merge!({'source' => @source, 'destination' => File.join(@source, "_site")}))
+      site = Jekyll::Site.new(config)
+      site.process
+
+      file = File.read(File.join(@source, "_site/links.html"))
+      content = file[/\<div\>(.|\s)*\<\/div>/][5..-7].strip.split("<br/>").map do |entry|
+        entry.strip
+      end
+
+      assert_equal "/resource.html", content[0]
+      assert_equal "/xorg/l/memonic.html", content[1]
+      assert_equal "/rdfsites/http/example.org/outside/xorg/l/menonic.html", content[2]
+    end
+  end
 end

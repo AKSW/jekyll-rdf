@@ -4,6 +4,14 @@ module Jekyll
       module RdfPageHelper
         attr_reader :complete
 
+        def relative_path= url
+          @relative_path=url
+        end
+
+        def relative_path
+          @relative_path ||= super
+        end
+
         def assimilate_page page
           self.data.merge!(page.data)
           setData()

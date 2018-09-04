@@ -139,6 +139,7 @@ module Jekyll
             unless changes
               site.pages << page
             end
+            page.relative_path = resource.iri
             resource.add_necessities(site, page)
             resource.subResources.each {|key, value|
               value.add_necessities(site, page)

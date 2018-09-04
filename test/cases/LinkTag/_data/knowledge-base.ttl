@@ -1,0 +1,7 @@
+@prefix eg: <http://example.org/instance/> .
+
+eg:resource eg:predicate eg:object .
+
+<http://example.org/instance/xorg/l/memonic> eg:predicate eg:object .
+<http://example.org/outside/xorg/l/menonic> eg:predicate eg:object .
+
