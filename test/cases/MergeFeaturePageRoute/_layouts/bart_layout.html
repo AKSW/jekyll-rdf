@@ -1,0 +1,21 @@
+---
+layout: default_bart
+---
+
+<div class="person">
+  <h6>
+    name:
+  </h6>
+  {{page.rdf | rdf_property: "foaf:name"}}
+  <br/>
+  <h6>
+    age:
+  </h6>
+  {{page.rdf | rdf_property: "foaf:age"}}
+</div>
+
+<div>
+    begin bart content
+    {{ content }}
+    end bart content
+</div>

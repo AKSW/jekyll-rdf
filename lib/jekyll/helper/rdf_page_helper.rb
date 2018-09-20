@@ -33,7 +33,10 @@ module Jekyll
           resource.site = @site
           @site.data['resources'] << resource
           @url = resource.page_url
-          @url = "/" + @url unless @url[0].eql? "/"   #by default jekyll renders with a leading /
+          #page_url reflects the url given by the uri of that site
+          #Jekyll on the other hand renders .html in each url belonging to an html (also converted ones like .md)
+          @url << ".html" unless (@url.length == 0) || (@url[-1].eql? "/")
+          @url = "/" + @url unless (@url.length > 0)&&(@url[0].eql? "/")   #by default jekyll renders with a leading /
         end
 
         def self.prepare_resource resource, mapper

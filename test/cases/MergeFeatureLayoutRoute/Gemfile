@@ -1,4 +1,4 @@
 source 'https://rubygems.org'
 group :jekyll_plugins do
-    gem 'jekyll-rdf', :path => '../../jekyll-rdf/'
+    gem 'jekyll-rdf', :path => '../../../'
 end
