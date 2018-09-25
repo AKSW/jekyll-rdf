@@ -5,6 +5,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
   graph = RDF::Graph.load(File.join(TestHelper::TEST_OPTIONS['source'], TestHelper::TEST_OPTIONS['jekyll_rdf']['path']))
   sparql = SPARQL::Client.new(graph)
   res_helper = ResourceHelper.new(sparql)
+  Jekyll::JekyllRdf::Helper::RdfHelper::sparql = sparql
   context "the class extraction" do
     should "extract classes from the given source" do
       answer = search_for_classes(sparql)
@@ -85,6 +86,7 @@ class TestRdfTemplateMapper < Test::Unit::TestCase
         "http://pcai042.informatik.uni-leipzig.de/~dtp16#AnotherSpecialPerson" => "AnotherSpecialPerson"
       }
       default_template = "default"
+      Jekyll::JekyllRdf::Helper::RdfHelper::sparql = sparql
       @mapper = Jekyll::RdfTemplateMapper.new(resources_to_templates, classes_to_templates, default_template, sparql)
     end
 
