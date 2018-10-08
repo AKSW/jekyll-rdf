@@ -16,7 +16,7 @@ The API Documentation is available at [RubyDoc.info](http://www.rubydoc.info/gem
     2. [Building the Jekyll Site](#building-the-jekyll-site)
     3. [Defining Templates](#defining-templates)
 3. [Parameters and configuration options at a glance](#parameters-and-configuration-options-at-a-glance)
-    1. [Resource Attributes](#resource-attributed)
+    1. [Resource Attributes](#resource-attributes)
     2. [Liquid Filters](#liquid-filters)
     3. [Plugin Configuration (\_config.yml)](#plugin-configuration-_configyml)
 4. [Development](#development)
