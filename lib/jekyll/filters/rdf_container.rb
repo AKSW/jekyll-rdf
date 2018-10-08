@@ -26,7 +26,7 @@
 module Jekyll
   module JekyllRdf
     module Filter
-      def rdf_container(input)
+      def rdf_container(input, predicate = nil)
         input = rdf_page_to_resource(input)
         return unless valid_resource?(input)
         sparql_client = Jekyll::JekyllRdf::Helper::RdfHelper::sparql
@@ -35,7 +35,9 @@ module Jekyll
           Jekyll.logger.error "#{n_triples} is not recognized as a container"
           return []
         end
-        query = "SELECT ?p ?o WHERE{ #{n_triples} ?p ?o #{query_additions()}"
+        query = "SELECT ?p ?o WHERE{ #{n_triples} " <<
+          (predicate.nil? ? "" : " #{rdf_resolve_prefix(predicate)} ?container . ?container ") <<
+          " ?p ?o #{query_additions()}"
         solutions = sparql_client.query(query).each_with_object([]) {|solution, array|
           if(/^http:\/\/www\.w3\.org\/1999\/02\/22-rdf-syntax-ns#_\d+$/.match(solution.p.to_s))
             array << Jekyll::JekyllRdf::Drops::RdfTerm.build_term_drop(solution.o, Jekyll::JekyllRdf::Helper::RdfHelper::site, true).add_necessities(Jekyll::JekyllRdf::Helper::RdfHelper::site, Jekyll::JekyllRdf::Helper::RdfHelper::page)
