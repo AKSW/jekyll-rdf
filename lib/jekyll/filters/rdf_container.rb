@@ -26,12 +26,12 @@
 module Jekyll
   module JekyllRdf
     module Filter
-      def rdf_container(input, type = nil)
+      def rdf_container(input)
         input = rdf_page_to_resource(input)
         return unless valid_resource?(input)
         sparql_client = Jekyll::JekyllRdf::Helper::RdfHelper::sparql
         n_triples = to_string_wrap(input)
-        if(!(valid_container?(n_triples, type)))
+        if(!(valid_container?(n_triples)))
           Jekyll.logger.error "#{n_triples} is not recognized as a container"
           return []
         end
@@ -49,7 +49,7 @@ module Jekyll
         return "BIND((<http://www.w3.org/2001/XMLSchema#integer>(SUBSTR(str(?p), 45))) AS ?order) } ORDER BY ASC(?order)"
       end
 
-      def valid_container?(n_triples, type = nil)
+      def valid_container?(n_triples)
         ask_query1 = "ASK WHERE {VALUES ?o {<http://www.w3.org/2000/01/rdf-schema#Container> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt>} #{n_triples} <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o}"
         ask_query2 = "ASK WHERE {#{ n_triples } <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o. ?o <http://www.w3.org/2000/01/rdf-schema#subClassOf>* <http://www.w3.org/2000/01/rdf-schema#Container>}"
         return (Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(ask_query1).true?) || (Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(ask_query2).true?)
