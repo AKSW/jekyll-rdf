@@ -1,0 +1,17 @@
+---
+---
+<html>
+    <head>
+        <title>Collections shortcut test</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        {% assign result = "<http://example.org/instance/conPointer>" | rdf_container: "<http://example.org/instance/contain>" %}
+        <div>
+            {%- for item in result -%}
+            {{item}} <br/>
+            {%- endfor -%}
+        </div>
+    </body>
+</html>
