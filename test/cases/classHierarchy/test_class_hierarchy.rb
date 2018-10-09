@@ -1,9 +1,10 @@
 require 'test_helper'
 
-class TestRdfTemplateMapper < Test::Unit::TestCase
+class TestClassHierarchy < Test::Unit::TestCase
+  include RdfTestUtility
   context "the class-template-mapping system" do
     should "map the right template to the right class in consideration to its super classes" do
-      setup_jekyll "cases/classHierarchy"
+      setup_jekyll File.dirname(__FILE__)
 
       content = []
       file = File.read(File.join(@source, "_site/baseRes.html"))
