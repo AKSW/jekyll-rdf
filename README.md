@@ -78,7 +78,7 @@ plugins:
 jekyll_rdf:
     path: "_data/data.ttl"
     default_template: "default.html"
-    restriction: "SELECT ?s WHERE { ?s ?p ?o . FILTER regex(str(?s), "http://example.org/simpsons")  }"
+    restriction: "SELECT ?resourceUri WHERE { ?resourceUri ?p ?o . FILTER regex(str(?resourceUri), 'http://example.org/simpsons')  }"
     class_template_mappings:
         "http://xmlns.com/foaf/0.1/Person": "person.html"
     instance_template_mappings:
@@ -105,7 +105,7 @@ It is also possible to define a default template, which is used for all resource
 ```
 
 ### Restrict resource selection
-Additionally, you can restrict the overall resource selection by adding a SPARQL query as `restriction` parameter to `_config.yml`. Please use ?resourceUri as the placeholder for the resulting literal:
+Additionally, you can restrict the overall resource selection by adding a SPARQL query as `restriction` parameter to `_config.yml`. Please use `?resourceUri` as the placeholder for the resulting URIs:
 ```yaml
   restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"
 ```
@@ -275,11 +275,11 @@ We implemented a liquid filter `sparql_query` to run custom SPARQL queries. Each
 ### Defining Prefixes for RDF
 It is possible to declare a set of prefixes which can be used in the `rdf_property` and `sparql_query` liquid-filters.
 This allows to shorten the amount of text required for each liquid-filter.
-The syntax of the prefix declarations the same as for [SPARQL 1.1](https://www.w3.org/TR/2013/REC-sparql11-query-20130321/).
+The syntax of the prefix declarations is the same as for [SPARQL 1.1](https://www.w3.org/TR/2013/REC-sparql11-query-20130321/).
 Just put your prefixes in a separate file and include the key `rdf_prefix_path` together with a relative path in the [YAML Front Matter](https://jekyllrb.com/docs/frontmatter/) of a file where your prefixes should be used.
 
 For the prefixes the same rules apply as for other variables defined in the YAML Front Matter.
-“These variables will then be available to you to access using Liquid tags both further down in the file and also in any layouts or includes that the page or post in question relies on.” (source: [YAML Front Matter](https://jekyllrb.com/docs/frontmatter/)).
+*These variables will then be available to you to access using Liquid tags both further down in the file and also in any layouts or includes that the page or post in question relies on.* (source: [YAML Front Matter](https://jekyllrb.com/docs/frontmatter/)).
 This is especially relevant if you are using prefixes in includes.
 
 ### Dealing with Fragment Identifiers
@@ -637,7 +637,7 @@ http://www.ifi.uio.no/INF3580/simpsons#Maggie
 |path|Relative path to the RDF-File|no default|Specifies the path to the RDF file you want to render the website for|```path: "rdf-data/simpsons.ttl"```|
 |language|Language-Tag as String|no default|Specifies the preferred language when you select objects using our Liquid filters|```language: "en"```|
 |include_blank|Boolean-Expression|false|Specifies whether blank nodes should also be rendered or not|```include_blank: true```|
-|restriction|SPARQL-Query as String or subjects / objects / predicates|no default|Restricts the resource-selection with a given SPARQL-Query or the three keywords subjects (only subject URIs), objects, predicates|```restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"```|
+|restriction|SPARQL-Query as String or subjects/objects/predicates|no default|Restricts the resource-selection with a given SPARQL-Query to the results bound to the special variable `?resourceUri` or the three keywords `subjects` (only subject URIs), `objects`, `predicates`|```restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"```|
 |default_template|Filename of the default RDF-template in _layouts directory|no default|Specifies the template-file you want Jekyll to use to render all RDF resources|```default_template: "rdf_index.html"```|
 |instance_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files for rendering an individual instance|```instance_template_mappings: "http://www.ifi.uio.no/INF3580/simpsons#Abraham": "abraham.html"```|
 |class_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files for rendering all instances of that class|```class_template_mappings: "http://xmlns.com/foaf/0.1/Person": "person.html"```|
