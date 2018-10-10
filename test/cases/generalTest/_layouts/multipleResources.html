@@ -1,0 +1,20 @@
+---
+---
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Sub Resources</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div><h5>This resource {{page.rdf}} has multiple resource</h5>
+            <div>
+                <div class="mainResource">{{page.rdf}}</div>
+                {%- for resource in page.sub_rdf -%}
+                   <div class="subResource"> {{resource}}  +++ {%- assign description = resource | rdf_property: "<http://example.org/instance/description>" -%} {{description}}</div>  <br/>
+                {%- endfor -%}
+            </div>
+        </div>
+    </body>
+</html>

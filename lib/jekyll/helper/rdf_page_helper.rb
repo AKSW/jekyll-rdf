@@ -53,7 +53,10 @@ module Jekyll
         end
 
         def read_yaml(base, name, opts = {})
-          @path = @site.layouts[Jekyll::JekyllRdf::Helper::RdfPageHelper.template(true)].path unless Jekyll::JekyllRdf::Helper::RdfPageHelper.template.nil?
+          begin
+            template = @site.layouts[Jekyll::JekyllRdf::Helper::RdfPageHelper.template(true)]  #load actual template
+            @path = template.path unless template.nil?
+          end unless Jekyll::JekyllRdf::Helper::RdfPageHelper.template.nil?
           super(base, name, opts)
         end
 

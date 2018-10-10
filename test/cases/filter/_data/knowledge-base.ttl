@@ -1,0 +1,56 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix eg: <http://example.org/instance/> .
+
+eg:resource eg:predicate eg:object .
+
+eg:resource eg:prelist eg:object1 .
+eg:resource eg:prelist eg:object2 .
+eg:resource eg:prelist eg:object3 .
+eg:resource eg:prelist eg:object4 .
+
+eg:resource eg:literals "unknown"@en .
+eg:resource eg:literals "unknown 2"@en .
+eg:resource eg:literals "unbekannt"@de .
+eg:resource eg:literals "unbekannt 2"@de .
+
+eg:resource1 eg:predicate eg:object .
+eg:resource2 eg:predicate eg:object .
+
+eg:collection a rdf:List .
+eg:collection rdf:first eg:colItem1 .
+eg:collection rdf:rest eg:colHolder1 .
+eg:colHolder1 rdf:first eg:colItem2 .
+eg:colHolder1 rdf:rest eg:colHolder2 .
+eg:colHolder2 rdf:first eg:colItem3 .
+eg:colHolder2 rdf:rest eg:colHolder3 .
+eg:colHolder3 rdf:first eg:colItem4 .
+eg:colHolder3 rdf:rest eg:colHolder4 .
+eg:colHolder4 rdf:first eg:colItem5 .
+eg:colHolder4 rdf:rest rdf:nil .
+
+eg:colPointer eg:collect eg:collection .
+
+eg:Seq a rdf:Seq .
+eg:Seq rdf:_1 eg:conItem1 .
+eg:Seq rdf:_2 eg:conItem2 .
+eg:Seq rdf:_3 eg:conItem3 .
+eg:Seq rdf:_4 eg:conItem4 .
+eg:Seq rdf:_5 eg:conItem5 .
+
+eg:Container a rdfs:Container .
+eg:Container rdf:_1 eg:conItem1 .
+eg:Container rdf:_2 eg:conItem2 .
+eg:Container rdf:_3 eg:conItem3 .
+eg:Container rdf:_4 eg:conItem4 .
+eg:Container rdf:_5 eg:conItem5 .
+
+eg:ContainerClass rdfs:subClassOf eg:ContainmentClass .
+eg:ContainmentClass rdfs:subClassOf rdfs:Container .
+
+eg:CustomContainer a eg:ContainerClass .
+eg:CustomContainer rdf:_1 eg:conItem1 .
+eg:CustomContainer rdf:_2 eg:conItem2 .
+eg:CustomContainer rdf:_3 eg:conItem3 .
+eg:CustomContainer rdf:_4 eg:conItem4 .
+eg:CustomContainer rdf:_5 eg:conItem5 .
