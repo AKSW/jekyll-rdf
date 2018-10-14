@@ -65,6 +65,12 @@ module Jekyll #:nodoc:
           end
           @subResources = {}
           @covered = covered
+          @iri = term.to_s
+          @blank = false
+          begin
+            @iri = ""
+            @blank = true
+          end if (@iri.length > 1 && (@iri[0..1].eql? "_:")) || (term.class <= RDF::Node)
         end
 
         def add_necessities(site, page)
@@ -155,7 +161,11 @@ module Jekyll #:nodoc:
         end
 
         def iri
-          term.to_s
+          @iri
+        end
+
+        def blank?
+          @blank
         end
 
         ##
