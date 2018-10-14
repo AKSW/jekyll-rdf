@@ -1,0 +1,3 @@
+@prefix eg: <http://example.org/instance/> .
+
+eg:resource eg:predicate eg:object .
