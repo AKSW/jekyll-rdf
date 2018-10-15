@@ -1,0 +1,27 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix remote: <http://remote-endpoint.org/instance/> .
+
+remote:resource remote:predicate remote:render .
+remote:resource remote:predicate2 remote:queryItem0 ,
+                                  remote:queryItem1 ,
+                                  remote:queryItem2 .
+
+remote:collection a rdf:List .
+remote:collection rdf:first remote:colItem1 .
+remote:collection rdf:rest remote:colHolder1 .
+remote:colHolder1 rdf:first remote:colItem2 .
+remote:colHolder1 rdf:rest remote:colHolder2 .
+remote:colHolder2 rdf:first remote:colItem3 .
+remote:colHolder2 rdf:rest remote:colHolder3 .
+remote:colHolder3 rdf:first remote:colItem4 .
+remote:colHolder3 rdf:rest remote:colHolder4 .
+remote:colHolder4 rdf:first remote:colItem5 .
+remote:colHolder4 rdf:rest rdf:nil .
+
+remote:Container a rdfs:Container .
+remote:Container rdf:_1 remote:conItem1 .
+remote:Container rdf:_2 remote:conItem2 .
+remote:Container rdf:_3 remote:conItem3 .
+remote:Container rdf:_4 remote:conItem4 .
+remote:Container rdf:_5 remote:conItem5 .
