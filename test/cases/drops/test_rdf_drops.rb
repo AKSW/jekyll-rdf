@@ -38,8 +38,8 @@ class TestRdfResource < Test::Unit::TestCase
       assert_equal "#<RdfStatement:0x", @statement.inspect[0..16]
       assert_equal "@subject=#<RdfResource:0x", @statement.inspect[32..56]
       assert_equal "@iri=http://example.resource/subject @subResources=[]> @predicate=#<RdfResource:0x", @statement.inspect[72..153]
-      assert_equal "@iri=_:http://example.term/predicate @subResources=[]> @object=#<RdfLiteral:0x", @statement.inspect[169..246]
-      assert_equal "@term=http://example.literal/object>>", @statement.inspect[262..298]
+      assert_equal "@iri= @subResources=[]> @object=#<RdfLiteral:0x", @statement.inspect[169..215]
+      assert_equal "@term=http://example.literal/object>>", @statement.inspect[231..298]
     end
   end
 
@@ -241,6 +241,26 @@ class TestRdfResource < Test::Unit::TestCase
       Jekyll::JekyllRdf::Helper::RdfHelper::pathiri = "/blog/s"
       assert_equal "a.html", resource.filename
       assert_equal "/rdfsites/http/ex.org/blog/bla/", resource.filedir
+    end
+  end
+
+  context "Jekyll::JekyllRdf::Drops::RdfResource" do
+    should "return the iri on calling .iri" do
+      resource = Jekyll::JekyllRdf::Drops::RdfResource.new("http://example.org/instance/resource")
+      assert_equal "http://example.org/instance/resource", resource.iri
+      blank_node = Jekyll::JekyllRdf::Drops::RdfResource.new("_:123456789")
+      assert_equal "", blank_node.iri
+      blank_node = Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::Node.new)
+      assert_equal "", blank_node.iri
+    end
+
+    should "distinguish between resources and blanknodes" do
+      resource = Jekyll::JekyllRdf::Drops::RdfResource.new("http://example.org/instance/resource")
+      assert !resource.blank?, "The resource #{resource} is not a blanknode"
+      blank_node = Jekyll::JekyllRdf::Drops::RdfResource.new("_:123456789")
+      assert blank_node.blank?, "The resource #{blank_node} is a blanknode"
+      blank_node = Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::Node.new)
+      assert blank_node.blank?, "The resource #{blank_node} is a blanknode"
     end
   end
 end
