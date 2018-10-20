@@ -7,6 +7,7 @@ plugins:
 jekyll_rdf:
   remote:
     endpoint: "http://localhost:3030/remote/query"
+    default_graph: "http://localhost:3030/remote/data/graph1"
   restriction: "SELECT ?resourceUri WHERE {?resourceUri ?p <http://remote-endpoint.org/instance/render>}"
   instance_template_mappings:
     "http://remote-endpoint.org/instance/resource": "exampleInstance"

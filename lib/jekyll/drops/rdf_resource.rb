@@ -168,7 +168,6 @@ module Jekyll #:nodoc:
         #   :object ::
         #     Return a list of Jekyll::JekyllRdf::Drops::RdfStatements whose object is the RDF resource represented by the receiver
         #
-        #TODO use term.to_ntriples first if can be substituted through << return [] if (term.instance_of? RDF::Node)
         def statements_as(role)
           if(!term.to_s[0..1].eql? "_:")
             input_uri = "<#{term.to_s}>"

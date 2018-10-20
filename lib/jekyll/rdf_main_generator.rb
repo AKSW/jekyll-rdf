@@ -49,7 +49,12 @@ module Jekyll
         return false
       end
       if(!@config['remote'].nil?)
-        graph = @config['remote']
+        if (@config['remote']['endpoint'].nil?)
+          raise ArgumentError, "When the key 'remote' is specified, another subkey 'endpoint' must be specified which contains the location of your graph."
+        else
+          graph = @config['remote']['endpoint'].strip
+        end
+        graph << "?default-graph-uri=#{CGI::escape(@config['remote']['default_graph'])}" unless @config['remote']['default_graph'].nil?
       elsif(!@config['path'].nil?)
         graph = RDF::Graph.load( File.join( site.config['source'], @config['path']))
       else
@@ -64,6 +69,11 @@ module Jekyll
 
       # restrict RDF graph with restriction
       resources = extract_resources(@config['restriction'], @config['include_blank'], sparql)
+      Jekyll.logger.info "resources:"
+      resources.each{|resource|
+        Jekyll.logger.info "#{resource}"
+      }
+      Jekyll.logger.info "resources end"
       site.data['sparql'] = sparql
       site.data['resources'] = []
 

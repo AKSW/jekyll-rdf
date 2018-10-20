@@ -1,0 +1,19 @@
+---
+rdf_prefix_path: _data/Prefixes.pref
+---
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Remote SPARQL Endpoint Test</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>
+            {%- assign resource = "remote:resource" | rdf_get -%}
+            {{resource}}  <br/>
+            {%- assign result = resource | rdf_property: "remote:predicate" -%}
+            {{result}}
+        </div>
+    </body>
+</html>
