@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [3.0.0] - 2018-10-20
 The major revision with a lot of changes as a [birthday present](https://twitter.com/jekyllrb/status/1053579886516936704) for [jekyll's](https://jekyllrb.com/).
-For a full list of the changes check out the [pullrequest](https://github.com/white-gecko/jekyll-rdf/pull/140): [Commits (138)](https://github.com/white-gecko/jekyll-rdf/pull/140/commits), [Files changed (235)](https://github.com/white-gecko/jekyll-rdf/pull/140/files).
+For a full list of the changes check out the [pullrequest](https://github.com/white-gecko/jekyll-rdf/pull/140): [Commits (140)](https://github.com/white-gecko/jekyll-rdf/pull/140/commits), [Files changed (236)](https://github.com/white-gecko/jekyll-rdf/pull/140/files) and the [3.0.0 milestone](https://github.com/white-gecko/jekyll-rdf/milestone/5?closed=1).
 If you have trouble transitioning from Jekyll RDF 2.x to 3.0 please check our documentation of the filters in the README.
 If you think we made some mistakes please help us be sending [pull requests](https://github.com/white-gecko/jekyll-rdf/pulls) or filling an [issue](https://github.com/white-gecko/jekyll-rdf/issues).
 
