@@ -4,6 +4,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## [3.0.0] - 2018-10-20
+The major revision with a lot of changes as a [birthday present](https://twitter.com/jekyllrb/status/1053579886516936704) for [jekyll's](https://jekyllrb.com/).
+For a full list of the changes check out the [pullrequest](https://github.com/white-gecko/jekyll-rdf/pull/140): [Commits (138)](https://github.com/white-gecko/jekyll-rdf/pull/140/commits), [Files changed (235)](https://github.com/white-gecko/jekyll-rdf/pull/140/files).
+If you have trouble transitioning from Jekyll RDF 2.x to 3.0 please check our documentation of the filters in the README.
+If you think we made some mistakes please help us be sending [pull requests](https://github.com/white-gecko/jekyll-rdf/pulls) or filling an [issue](https://github.com/white-gecko/jekyll-rdf/issues).
+
+### Added
+- You can now omit `page.rdf` for some filters and just pass `nil`, which will default to the current pages RDF resource.
+- The JekyllRDF filters can now also be used on standard Jekyll pages which are not created by JekyllRDF.
+- Allow embedding of Jekyll pages into JekyllRDF pages which are mapped to the same URL. (This currently only works properly with HTML pages, MD is not rendered in this case.)
+- New config parameter `baseiri` which defines the namespace from which the resources are interpreted independently from jekylls standard `baseurl` and `url` parameters.
+- Support for gem based themes (https://jekyllrb.com/docs/themes/). The first one is (https://rubygems.org/gems/jekyll-theme-jod).
+
+### Changed
+- A lot under the hood.
+- Improved documentation in the README.
+- Make the URI mapping of RDF resources to Jekyll pages neat and more predictive, or logically (as you like to see it) this involves the mappings described in https://github.com/white-gecko/jekyll-rdf/issues/94, https://github.com/white-gecko/jekyll-rdf/issues/78, and https://github.com/white-gecko/jekyll-rdf/issues/82.
+- `sparql_query` now accepts arrays, this allows to specify multiple variables to be replaced by the arrays content using the variables `?resourceUri_0`, `?resourceUri_1` and so on.
+- Prefix paths don't need to be in the `rdf-data/` folder but can be anywhere. The `rdf_prefix_path` is no longer interpreted relative to `rdf-data/`. We rather recommend to place it in `_data`.
+- All filters now also accept URI-strings as input e.g. `{{ <http://example.org/resource> | rdf_property: … }}`.
+- `rdf_container` filter can now also be called using a property as it is possible for `rdf_collection`.
+
+### Fixed
+- Fix behavior of URI mapping when it was disturbed by the Jekyll permalink settings.
+- Prefix definition files can now contain empty lines.
+- Fix behavior in development mode, when the `site.url` is set to http://localhost:4000 (https://jekyllrb.com/news/#3-siteurl-is-set-by-the-development-server).
+- Usage of math filters and some other standard liquid filters.
+- Interpret graph path relative to source path and not the current working directory.
+
 ## [2.3.0] - 2017-10-23
 ### Added
 - Add convenient method to parse collections starting with a blank node, using the `rdf_collection` filter.
