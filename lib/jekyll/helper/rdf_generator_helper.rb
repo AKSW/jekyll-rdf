@@ -128,7 +128,7 @@ module Jekyll
           if(page.complete)
             changes = false
             site.pages.map!{|old_page|
-              if (old_page.url == page.url)
+              if (old_page.url.chomp('.html') == page.url.chomp('.html'))
                 changes||=true
                 page.assimilate_page(old_page)
                 page
