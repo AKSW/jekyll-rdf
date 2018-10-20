@@ -1,0 +1,22 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix eg: <http://example.org/instance/> .
+
+eg:resource eg:predicate eg:object .
+
+eg:instance1 eg:predicate eg:object .
+eg:instance2 eg:predicate eg:object .
+
+eg:person a foaf:Person .
+eg:classShow a eg:class .
+eg:class rdfs:subClassOf eg:superClass .
+
+<http://example.org/instance/resource#subResource1> eg:predicate eg:object .
+<http://example.org/instance/resource#subResource2> eg:predicate eg:object .
+<http://example.org/instance/resource#subResource3> eg:predicate eg:object .
+
+<http://example.org/instance/b/y/> eg:predicate eg:object .
+<http://example.org/instance/bla/a> eg:predicate eg:object .
+<http://ex.org/b/y/> eg:predicate eg:object .

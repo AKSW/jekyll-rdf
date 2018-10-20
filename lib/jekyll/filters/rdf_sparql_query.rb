@@ -24,43 +24,56 @@
 #
 
 module Jekyll
-
-  ##
-  # Internal module to hold the medthod #sparql_query
-  #
-  module RdfSparqlQuery
-
+  module JekyllRdf
     ##
-    # Executes a SPARQL query. The supplied query is augmented by replacing each occurence of '?resourceUri' by the URI of the context RDF resource.
-    # Returns an Array of bindings. Each binding is a Hash mapping variables to their values.
+    # Internal module to hold the medthod #sparql_query
     #
-    # * +input+ - the context RDF resource
-    # * +query+ - the SPARQL query
-    #
-    def sparql_query(input, query)
-      return input unless input.is_a?(Jekyll::Drops::RdfResource)
-      query.gsub!('?resourceUri', "<#{input.term.to_s}>")
-      if(!input.page.data["rdf_prefixes"].nil?)
-        query = query.prepend(" ").prepend(input.page.data["rdf_prefixes"])
-      end
-      begin
-        result = input.sparql.query(query).map do |solution|
-          hsh = solution.to_h
-          hsh.update(hsh){ |k,v| Jekyll::Drops::RdfTerm.build_term_drop(v, input.sparql, input.site).add_necessities(input.site, input.page)}
-          hsh.collect{|k,v| [k.to_s, v]}.to_h
-        end
-        return result
-      rescue SPARQL::Client::ClientError => ce
-        Jekyll.logger.error("client error experienced: \n #{query} \n Error Message: #{ce.message}")
-      rescue SPARQL::MalformedQuery => mq
-        Jekyll.logger.error("malformed query found: \n #{query} \n Error Message: #{mq.message}")
-      rescue Exception => e
-        Jekyll.logger.error("unknown Exception of class: #{e.class} in sparql_query \n Query: #{query} \nMessage: #{e.message} \nTrace #{e.backtrace.drop(1).map{|s| "\t#{s}"}.join("\n")}")
-      end
-      return []
-    end
+    module Filter
 
+      ##
+      # Executes a SPARQL query. The supplied query is augmented by replacing each occurence of '?resourceUri' by the URI of the context RDF resource.
+      # Returns an Array of bindings. Each binding is a Hash mapping variables to their values.
+      #
+      # * +input+ - the context RDF resource
+      # * +query+ - the SPARQL query
+      #
+      def sparql_query(resource = nil, query)
+        query = query.clone #sometimes liquid wont reinit static strings in for loops
+        if(rdf_substitude_nil?(resource))
+          query.gsub!('?resourceUri', "<#{Jekyll::JekyllRdf::Helper::RdfHelper::page.data['rdf'].term}>")
+        elsif(resource.class <= Array)
+          resource.each_with_index do |uri, index|
+            return unless valid_resource?(uri)
+            if(uri.class <= Jekyll::JekyllRdf::Drops::RdfResource)
+              query.gsub!("?resourceUri_#{index}", uri.term.to_ntriples)
+            else
+              query.gsub!("?resourceUri_#{index}", "#{rdf_resolve_prefix(uri.to_s)}")
+            end
+          end
+        else
+          return unless valid_resource?(resource)
+          query.gsub!('?resourceUri', to_string_wrap(resource))
+        end if query.include? '?resourceUri'  #the only purpose of the if statement is to substitute ?resourceUri
+        unless Jekyll::JekyllRdf::Helper::RdfHelper::prefixes["rdf_prefixes"].nil?
+          query = query.prepend(" ").prepend(Jekyll::JekyllRdf::Helper::RdfHelper::prefixes["rdf_prefixes"])
+        end
+        begin
+          result = Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(query).map do |solution|
+            hsh = solution.to_h
+            hsh.update(hsh){ |k,v| Jekyll::JekyllRdf::Drops::RdfTerm.build_term_drop(v, Jekyll::JekyllRdf::Helper::RdfHelper::site, true).add_necessities(Jekyll::JekyllRdf::Helper::RdfHelper::site, Jekyll::JekyllRdf::Helper::RdfHelper::page)}
+            hsh.collect{|k,v| [k.to_s, v]}.to_h
+          end
+          return result
+        rescue SPARQL::Client::ClientError => ce
+          Jekyll.logger.error("client error experienced: \n #{query} \n Error Message: #{ce.message}")
+        rescue SPARQL::MalformedQuery => mq
+          Jekyll.logger.error("malformed query found: \n #{query} \n Error Message: #{mq.message}")
+        rescue Exception => e
+          Jekyll.logger.error("unknown Exception of class: #{e.class} in sparql_query \n Query: #{query} \nMessage: #{e.message} \nTrace #{e.backtrace.drop(1).map{|s| "\t#{s}"}.join("\n")}")
+        end
+        return []
+      end
+
+    end
   end
 end
-
-Liquid::Template.register_filter(Jekyll::RdfSparqlQuery)

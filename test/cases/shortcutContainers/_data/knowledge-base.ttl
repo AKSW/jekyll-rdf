@@ -1,0 +1,11 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix eg: <http://example.org/instance/> .
+
+eg:conPointer eg:contain eg:Container .
+eg:Container a rdfs:Container .
+eg:Container rdf:_1 eg:conItem1 .
+eg:Container rdf:_2 eg:conItem2 .
+eg:Container rdf:_3 eg:conItem3 .
+eg:Container rdf:_4 eg:conItem4 .
+eg:Container rdf:_5 eg:conItem5 .

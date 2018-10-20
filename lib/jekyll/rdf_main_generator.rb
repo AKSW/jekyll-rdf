@@ -32,7 +32,7 @@ module Jekyll
   class RdfMainGenerator < Jekyll::Generator
     safe true
     priority :highest
-    include Jekyll::RdfGeneratorHelper
+    include Jekyll::JekyllRdf::Helper::RdfGeneratorHelper
 
     ##
     # #generate performs the enrichment of a Jekyll::Site with rdf triples
@@ -49,18 +49,19 @@ module Jekyll
         return false
       end
 
-      graph = RDF::Graph.load(@config['path'])
+      graph = RDF::Graph.load( File.join( site.config['source'], @config['path']))
       sparql = SPARQL::Client.new(graph)
 
-      Jekyll::RdfHelper::sparql = sparql
-      Jekyll::RdfHelper::site = site
+      Jekyll::JekyllRdf::Helper::RdfHelper::sparql = sparql
+      Jekyll::JekyllRdf::Helper::RdfHelper::site = site
+      Jekyll::JekyllRdf::Helper::RdfHelper::prefixes = File.join(site.source, @config['prefixes'].strip) unless @config['prefixes'].nil?
 
       # restrict RDF graph with restriction
       resources = extract_resources(@config['restriction'], @config['include_blank'], sparql)
       site.data['sparql'] = sparql
       site.data['resources'] = []
 
-      parse_resources(resources, sparql)
+      parse_resources(resources)
 
       mapper = Jekyll::RdfTemplateMapper.new(@config['instance_template_mappings'], @config['class_template_mappings'], @config['default_template'], sparql)
 

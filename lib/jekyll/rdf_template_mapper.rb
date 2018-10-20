@@ -44,7 +44,7 @@ module Jekyll
 
     attr_accessor :classResources
 
-    include Jekyll::RdfClassExtraction
+    include Jekyll::JekyllRdf::Helper::RdfClassExtraction
 
     ##
     # Create a new Jekyll::RdfTemplateMapper

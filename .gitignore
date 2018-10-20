@@ -23,6 +23,7 @@ build/
 */doc/
 */rdoc/
 */html/
+test/**/_site/
 
 ## Environment normalization:
 /.bundle/

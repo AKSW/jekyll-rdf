@@ -24,43 +24,45 @@
 #
 
 module Jekyll
-  module Drops
-
-    ##
-    # Represents an RDF statement to the Liquid template engine
-    #
-    class RdfStatement < Liquid::Drop
+  module JekyllRdf
+    module Drops
 
       ##
-      # The subject RdfTerm of this RDF statement
+      # Represents an RDF statement to the Liquid template engine
       #
-      attr_reader :subject
+      class RdfStatement < Liquid::Drop
 
-      ##
-      # The predicate RdfTerm of this RDF statement
-      #
-      attr_reader :predicate
+        ##
+        # The subject RdfTerm of this RDF statement
+        #
+        attr_reader :subject
 
-      ##
-      # The object RdfTerm of this RDF statement
-      #
-      attr_reader :object
+        ##
+        # The predicate RdfTerm of this RDF statement
+        #
+        attr_reader :predicate
 
-      ##
-      # Create a new Jekyll::Drops::RdfStatement
-      #
-      # * +statement+ - The statement to be represented
-      # * +sparql+ - The SPARQL::Client which contains the +statement+
-      # * +site+ - The Jekyll::Site to be enriched
-      def initialize(statement, sparql, site)
-        @subject ||= Jekyll::Drops::RdfTerm.build_term_drop(statement.subject, sparql, site)
-        @predicate ||= Jekyll::Drops::RdfTerm.build_term_drop(statement.predicate, sparql, site)
-        @object ||= Jekyll::Drops::RdfTerm.build_term_drop(statement.object, sparql, site)
-      end
+        ##
+        # The object RdfTerm of this RDF statement
+        #
+        attr_reader :object
 
-      def inspect
-        obj_id = ('%x' % (self.object_id << 1)).to_s
-        return "#<RdfStatement:0x#{"0"*(14 - obj_id.length)}#{obj_id} @subject=#{subject.inspect} @predicate=#{predicate.inspect} @object=#{object.inspect}>"
+        ##
+        # Create a new Jekyll::Drops::RdfStatement
+        #
+        # * +statement+ - The statement to be represented
+        # * +sparql+ - The SPARQL::Client which contains the +statement+
+        # * +site+ - The Jekyll::Site to be enriched
+        def initialize(statement, site)
+          @subject ||= Jekyll::JekyllRdf::Drops::RdfTerm.build_term_drop(statement.subject, site, true)
+          @predicate ||= Jekyll::JekyllRdf::Drops::RdfTerm.build_term_drop(statement.predicate, site, true)
+          @object ||= Jekyll::JekyllRdf::Drops::RdfTerm.build_term_drop(statement.object, site, true)
+        end
+
+        def inspect
+          obj_id = ('%x' % (self.object_id << 1)).to_s
+          return "#<RdfStatement:0x#{"0"*(14 - obj_id.length)}#{obj_id} @subject=#{subject.inspect} @predicate=#{predicate.inspect} @object=#{object.inspect}>"
+        end
       end
     end
   end

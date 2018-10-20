@@ -24,20 +24,38 @@
 #
 
 module Jekyll
-  module Drops
-
-    ##
-    # Represents an RDF literal to the Liquid template engine
-    #
-    class RdfLiteral < RdfTerm
+  module JekyllRdf
+    module Drops
 
       ##
-      # Return a user-facing string representing this RdfLiteral
+      # Represents an RDF literal to the Liquid template engine
       #
-      def literal
-        term.to_s
-      end
+      class RdfLiteral < RdfTerm
 
+        ##
+        # Return a user-facing string representing this RdfLiteral
+        #
+        def literal
+          term.to_s
+        end
+
+        ##
+        # Return literal value to allow liquid filters to compute
+        # rdf literals as well
+        # source: https://github.com/eccenca/jekyll-rdf/commit/704dd98c5e457a81e97fcd011562f1f39fc3f813
+        #
+        def to_liquid
+          # Convert scientific notation
+
+          term_str = term.to_s
+          if(term.has_datatype?)
+            custom_type = Jekyll::JekyllRdf::Helper::Types::find(term.datatype)
+            return custom_type.to_type term_str if (!custom_type.nil?) && (custom_type.match? term_str)
+          end
+          return term.to_s
+        end
+
+      end
     end
   end
 end

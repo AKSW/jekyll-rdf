@@ -1,0 +1,14 @@
+@prefix eg: <http://example.org/instance/> .
+@prefix egh: <http://example.org/instance#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+eg:resource eg:predicate eg:object .
+eg:person a foaf:Person .
+eg:person foaf:age "28"^^xsd:int .
+eg:person foaf:name "Jeanne Doe" .
+egh:resource1 eg:description "describes resource1"@en .
+egh:resource2 eg:description "describes resource2"@en .
+<http://outside.org/resource> a foaf:Document .
+eg:coveredResource a foaf:Document .
+<http://example.org/instance> eg:predicate eg:object .

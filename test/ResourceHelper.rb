@@ -10,7 +10,7 @@ class ResourceHelper
   end
 
   def basic_resource(uri)
-    resource = Jekyll::Drops::RdfResource.new(RDF::URI.new(uri), @sparql)
+    resource = Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI.new(uri))
     if(@global_site)
       attach_site(resource, use_global_site())
     else
@@ -21,7 +21,7 @@ class ResourceHelper
   end
 
   def basic_literal(string)
-    literal = Jekyll::Drops::RdfLiteral.new(RDF::Literal.new(string), @sparql)
+    literal = Jekyll::JekyllRdf::Drops::RdfLiteral.new(RDF::Literal.new(string))
     return literal
   end
 
@@ -57,7 +57,7 @@ class ResourceHelper
     return resource
   end
 
-  def resource_faulty_sparql(uri, exception)  #Fehleranfällig
+  def faulty_sparql_client(exception)  #Fehleranfällig
     faulty_sparql = Object.new
     case exception
     when :ClientError
@@ -73,10 +73,7 @@ class ResourceHelper
         raise Exception
       end
     end
-    resource = Jekyll::Drops::RdfResource.new(RDF::URI.new(uri), faulty_sparql)
-    attach_site(resource, create_fake_site())
-    attach_page(resource, create_fake_page())
-    return resource
+    return faulty_sparql
   end
 
   def create_bad_fetch_site()
@@ -162,6 +159,14 @@ class ResourceHelper
       return (other_page.id.eql? @id)&&(other_page.type.eql? @type)
     end
 
+    def fake_page.class
+      return Jekyll::Page
+    end
+
+    def fake_page.is_a? t_class
+      self.class <= t_class
+    end
+
     def fake_page.inspect
       return "<#page:xxxx#{@id} @type = #{@type}>"
     end
@@ -233,9 +238,15 @@ class ResourceHelper
       end
       return @data
     end
-    obj.data
+
+    def obj.data= hash
+      @data = hash
+    end
+
+    obj.data = {}
+
     def obj.read_yaml(path, template)
-      @data["rdf_prefix_path"] = "simpsons.pref"
+      @data["rdf_prefix_path"] = "rdf-data/simpsons.pref"
       return true
     end
   end

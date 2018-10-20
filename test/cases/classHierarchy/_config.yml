@@ -1,0 +1,12 @@
+baseurl: "/instance" # the subpath of your site, e.g. /blog
+url: "http://example.org/" # the base hostname & protocol for your site
+plugins:
+- jekyll-rdf
+jekyll_rdf:
+  path: "_data/knowledge-base.ttl"
+  restriction: "SELECT ?resourceUri WHERE {?resourceUri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o}"
+  class_template_mappings:
+    "http://example.org/instance/Supreme": "Supreme"
+    "http://example.org/instance/Master": "Master"
+    "http://example.org/instance/lowerMaster": "LowerMaster"
+    "http://example.org/instance/advanced": "Advanced"

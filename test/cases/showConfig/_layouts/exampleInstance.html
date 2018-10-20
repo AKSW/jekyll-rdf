@@ -1,0 +1,15 @@
+---
+---
+<!DOCTYPE html>
+  <html>
+    <head></head>
+    <body>
+      <div class="instance">
+        {{page.rdf}} <br/>
+        {% for sub in page.sub_rdf %}
+          {{sub}} <br/>
+        {% endfor %}
+      </div>
+    </body>
+  </html>
+

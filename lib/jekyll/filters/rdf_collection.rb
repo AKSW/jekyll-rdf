@@ -25,22 +25,21 @@
 #
 
 module Jekyll
-  module RdfCollection
-    def rdf_collection(input, predicate = nil)
-      sparql_query = input.sparql
-      unless predicate.nil?
-        predicate = rdf_resolve_prefix(input, predicate)
+  module JekyllRdf
+    module Filter
+      def rdf_collection(input, predicate = nil)
+        input = rdf_page_to_resource(input)
+        return unless valid_resource?(input)
+        input = to_string_wrap(input)
+        query = "SELECT ?f WHERE{ #{input} " <<
+          (predicate.nil? ? "" : " #{rdf_resolve_prefix(predicate)} ?coll . ?coll ") <<
+          " <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest>* ?r. ?r <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?f}"
+        results = []
+        Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(query).each{ |solution|
+          results.push Jekyll::JekyllRdf::Drops::RdfTerm.build_term_drop(solution.f, Jekyll::JekyllRdf::Helper::RdfHelper::site, true).add_necessities(Jekyll::JekyllRdf::Helper::RdfHelper::site, Jekyll::JekyllRdf::Helper::RdfHelper::page)
+        }
+        return results
       end
-      query = "SELECT ?f WHERE{ #{input.term.to_ntriples} " <<
-              (predicate.nil?? "" : " <#{predicate}> ?coll . ?coll ") <<
-              " <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest>* ?r. ?r <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> ?f}"
-      results = []
-      sparql_query.query(query).each{ |solution|
-        results.push Jekyll::Drops::RdfTerm.build_term_drop(solution.f, input.sparql, input.site).add_necessities(input.site, input.page)
-      }
-      return results
     end
   end
 end
-
-Liquid::Template.register_filter(Jekyll::RdfCollection)

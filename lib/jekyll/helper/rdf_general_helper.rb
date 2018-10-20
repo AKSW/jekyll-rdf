@@ -23,33 +23,89 @@
 #
 
 module Jekyll
+  module JekyllRdf
+    module Helper
 
-  ##
-  # Internal module to hold the medthod #rdf_get
-  #
-  module RdfHelper
-    def self.sparql= sparql
-      @@sparql = sparql
-    end
+      ##
+      # Internal module to hold support for functionalities like submitting sparql queries
+      #
+      module RdfHelper
+        @@prefixes = {}
 
-    def self.sparql
-      @@sparql
-    end
+        def self.sparql= sparql
+          @@sparql = sparql
+        end
 
-    def self.site= site
-      @@site = site
-    end
+        def self.sparql
+          @@sparql
+        end
 
-    def self.site
-      @@site
-    end
+        def self.site= site
+          @@site = site
+        end
 
-    def self.page= page
-      @@page = page
-    end
+        def self.site
+          @@site
+        end
 
-    def self.page
-      @@page
+        def self.page= page
+          @@page = page
+          unless @@page.data["rdf_prefixes"].nil?
+            @@usePage = true
+          else
+            @@usePage = false
+          end
+        end
+
+        def self.page
+          @@page
+        end
+
+        def self.prefixes= path
+          @@prefixes = {}
+          self.load_prefixes(path, @@prefixes)
+        end
+
+        def self.load_prefixes(path, prefHolder)
+          begin
+            prefix_file = File.new(path).readlines
+            prefHolder["rdf_prefixes"] = prefix_file.join(" ")
+            prefHolder["rdf_prefix_map"] = Hash[ *(prefix_file.collect { |v|
+                  arr = v.split(":",2)
+                  next [nil, nil] if arr[1].nil?
+                  [arr[0][7..-1].strip, arr[1].strip[1..-2]]
+                }.flatten.reject {|x| x.nil?})]
+          rescue Errno::ENOENT => ex
+            Jekyll.logger.error("Prefix file not found: #{path}")
+            raise
+          end
+        end
+
+        def self.prefixes
+          if(@@usePage)
+            return @@page.data
+          else
+            return @@prefixes
+          end
+        end
+
+        def self.domainiri= domain
+          @@domainiri = domain
+        end
+
+        def self.domainiri
+          @@domainiri
+        end
+
+        def self.pathiri= path
+          @@baseiri = path
+        end
+
+        def self.pathiri
+          @@baseiri
+        end
+      end
+
     end
   end
 end

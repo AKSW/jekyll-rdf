@@ -23,6 +23,12 @@
 #
 
 
-Jekyll::Hooks.register :pages, :pre_render do |page|
-  Jekyll::RdfHelper::page = page
+Jekyll::Hooks.register :pages, :pre_render do |page, payload|
+  unless(page.data['rdf'].nil?)
+    payload["content"] = ""
+  end
+  if(page.data["rdf_prefixes"].nil? && !page.data["rdf_prefix_path"].nil?)
+    Jekyll::JekyllRdf::Helper::RdfHelper.load_prefixes(File.join(page.instance_variable_get(:@base), page.data["rdf_prefix_path"]), page.data)
+  end
+  Jekyll::JekyllRdf::Helper::RdfHelper::page = page
 end
