@@ -31,7 +31,6 @@ require 'linkeddata'
 require 'sparql'
 require 'set'
 require 'addressable/uri'
-require 'cgi'
 require 'pp'
 
 require 'jekyll/helper/rdf_types'
