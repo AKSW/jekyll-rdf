@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.1.0] - ???
+### Added
+- Allow building sites from a SPARQL endpoint by setting remote:\n endpoint: <endpointuri> in the _config.yml
+
+
 ## [2.3.0] - 2017-10-23
 ### Added
 - Add convenient method to parse collections starting with a blank node, using the `rdf_collection` filter.
