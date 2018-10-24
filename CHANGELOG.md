@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.1] - ???
+
+### Changed
+- Show debug messages only if JEKYLL_ENV is set to development
+
 
 ## [3.0.0] - 2018-10-20
 The major revision with a lot of changes as a [birthday present](https://twitter.com/jekyllrb/status/1053579886516936704) for [jekyll's](https://jekyllrb.com/).
