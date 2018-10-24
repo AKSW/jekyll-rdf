@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'sparql',               '~> 2.2', '>= 2.2.1'
   s.add_runtime_dependency 'jekyll',               '~> 3.1'
   s.add_development_dependency 'rake',             '~> 10.4'
+  s.add_development_dependency 'rest-client',      '~> 1.8'
   s.add_development_dependency 'coveralls',        '~> 0.8'
   s.add_development_dependency 'test-unit',        '~> 3.0'
   s.add_development_dependency 'shoulda-context',  '~> 1.1'

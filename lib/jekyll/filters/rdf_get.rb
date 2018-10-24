@@ -37,7 +37,13 @@ module Jekyll
         return unless valid_resource?(request_uri) && (!request_uri[0..1].eql? "_:")
         request_uri = rdf_resolve_prefix(request_uri)
         ask_exist = "ASK WHERE {{#{request_uri} ?p ?o}UNION{?s #{request_uri} ?o}UNION{?s ?p #{request_uri}}} "
-        Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI(request_uri[1..-2]), Jekyll::JekyllRdf::Helper::RdfHelper::site, Jekyll::JekyllRdf::Helper::RdfHelper::page, (Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(ask_exist).true?))
+        exists = Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(ask_exist)
+        if(exists.instance_of? RDF::Literal::Boolean)
+          exists = exists.true?
+        else
+          exists = false || exists   #take care of compatibility with virtuoso
+        end
+        Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI(request_uri[1..-2]), Jekyll::JekyllRdf::Helper::RdfHelper::site, Jekyll::JekyllRdf::Helper::RdfHelper::page, exists)
       end
     end
   end

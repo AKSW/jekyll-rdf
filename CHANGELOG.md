@@ -4,8 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [3.0.1] - ???
-
+## [3.1.0] - ???
+### Added
+- Allow building sites from a SPARQL endpoint by setting remote:\n endpoint: <endpointuri> in the _config.yml
+  
 ### Changed
 - Show debug messages only if JEKYLL_ENV is set to development
 

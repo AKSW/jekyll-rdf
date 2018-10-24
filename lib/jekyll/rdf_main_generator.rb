@@ -48,8 +48,18 @@ module Jekyll
         Jekyll.logger.error("Outdated format in _config.yml:\n  'template_mapping' detected but the following keys must be used now instead:\n    instance_template_mappings -> maps single resources to single layouts\n    class_template_mappings -> maps entire classes of resources to layouts\nJekyll-RDF wont render any pages for #{site.source}")
         return false
       end
-
-      graph = RDF::Graph.load( File.join( site.config['source'], @config['path']))
+      if(!@config['remote'].nil?)
+        if (@config['remote']['endpoint'].nil?)
+          raise ArgumentError, "When the key 'remote' is specified, another subkey 'endpoint' must be specified which contains the location of your graph."
+        else
+          graph = @config['remote']['endpoint'].strip
+        end
+      elsif(!@config['path'].nil?)
+        graph = RDF::Graph.load( File.join( site.config['source'], @config['path']))
+      else
+        Jekyll.logger.error("No sparql endpoint defined. Jumping out of jekyll-rdf processing.")
+        return false
+      end
       sparql = SPARQL::Client.new(graph)
 
       Jekyll::JekyllRdf::Helper::RdfHelper::sparql = sparql
@@ -58,6 +68,11 @@ module Jekyll
 
       # restrict RDF graph with restriction
       resources = extract_resources(@config['restriction'], @config['include_blank'], sparql)
+      Jekyll.logger.info "resources:"
+      resources.each{|resource|
+        Jekyll.logger.info "#{resource}"
+      }
+      Jekyll.logger.info "resources end"
       site.data['sparql'] = sparql
       site.data['resources'] = []
 
