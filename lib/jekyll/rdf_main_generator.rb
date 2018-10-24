@@ -64,7 +64,7 @@ module Jekyll
 
       Jekyll::JekyllRdf::Helper::RdfHelper::sparql = sparql
       Jekyll::JekyllRdf::Helper::RdfHelper::site = site
-      Jekyll::JekyllRdf::Helper::RdfHelper::prefixes = File.join(site.source, 'rdf-data', @config['prefixes'].strip) unless @config['prefixes'].nil?
+      Jekyll::JekyllRdf::Helper::RdfHelper::prefixes = File.join(site.source, @config['prefixes'].strip) unless @config['prefixes'].nil?
 
       # restrict RDF graph with restriction
       resources = extract_resources(@config['restriction'], @config['include_blank'], sparql)

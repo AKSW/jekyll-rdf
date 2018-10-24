@@ -66,10 +66,13 @@ module Jekyll
           return result
         rescue SPARQL::Client::ClientError => ce
           Jekyll.logger.error("client error experienced: \n #{query} \n Error Message: #{ce.message}")
+          raise if Jekyll.env.eql? "development"
         rescue SPARQL::MalformedQuery => mq
           Jekyll.logger.error("malformed query found: \n #{query} \n Error Message: #{mq.message}")
+          raise if Jekyll.env.eql? "development"
         rescue Exception => e
           Jekyll.logger.error("unknown Exception of class: #{e.class} in sparql_query \n Query: #{query} \nMessage: #{e.message} \nTrace #{e.backtrace.drop(1).map{|s| "\t#{s}"}.join("\n")}")
+          raise if Jekyll.env.eql? "development"
         end
         return []
       end
