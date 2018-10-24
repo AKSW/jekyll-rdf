@@ -54,6 +54,7 @@ module Jekyll
         else
           graph = @config['remote']['endpoint'].strip
         end
+        graph << "?default-graph-uri=#{CGI::escape(@config['remote']['default_graph'])}" unless @config['remote']['default_graph'].nil?
       elsif(!@config['path'].nil?)
         graph = RDF::Graph.load( File.join( site.config['source'], @config['path']))
       else
