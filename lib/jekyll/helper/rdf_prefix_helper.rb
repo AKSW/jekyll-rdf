@@ -35,6 +35,7 @@ module Jekyll
           Jekyll::JekyllRdf::Helper::RdfHelper.load_prefixes(path, prefHolder)
         rescue Errno::ENOENT => ex
           Jekyll.logger.error("--> context resource: #{@resource}  template: #{@template}") unless self.data["rdf"].nil?
+          raise if Jekyll.env.eql? "development"
         end
       end
 

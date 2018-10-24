@@ -75,7 +75,7 @@ module Jekyll
           classRes = classResources[classUri]
           if((classRes.lock <= lock || lock == -1) && !classRes.template.nil?)
             if(classRes.subClassHierarchyValue > hier)
-              Jekyll.logger.info("classMapped: #{classUri} : #{resource.term.to_s} : #{classResources[classUri].template}")
+              Jekyll.logger.info("classMapped: #{classUri} : #{resource.term.to_s} : #{classResources[classUri].template}") if Jekyll.env.eql? "development"
               lock = classRes.lock
               tmpl = classRes.template
               hier = classRes.subClassHierarchyValue

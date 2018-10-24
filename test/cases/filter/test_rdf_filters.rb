@@ -137,7 +137,9 @@ class TestRdfFilter < Test::Unit::TestCase
       TestHelper::setErrOutput
       Jekyll::JekyllRdf::Helper::RdfHelper::sparql = res_helper.faulty_sparql_client(:ClientError)
       query = "SELECT ?x ?y WHERE{ ?x <http://example.org/instance/predicate> ?y}"
-      sparql_query(query)
+      assert_raise do
+        sparql_query(query)
+      end
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)} , "missing error message: client error experienced: ****"
       TestHelper::resetErrOutput
     end
@@ -146,7 +148,9 @@ class TestRdfFilter < Test::Unit::TestCase
       TestHelper::setErrOutput
       Jekyll::JekyllRdf::Helper::RdfHelper::sparql = res_helper.faulty_sparql_client(:MalformedQuery)
       query = "SELECT ?x ?y WHERE{ ?x <http://example.org/instance/predicate> ?y}"
-      sparql_query(query)
+      assert_raise do
+        sparql_query(query)
+      end
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)}, "missing error message: client error experienced: ****"
       TestHelper::resetErrOutput
     end
@@ -155,7 +159,9 @@ class TestRdfFilter < Test::Unit::TestCase
       TestHelper::setErrOutput
       Jekyll::JekyllRdf::Helper::RdfHelper::sparql = res_helper.faulty_sparql_client(:Exception)
       query = "SELECT ?x ?y WHERE{ ?x <http://example.org/instance/predicate> ?y}"
-      sparql_query(query)
+      assert_raise do
+        sparql_query(query)
+      end
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /client error experienced:.*/)}, "missing error message: client error experienced: ****"
       TestHelper::resetErrOutput
     end
