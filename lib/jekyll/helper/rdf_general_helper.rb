@@ -31,6 +31,7 @@ module Jekyll
       #
       module RdfHelper
         @@prefixes = {}
+        @@usePage = false
 
         def self.sparql= sparql
           @@sparql = sparql
