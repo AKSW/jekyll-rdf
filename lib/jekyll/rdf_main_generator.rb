@@ -68,11 +68,6 @@ module Jekyll
 
       # restrict RDF graph with restriction
       resources = extract_resources(@config['restriction'], @config['include_blank'], sparql)
-      Jekyll.logger.info "resources:"
-      resources.each{|resource|
-        Jekyll.logger.info "#{resource}"
-      }
-      Jekyll.logger.info "resources end"
       site.data['sparql'] = sparql
       site.data['resources'] = []
 
