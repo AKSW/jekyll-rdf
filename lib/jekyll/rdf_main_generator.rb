@@ -33,6 +33,7 @@ module Jekyll
     safe true
     priority :highest
     include Jekyll::JekyllRdf::Helper::RdfGeneratorHelper
+    include Jekyll::JekyllRdf::ResolvePrefixes
 
     ##
     # #generate performs the enrichment of a Jekyll::Site with rdf triples
@@ -67,7 +68,8 @@ module Jekyll
       Jekyll::JekyllRdf::Helper::RdfHelper::prefixes = File.join(site.source, @config['prefixes'].strip) unless @config['prefixes'].nil?
 
       # restrict RDF graph with restriction
-      resources = extract_resources(@config['restriction'], @config['include_blank'], sparql)
+      resources = extract_resources(@config['restriction'].strip, @config['include_blank'], site.config['source'], sparql)
+
       site.data['sparql'] = sparql
       site.data['resources'] = []
 

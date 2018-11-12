@@ -96,7 +96,7 @@ module Jekyll
         # * +include_blank+ - If true, blank nodes are also returned, otherwise blank nodes are omitted
         # * +sparql+ - The SPARQL client to run queries against
         #
-        def extract_resources(selection, include_blank, sparql)
+        def extract_resources(selection, include_blank, source, sparql)
 
           case selection
           when nil  # Config parameter not present
@@ -111,14 +111,30 @@ module Jekyll
           when "predicates"
             query = "SELECT ?resourceUri WHERE{?s ?resourceUri ?o}"
           else
-            # Custom query
-            query = selection
+            if(selection.match(/\s/))
+              # Custom query
+              query = selection
+            else
+              return extract_list_resources(File.join(source, selection))
+            end
           end
           sparql.query(query).map{ |sol| sol[:resourceUri] }.reject do |s|  # Reject literals
             s.class <= RDF::Literal
           end.select do |s|  # Select URIs and blank nodes in case of include_blank
             include_blank || s.class == RDF::URI
           end.uniq
+        end
+
+        def extract_list_resources path
+          file = File.open(path, "r")
+          result = []
+          file.each_line {|line|
+            result.push(RDF::URI(line.strip[1..-2])) if Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(
+              "ASK WHERE{{#{line} ?p ?o}UNION{?s #{line} ?o}UNION{?s ?p #{line}}}"
+            ).true?
+          }
+          file.close
+          result
         end
 
         def create_page(site, resource, mapper)
