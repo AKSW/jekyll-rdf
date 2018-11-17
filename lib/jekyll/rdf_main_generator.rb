@@ -68,8 +68,11 @@ module Jekyll
       Jekyll::JekyllRdf::Helper::RdfHelper::prefixes = File.join(site.source, @config['prefixes'].strip) unless @config['prefixes'].nil?
 
       # restrict RDF graph with restriction
-      resources = extract_resources(@config['restriction'].strip, @config['include_blank'], site.config['source'], sparql)
-
+      resources = []
+      resources = resources + extract_resources(@config['restriction'], @config['include_blank'], sparql) unless @config['restriction'].nil?
+      resources = resources + extract_list_resources(File.join(site.config['source'], @config['restriction_file'])) unless @config['restriction_file'].nil?
+      resources = resources + extract_resources(nil, @config['include_blank'], sparql) if resources.length == 0  # subject + predicate + object should only be extracted if there is neither a restriction or restriction_file
+      resources.uniq! unless @config['restriction'].nil? || @config['restriction_file'].nil?
       site.data['sparql'] = sparql
       site.data['resources'] = []
 

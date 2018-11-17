@@ -6,7 +6,7 @@ plugins:
 - jekyll-rdf
 jekyll_rdf:
   path: "_data/knowledge-base.ttl"
-  restriction: "_data/restriction.txt"
+  restriction_file: "_data/restriction.txt"
   default_template: "default"
   class_template_mappings:
     "http://xmlns.com/foaf/0.1/Person": "person"
