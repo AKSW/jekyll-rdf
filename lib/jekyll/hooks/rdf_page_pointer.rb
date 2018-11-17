@@ -24,7 +24,6 @@
 
 
 Jekyll::Hooks.register :pages, :pre_render do |page, payload|
-  Jekyll.logger.info "page"
   unless(page.data['rdf'].nil?)
     payload["content"] = ""
   end
