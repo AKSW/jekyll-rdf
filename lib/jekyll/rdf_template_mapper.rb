@@ -54,31 +54,24 @@ module Jekyll
       tmpl = @resources_to_templates ? @resources_to_templates[resource.term.to_s] : nil
       lock = -1
       hier = -1
-      warn_mult_templ = false
       duplicate_level_templ = []
       resource.direct_classes.each do |classUri|
         classRes = @classResources[classUri]
         if((classRes.lock <= lock || lock == -1) && !classRes.template.nil?)
           if(classRes.subClassHierarchyValue > hier)
-            Jekyll.logger.info("classMapped: #{classUri} : #{resource.term.to_s} : #{@classResources[classUri].template}") if Jekyll.env.eql? "development"
             lock = classRes.lock
             tmpl = classRes.template
             hier = classRes.subClassHierarchyValue
-            warn_mult_templ = false
             duplicate_level_templ.clear.push(tmpl)
             if(classRes.multiple_templates?)
-              warn_mult_templ = true
               duplicate_level_templ.concat(classRes.alternativeTemplates)
             end
           elsif(classRes.subClassHierarchyValue == hier)
-            warn_mult_templ = true
             duplicate_level_templ.push(classRes.template)
-          end
-          if(warn_mult_templ)
-            Jekyll.logger.warn("Warning: multiple possible templates for #{resource.term.to_s}: #{duplicate_level_templ.uniq.join(', ')}") if Jekyll.env.eql? "development"
           end
         end unless classRes.nil?
       end if(tmpl.nil?)
+      Jekyll.logger.warn("Warning: multiple possible templates for #{resource.term.to_s}: #{duplicate_level_templ.uniq.join(', ')}") if (duplicate_level_templ.length > 1) && (Jekyll.env.eql? "development")
       return tmpl unless tmpl.nil?
       return @default_template
     end
