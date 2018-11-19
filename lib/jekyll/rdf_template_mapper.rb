@@ -30,20 +30,6 @@ module Jekyll
   #
   class RdfTemplateMapper
 
-    ##
-    # A Hash mapping a resource to a template name
-    attr_accessor :resources_to_templates
-
-    ##
-    # Default template name
-    attr_accessor :default_template
-
-    ##
-    # A Hash mapping a type resource to a template name
-    attr_accessor :classes_to_templates
-
-    attr_accessor :classResources
-
     include Jekyll::JekyllRdf::Helper::RdfClassExtraction
 
     ##
@@ -65,38 +51,36 @@ module Jekyll
     #
     # Returns the template name of one of the +resource+'s types, if available. Returns the default template name otherwise.
     def map(resource)
-      tmpl = resources_to_templates ? resources_to_templates[resource.term.to_s] : nil
+      tmpl = @resources_to_templates ? @resources_to_templates[resource.term.to_s] : nil
       lock = -1
       hier = -1
       warn_mult_templ = false
       duplicate_level_templ = []
-      if(tmpl.nil?)
-        resource.direct_classes.each do |classUri|
-          classRes = classResources[classUri]
-          if((classRes.lock <= lock || lock == -1) && !classRes.template.nil?)
-            if(classRes.subClassHierarchyValue > hier)
-              Jekyll.logger.info("classMapped: #{classUri} : #{resource.term.to_s} : #{classResources[classUri].template}") if Jekyll.env.eql? "development"
-              lock = classRes.lock
-              tmpl = classRes.template
-              hier = classRes.subClassHierarchyValue
-              warn_mult_templ = false
-              duplicate_level_templ.clear.push(tmpl)
-              if(classRes.multiple_templates?)
-                warn_mult_templ = true
-                duplicate_level_templ.concat(classRes.alternativeTemplates)
-              end
-            elsif(classRes.subClassHierarchyValue == hier)
+      resource.direct_classes.each do |classUri|
+        classRes = @classResources[classUri]
+        if((classRes.lock <= lock || lock == -1) && !classRes.template.nil?)
+          if(classRes.subClassHierarchyValue > hier)
+            Jekyll.logger.info("classMapped: #{classUri} : #{resource.term.to_s} : #{@classResources[classUri].template}") if Jekyll.env.eql? "development"
+            lock = classRes.lock
+            tmpl = classRes.template
+            hier = classRes.subClassHierarchyValue
+            warn_mult_templ = false
+            duplicate_level_templ.clear.push(tmpl)
+            if(classRes.multiple_templates?)
               warn_mult_templ = true
-              duplicate_level_templ.push(classRes.template)
+              duplicate_level_templ.concat(classRes.alternativeTemplates)
             end
-          end unless classRes.nil?
-        end
-        if(warn_mult_templ)
-          Jekyll.logger.warn("Warning: multiple possible templates for #{resource.term.to_s}: #{duplicate_level_templ.uniq.join(', ')}")
-        end
-      end
+          elsif(classRes.subClassHierarchyValue == hier)
+            warn_mult_templ = true
+            duplicate_level_templ.push(classRes.template)
+          end
+          if(warn_mult_templ)
+            Jekyll.logger.warn("Warning: multiple possible templates for #{resource.term.to_s}: #{duplicate_level_templ.uniq.join(', ')}") if Jekyll.env.eql? "development"
+          end
+        end unless classRes.nil?
+      end if(tmpl.nil?)
       return tmpl unless tmpl.nil?
-      return default_template
+      return @default_template
     end
   end
 
