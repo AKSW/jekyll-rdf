@@ -1,0 +1,14 @@
+baseurl: "/instance" # the subpath of your site, e.g. /blog
+url: "http://example.org/" # the base hostname & protocol for your site
+# Build settings
+markdown: kramdown
+plugins:
+- jekyll-rdf
+jekyll_rdf:
+  path: "_data/knowledge-base.ttl"
+  restriction_file: "_data/restriction.txt"
+  default_template: "default"
+  class_template_mappings:
+    "http://xmlns.com/foaf/0.1/Person": "person"
+  instance_template_mappings:
+    "http://example.org/instance/resource": "exampleInstance"

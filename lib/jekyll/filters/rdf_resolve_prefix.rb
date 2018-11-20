@@ -25,7 +25,7 @@
 
 module Jekyll
   module JekyllRdf
-    module Filter
+    module ResolvePrefixes
       private
       def rdf_resolve_prefix(predicate)
         if(predicate[0] == "<" && predicate[-1] == ">")
@@ -47,6 +47,14 @@ module Jekyll
           raise NoPrefixesDefined.new(predicate, Jekyll::JekyllRdf::Helper::RdfHelper::page.data['template']) #TODO .data['template'] is only defined on RdfPages
         end
       end
+    end
+  end
+end
+
+module Jekyll
+  module JekyllRdf
+    module Filter
+      include Jekyll::JekyllRdf::ResolvePrefixes
     end
   end
 end

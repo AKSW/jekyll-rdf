@@ -121,6 +121,17 @@ module Jekyll
           end.uniq
         end
 
+        def extract_list_resources path
+          file = File.open(path, "r")
+          result = []
+          file.each_line {|line|
+            line = line.strip
+            result.push(RDF::URI(line[1..-2])) if (line[0].eql? "<" )&& (line[-1].eql? ">")
+          }
+          file.close
+          result
+        end
+
         def create_page(site, resource, mapper)
           Jekyll::JekyllRdf::Helper::RdfPageHelper.prepare_resource resource, mapper
           page = Jekyll::Page.new(site, site.source, resource.filedir, resource.filename)
