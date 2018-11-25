@@ -42,6 +42,7 @@ module Jekyll
       @default_template = default_template
       @classes_to_templates = classes_to_templates
       @classResources = {}
+      @warnings = {}
       create_resource_class(search_for_classes(sparql), sparql)
       assign_class_templates(classes_to_templates)
     end
@@ -71,10 +72,28 @@ module Jekyll
           end
         end unless classRes.nil?
       end if(tmpl.nil?)
-      Jekyll.logger.warn("Warning: multiple possible templates for #{resource.term.to_s}: #{duplicate_level_templ.uniq.join(', ')}") if (duplicate_level_templ.length > 1) && (Jekyll.env.eql? "development")
+      add_warning(duplicate_level_templ.uniq, resource.iri) if (duplicate_level_templ.length > 1) && (Jekyll.env.eql? "development")
       return tmpl unless tmpl.nil?
       return @default_template
     end
-  end
 
-end
+    ##
+    # Add a warning for a resource having multiple possible templates
+    # The warnings are then later displayed with print_warnings
+    #
+    def add_warning(keys, iri)
+      keys.sort!
+      key = keys.join(', ')
+      @warnings[key] = [] if @warnings[key].nil?  # using a hash ensures that a warning is printed only once for each combination of templates
+                                                  # and for each resource at most once
+      @warnings[key].push(iri) unless @warnings[key].include? iri
+    end
+
+    def print_warnings
+      @warnings.delete_if{ |key, iris|
+        Jekyll.logger.warn("Warning: multiple possible templates for resources #{iris.join(", ")}\nPossible Templates: #{key}")
+        true
+      }
+    end
+  end # RdfTemplateMapper
+end #Jekyll

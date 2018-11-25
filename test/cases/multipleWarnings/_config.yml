@@ -1,0 +1,30 @@
+baseurl: "/instance" # the subpath of your site, e.g. /blog
+url: "http://example.org/" # the base hostname & protocol for your site
+# Build settings
+markdown: kramdown
+plugins:
+- jekyll-rdf
+jekyll_rdf:
+  path: "_data/knowledge-base.ttl"
+  restriction: "SELECT ?resourceUri WHERE {?resourceUri ?p ?o}"
+  default_template: "default"
+  class_template_mappings:
+    "http://example.org/class/group1/temp1": "layout1"
+    "http://example.org/class/group1/temp2": "layout2"
+    "http://example.org/class/group1/temp3": "layout3"
+    "http://example.org/class/group1/temp4": "layout4"
+    "http://example.org/class/group2/temp1": "layout5"
+    "http://example.org/class/group2/temp2": "layout6"
+    "http://example.org/class/group2/temp3": "layout7"
+    "http://example.org/class/group2/temp4": "layout8"
+    "http://example.org/class/group3/temp1": "layout9"
+    "http://example.org/class/group3/temp2": "layout10"
+    "http://example.org/class/group3/temp3": "layout11"
+    "http://example.org/class/group3/temp4": "layout12"
+    "http://example.org/class/group4/temp1": "layout9"
+    "http://example.org/class/group4/temp2": "layout10"
+    "http://example.org/class/group4/temp3": "layout11"
+    "http://example.org/class/group4/temp4": "layout12"
+
+
+

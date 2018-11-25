@@ -81,6 +81,8 @@ module Jekyll
       mapper = Jekyll::RdfTemplateMapper.new(@config['instance_template_mappings'], @config['class_template_mappings'], @config['default_template'], sparql)
 
       prepare_pages(site, mapper)
+
+      mapper.print_warnings
       return true
     end
   end
