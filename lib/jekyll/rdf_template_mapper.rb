@@ -30,20 +30,6 @@ module Jekyll
   #
   class RdfTemplateMapper
 
-    ##
-    # A Hash mapping a resource to a template name
-    attr_accessor :resources_to_templates
-
-    ##
-    # Default template name
-    attr_accessor :default_template
-
-    ##
-    # A Hash mapping a type resource to a template name
-    attr_accessor :classes_to_templates
-
-    attr_accessor :classResources
-
     include Jekyll::JekyllRdf::Helper::RdfClassExtraction
 
     ##
@@ -56,6 +42,7 @@ module Jekyll
       @default_template = default_template
       @classes_to_templates = classes_to_templates
       @classResources = {}
+      @warnings = {}
       create_resource_class(search_for_classes(sparql), sparql)
       assign_class_templates(classes_to_templates)
     end
@@ -65,39 +52,48 @@ module Jekyll
     #
     # Returns the template name of one of the +resource+'s types, if available. Returns the default template name otherwise.
     def map(resource)
-      tmpl = resources_to_templates ? resources_to_templates[resource.term.to_s] : nil
+      tmpl = @resources_to_templates ? @resources_to_templates[resource.term.to_s] : nil
       lock = -1
       hier = -1
-      warn_mult_templ = false
       duplicate_level_templ = []
-      if(tmpl.nil?)
-        resource.direct_classes.each do |classUri|
-          classRes = classResources[classUri]
-          if((classRes.lock <= lock || lock == -1) && !classRes.template.nil?)
-            if(classRes.subClassHierarchyValue > hier)
-              Jekyll.logger.info("classMapped: #{classUri} : #{resource.term.to_s} : #{classResources[classUri].template}") if Jekyll.env.eql? "development"
-              lock = classRes.lock
-              tmpl = classRes.template
-              hier = classRes.subClassHierarchyValue
-              warn_mult_templ = false
-              duplicate_level_templ.clear.push(tmpl)
-              if(classRes.multiple_templates?)
-                warn_mult_templ = true
-                duplicate_level_templ.concat(classRes.alternativeTemplates)
-              end
-            elsif(classRes.subClassHierarchyValue == hier)
-              warn_mult_templ = true
-              duplicate_level_templ.push(classRes.template)
+      resource.direct_classes.each do |classUri|
+        classRes = @classResources[classUri]
+        if((classRes.lock <= lock || lock == -1) && !classRes.template.nil?)
+          if(classRes.subClassHierarchyValue > hier)
+            lock = classRes.lock
+            tmpl = classRes.template
+            hier = classRes.subClassHierarchyValue
+            duplicate_level_templ.clear.push(tmpl)
+            if(classRes.multiple_templates?)
+              duplicate_level_templ.concat(classRes.alternativeTemplates)
             end
-          end unless classRes.nil?
-        end
-        if(warn_mult_templ)
-          Jekyll.logger.warn("Warning: multiple possible templates for #{resource.term.to_s}: #{duplicate_level_templ.uniq.join(', ')}")
-        end
-      end
+          elsif(classRes.subClassHierarchyValue == hier)
+            duplicate_level_templ.push(classRes.template)
+          end
+        end unless classRes.nil?
+      end if(tmpl.nil?)
+      add_warning(duplicate_level_templ.uniq, resource.iri) if (duplicate_level_templ.length > 1) && (Jekyll.env.eql? "development")
       return tmpl unless tmpl.nil?
-      return default_template
+      return @default_template
     end
-  end
 
-end
+    ##
+    # Add a warning for a resource having multiple possible templates
+    # The warnings are then later displayed with print_warnings
+    #
+    def add_warning(keys, iri)
+      keys.sort!
+      key = keys.join(', ')
+      @warnings[key] = [] if @warnings[key].nil?  # using a hash ensures that a warning is printed only once for each combination of templates
+                                                  # and for each resource at most once
+      @warnings[key].push(iri) unless @warnings[key].include? iri
+    end
+
+    def print_warnings
+      @warnings.delete_if{ |key, iris|
+        Jekyll.logger.warn("Warning: multiple possible templates for resources #{iris.join(", ")}\nPossible Templates: #{key}")
+        true
+      }
+    end
+  end # RdfTemplateMapper
+end #Jekyll
