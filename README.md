@@ -196,7 +196,7 @@ Age: {{ page.rdf | rdf_property: '<http://xmlns.com/foaf/0.1/age>' }}
 ```
 
 ### Optional Language Selection
-To select a specific language please add a a second parameter to the filter:
+To select a specific language please add a second parameter to the filter:
 ```
 Age: {{ page.rdf | rdf_property: '<http://xmlns.com/foaf/0.1/job>','en' }}
 ```
