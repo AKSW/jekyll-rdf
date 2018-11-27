@@ -1,4 +1,4 @@
-VERSION = '3.0.1'
+VERSION = '3.1.0'
 RELEASE_VERSION = case
     when ENV['TRAVIS'] && ENV['TRAVIS_BRANCH'].match(/^master$/i) then "#{VERSION}"
     when ENV['TRAVIS'] && ENV['TRAVIS_BRANCH'].match(/^develop$/i) then "#{VERSION}-#{ENV['TRAVIS_BRANCH']}.#{ENV['TRAVIS_BUILD_NUMBER']}"

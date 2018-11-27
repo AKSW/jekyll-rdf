@@ -105,7 +105,7 @@ It is also possible to define a default template, which is used for all resource
 ```
 
 ### Restrict resource selection
-Additionally, you can restrict the overall resource selection by adding a SPARQL query as `restriction` parameter to `_config.yml`. Please use `?resourceUri` as the placeholder for the resulting URIs:
+You can restrict the resources selected to be built by adding a SPARQL query as `restriction` parameter to `_config.yml`. Please use `?resourceUri` as the placeholder for the resulting URIs:
 ```yaml
   restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"
 ```
@@ -114,6 +114,20 @@ There are 3 pre-defined keywords for restrictions implemented:
 * `subjects` will load all subject URIs
 * `predicates` will load all predicate URIs
 * `objects` will load all object URIs
+
+Because some SPARQL endpoints have a built in limit for SELECT queries you can also define a list of resources to be built.
+A file `_data/restriction.txt` cool have the following content:
+
+```
+<http://example.org/resourceA>
+<http://example.org/resourceB>
+<http://example.org/resourceC>
+<http://example.org/resourceD>
+<http://example.org/resourceE>
+```
+
+In the `_config.yml` you specify the file with the key `restriction_file`.
+If both, a `restriction_file` and a `restriction`, are specified JekyllRDF will build pages for the union of the both.
 
 ### Blank Nodes
 Furthermore you can decide if you want to render blank nodes or not. You just need to add `include_blank`to `_config.yml`:
@@ -182,7 +196,7 @@ Age: {{ page.rdf | rdf_property: '<http://xmlns.com/foaf/0.1/age>' }}
 ```
 
 ### Optional Language Selection
-To select a specific language please add a a second parameter to the filter:
+To select a specific language please add a second parameter to the filter:
 ```
 Age: {{ page.rdf | rdf_property: '<http://xmlns.com/foaf/0.1/job>','en' }}
 ```
@@ -634,10 +648,13 @@ http://www.ifi.uio.no/INF3580/simpsons#Maggie
 ## Plugin Configuration (\_config.yml)
 |Name|Parameter|Default|Description|Example|
 |---	|---	|---	|---	|---	|
-|path|Relative path to the RDF-File|no default|Specifies the path to the RDF file you want to render the website for|```path: "rdf-data/simpsons.ttl"```|
+|path|Relative path to the RDF-File|no default|Specifies the path to the RDF file from where you want to render the website|```path: "rdf-data/simpsons.ttl"```|
+|remote|Section to specify a remote data source|no default|Has to contain the `endpoint` key. The `remote` paramter overrides the `path` parameter.||
+|remote > endpoint|SPARQL endpoint to get the data from|no default|Specifies the URL to the SPARQL endpoint from where you want to render the website|```remote: endpoint: "http://localhost:5000/sparql/"```|
 |language|Language-Tag as String|no default|Specifies the preferred language when you select objects using our Liquid filters|```language: "en"```|
 |include_blank|Boolean-Expression|false|Specifies whether blank nodes should also be rendered or not|```include_blank: true```|
 |restriction|SPARQL-Query as String or subjects/objects/predicates|no default|Restricts the resource-selection with a given SPARQL-Query to the results bound to the special variable `?resourceUri` or the three keywords `subjects` (only subject URIs), `objects`, `predicates`|```restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"```|
+|restriction_file|File of resources to be rendered|no default|Restricts the resource-selection to the list of resources in the file|```restriction_file: _data/restriction.txt```|
 |default_template|Filename of the default RDF-template in _layouts directory|no default|Specifies the template-file you want Jekyll to use to render all RDF resources|```default_template: "rdf_index.html"```|
 |instance_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files for rendering an individual instance|```instance_template_mappings: "http://www.ifi.uio.no/INF3580/simpsons#Abraham": "abraham.html"```|
 |class_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files for rendering all instances of that class|```class_template_mappings: "http://xmlns.com/foaf/0.1/Person": "person.html"```|
