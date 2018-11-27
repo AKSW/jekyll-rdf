@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.1.1] - ???
+
 ## [3.1.0] - 2018-11-27
 ### Added
 - Allow building sites from a (remote) SPARQL endpoint by setting `remote:\n endpoint: <endpointuri>` in the `_config.yml`. (Currently only querying the default default-graph ;-). Specifying the default graph, with `FROM` resp. `default-graph-uri` will come in the future, https://github.com/white-gecko/jekyll-rdf/pull/220.)
