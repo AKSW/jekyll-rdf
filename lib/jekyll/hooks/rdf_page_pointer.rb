@@ -32,3 +32,11 @@ Jekyll::Hooks.register :pages, :pre_render do |page, payload|
   end
   Jekyll::JekyllRdf::Helper::RdfHelper::page = page
 end
+
+Jekyll::Hooks.register :documents, :pre_render do |page, payload|
+  Jekyll::JekyllRdf::Helper::RdfHelper::page = page
+end
+
+Jekyll::Hooks.register :posts, :pre_render do |page, payload|
+  Jekyll::JekyllRdf::Helper::RdfHelper::page = page
+end

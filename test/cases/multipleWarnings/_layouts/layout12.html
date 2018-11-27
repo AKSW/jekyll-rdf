@@ -1,0 +1,15 @@
+---
+layout: default
+rdf_prefix_path: _data/Prefixes.pref
+---
+<div class="person">
+  <h6>
+    name:
+  </h6>
+  {{page.rdf | rdf_property: "foaf:name"}}
+  <br/>
+  <h6>
+    age:
+  </h6>
+  {{page.rdf | rdf_property: "foaf:age"}}
+</div>

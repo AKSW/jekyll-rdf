@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.1.0] - 2018-11-27
+### Added
+- Allow building sites from a (remote) SPARQL endpoint by setting `remote:\n endpoint: <endpointuri>` in the `_config.yml`. (Currently only querying the default default-graph ;-). Specifying the default graph, with `FROM` resp. `default-graph-uri` will come in the future, https://github.com/white-gecko/jekyll-rdf/pull/220.)
+- Specify the list of resources to be rendered, in a file by setting `restriction_file: <filename>` in the `_config.yml`.
+- Add hooks for posts and documents to also use the RDF context there.
+
+### Changed
+- Show debug messages only if JEKYLL_ENV is set to development
+- Reduce template mapping output
+
+### Fixed
+- Fix error if prefixes are requested before the page hook
 
 ## [3.0.0] - 2018-10-20
 The major revision with a lot of changes as a [birthday present](https://twitter.com/jekyllrb/status/1053579886516936704) for [jekyll's](https://jekyllrb.com/).

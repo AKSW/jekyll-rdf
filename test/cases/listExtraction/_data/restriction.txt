@@ -1,0 +1,3 @@
+<http://example.org/instance/listResource1>
+<http://example.org/instance/listResource2>
+<http://example.org/instance/listResource3>

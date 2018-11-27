@@ -1,0 +1,34 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix eg: <http://example.org/instance/> .
+@prefix egc1: <http://example.org/class/group1/> .
+@prefix egc2: <http://example.org/class/group2/> .
+@prefix egc3: <http://example.org/class/group3/> .
+@prefix egc4: <http://example.org/class/group4/> .
+
+eg:main1 a egc1:main .
+eg:main2 a egc2:main .
+eg:main3 a egc3:main .
+eg:main4 a egc4:main .
+
+egc1:main rdfs:subClassOf egc1:temp1 ,
+                          egc1:temp2 ,
+                          egc1:temp3 ,
+                          egc1:temp4 .
+
+egc2:main rdfs:subClassOf egc2:temp1 ,
+                          egc2:temp2 ,
+                          egc2:temp3 ,
+                          egc2:temp4 .
+
+egc3:main rdfs:subClassOf egc3:temp1 ,
+                          egc3:temp2 ,
+                          egc3:temp3 ,
+                          egc3:temp4 .
+
+egc4:main rdfs:subClassOf egc4:temp1 ,
+                          egc4:temp2 ,
+                          egc4:temp3 ,
+                          egc4:temp4 .

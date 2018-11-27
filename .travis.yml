@@ -1,4 +1,7 @@
+sudo: required
 language: ruby
+services:
+  - docker
 rvm:
 - 2.2.4
 - 2.3.0
@@ -6,6 +9,10 @@ rvm:
 matrix:
   allow_failures:
   - rvm: ruby-head
+before_install:
+- docker pull stain/jena-fuseki
+- docker build -t remote_sparql .
+- docker run -p 3030:3030 -e ADMIN_PASSWORD=admin -d remote_sparql:latest
 script:
 - bundle exec rake test
 deploy:

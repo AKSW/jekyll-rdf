@@ -33,6 +33,7 @@ module Jekyll
     safe true
     priority :highest
     include Jekyll::JekyllRdf::Helper::RdfGeneratorHelper
+    include Jekyll::JekyllRdf::ResolvePrefixes
 
     ##
     # #generate performs the enrichment of a Jekyll::Site with rdf triples
@@ -48,8 +49,18 @@ module Jekyll
         Jekyll.logger.error("Outdated format in _config.yml:\n  'template_mapping' detected but the following keys must be used now instead:\n    instance_template_mappings -> maps single resources to single layouts\n    class_template_mappings -> maps entire classes of resources to layouts\nJekyll-RDF wont render any pages for #{site.source}")
         return false
       end
-
-      graph = RDF::Graph.load( File.join( site.config['source'], @config['path']))
+      if(!@config['remote'].nil?)
+        if (@config['remote']['endpoint'].nil?)
+          raise ArgumentError, "When the key 'remote' is specified, another subkey 'endpoint' must be specified which contains the location of your graph."
+        else
+          graph = @config['remote']['endpoint'].strip
+        end
+      elsif(!@config['path'].nil?)
+        graph = RDF::Graph.load( File.join( site.config['source'], @config['path']))
+      else
+        Jekyll.logger.error("No sparql endpoint defined. Jumping out of jekyll-rdf processing.")
+        return false
+      end
       sparql = SPARQL::Client.new(graph)
 
       Jekyll::JekyllRdf::Helper::RdfHelper::sparql = sparql
@@ -57,7 +68,11 @@ module Jekyll
       Jekyll::JekyllRdf::Helper::RdfHelper::prefixes = File.join(site.source, @config['prefixes'].strip) unless @config['prefixes'].nil?
 
       # restrict RDF graph with restriction
-      resources = extract_resources(@config['restriction'], @config['include_blank'], sparql)
+      resources = []
+      resources = resources + extract_resources(@config['restriction'], @config['include_blank'], sparql) unless @config['restriction'].nil?
+      resources = resources + extract_list_resources(File.join(site.config['source'], @config['restriction_file'])) unless @config['restriction_file'].nil?
+      resources = resources + extract_resources(nil, @config['include_blank'], sparql) if resources.length == 0  # subject + predicate + object should only be extracted if there is neither a restriction or restriction_file
+      resources.uniq! unless @config['restriction'].nil? || @config['restriction_file'].nil?
       site.data['sparql'] = sparql
       site.data['resources'] = []
 
@@ -66,6 +81,8 @@ module Jekyll
       mapper = Jekyll::RdfTemplateMapper.new(@config['instance_template_mappings'], @config['class_template_mappings'], @config['default_template'], sparql)
 
       prepare_pages(site, mapper)
+
+      mapper.print_warnings
       return true
     end
   end
