@@ -37,13 +37,13 @@ module Jekyll
     #
     # * +resources_to_templates+ - A Hash mapping a type resource to a template name
     # * +default_template+ - Default template name
-    def initialize(resources_to_templates, classes_to_templates, default_template, sparql)
+    def initialize(resources_to_templates, classes_to_templates, default_template)
       @resources_to_templates = resources_to_templates
       @default_template = default_template
       @classes_to_templates = classes_to_templates
       @classResources = {}
       @warnings = {}
-      create_resource_class(search_for_classes(sparql), sparql)
+      create_class_map
       assign_class_templates(classes_to_templates)
     end
 

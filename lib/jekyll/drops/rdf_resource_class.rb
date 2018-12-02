@@ -31,23 +31,18 @@ module Jekyll #:nodoc:
       # Represents an RDF resource class to the Liquid template engine
       #
       class RdfResourceClass < RdfResource
-        @subClasses = []
-        @lock = -1
-        @subClassHierarchyValue = 0
-        attr_accessor :lock
-        attr_accessor :template
-        attr_accessor :alternativeTemplates
-        attr_accessor :subClasses
-        attr_accessor :subClassHierarchyValue
-        attr_reader :sparql
+        attr_reader :lock
+        attr_reader :template
+        attr_reader :alternativeTemplates
+        attr_reader :subClasses
+        attr_reader :subClassHierarchyValue
 
-        def initialize(term, sparql)
+        def initialize(term)
           super(term)
           @subClasses = []
           @lock = -1
           @subClassHierarchyValue = 0
           @alternativeTemplates = []
-          @sparql = sparql
         end
 
         def multiple_templates?
@@ -56,7 +51,8 @@ module Jekyll #:nodoc:
 
         def find_direct_subclasses
           query = "SELECT ?s WHERE{ ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> #{@term.to_ntriples}}"
-          selection = @sparql.query(query).map{ |solution| solution.s.to_s}
+          selection = Jekyll::JekyllRdf::Helper::RdfHelper::sparql.
+            query(query).map{ |solution| solution.s.to_s}
           return selection
         end
 
@@ -69,17 +65,17 @@ module Jekyll #:nodoc:
             @lock=lock
             @template=template
             @alternativeTemplates.clear()
-            subClasses.each{|sub| sub.propagate_template(template ,lock+1)}
+            @subClasses.each{|sub| sub.propagate_template(template ,lock+1)}
           elsif(@lock==lock)
             @alternativeTemplates.push(template)
-            subClasses.each{|sub| sub.propagate_template(template ,lock+1)}
+            @subClasses.each{|sub| sub.propagate_template(template ,lock+1)}
           end
         end
 
         def traverse_hierarchy_value(predecessorHierarchyValue)
           if(@subClassHierarchyValue + 1 >= predecessorHierarchyValue)  #avoid loops
             @subClassHierarchyValue += 1
-            subClasses.each{|sub| sub.traverse_hierarchy_value(@subClassHierarchyValue)}
+            @subClasses.each{|sub| sub.traverse_hierarchy_value(@subClassHierarchyValue)}
           end
         end
       end
