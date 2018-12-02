@@ -82,7 +82,7 @@ module Jekyll
 
       parse_resources(resources)
 
-      mapper = Jekyll::RdfTemplateMapper.new(@config['instance_template_mappings'], @config['class_template_mappings'], @config['default_template'], sparql)
+      mapper = Jekyll::RdfTemplateMapper.new(@config['instance_template_mappings'], @config['class_template_mappings'], @config['default_template'])
 
       prepare_pages(site, mapper)
 

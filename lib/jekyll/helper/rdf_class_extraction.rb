@@ -2,20 +2,29 @@ module Jekyll
   module JekyllRdf
     module Helper
       module RdfClassExtraction
+
         private
-        def search_for_classes(sparql)
-          class_recognition_query = "SELECT DISTINCT ?resourceUri WHERE{ {?resourceUri <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?o} UNION{ ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?resourceUri} UNION{ ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?resourceUri}}"
-          class_search_results = sparql.query(class_recognition_query).map{ |sol| sol[:resourceUri] }.reject do |s|  # Reject literals
-            s.class <= RDF::Literal
-          end.select do |s|  # Select URIs and blank nodes in case of include_blank
-            s.class <=RDF::Node || s.class <= RDF::URI
-          end
+        def create_class_map
+          create_resource_class(search_for_classes)
+        end
+
+        def search_for_classes
+          class_recognition_query = "SELECT DISTINCT ?resourceUri WHERE{ " <<
+            "{?resourceUri <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?o}" <<
+            " UNION{ ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?resourceUri}" <<
+            " UNION{ ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?resourceUri}}"
+          class_search_results = Jekyll::JekyllRdf::Helper::RdfHelper::sparql.
+            query(class_recognition_query).
+            map{ |sol| sol[:resourceUri] }.reject do |s|  # Reject literals
+              s.class <= RDF::Literal
+            end
           return class_search_results
         end
 
-        def create_resource_class(class_search_results, sparql)
+        def create_resource_class(class_search_results)
           class_search_results.each do |uri|
-            @classResources[uri.to_s]=Jekyll::JekyllRdf::Drops::RdfResourceClass.new(uri, sparql)
+            @classResources[uri.to_s]=Jekyll::JekyllRdf::Drops::
+              RdfResourceClass.new(uri)
           end
 
           @classResources.each{|key, value|
