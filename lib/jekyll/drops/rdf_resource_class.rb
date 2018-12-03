@@ -32,7 +32,7 @@ module Jekyll #:nodoc:
       #
       class RdfResourceClass < RdfResource
         attr_reader :lock
-        attr_reader :template
+        attr_accessor :template
         attr_reader :alternativeTemplates
         attr_reader :subClasses
         attr_reader :subClassHierarchyValue

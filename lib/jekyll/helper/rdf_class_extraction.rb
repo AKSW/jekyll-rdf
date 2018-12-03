@@ -45,6 +45,29 @@ module Jekyll
           end
         end
 
+        def clean_alternative_tmpl
+          @classResources.each{|key, value|
+            consistence_templates(value) if value.multiple_templates?
+          }
+        end
+
+        ##
+        # Add a warning for a class having multiple possible templates
+        # The warnings are then later displayed with print_warnings
+        #
+        def consistence_templates(classRes)
+          hash_str = classRes.alternativeTemplates.push(classRes.template).
+            sort!.join(", ")
+          begin
+            @consistence[hash_str] = []
+            @consistence[hash_str].push(classRes.template)
+            @consistence[hash_str].push([])
+          end if @consistence[hash_str].nil?
+          classRes.template = @consistence[hash_str][0]
+          @consistence[hash_str][1].push(classRes)  # using a hash ensures that a warning is printed only once for each combination of templates
+                                                    # and for each resource at most once
+        end
+
         class StopObject #unfortunately next does not work in this setup, it avoids to have "if" in every iteration
           def propagate_template(template, lock)
             return
