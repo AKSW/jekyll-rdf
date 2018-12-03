@@ -42,9 +42,10 @@ module Jekyll
       @default_template = default_template
       @classes_to_templates = classes_to_templates
       @classResources = {}
-      @warnings = {}
-      create_class_map
+      @consistence = {}    #ensures that the same template is chosen for each combination of templates
+      #create_class_map
       assign_class_templates(classes_to_templates)
+      clean_alternative_tmpl
     end
 
     ##
@@ -55,43 +56,22 @@ module Jekyll
       tmpl = @resources_to_templates ? @resources_to_templates[resource.term.to_s] : nil
       lock = -1
       hier = -1
-      duplicate_level_templ = []
-      resource.direct_classes.each do |classUri|
-        classRes = @classResources[classUri]
-        if((classRes.lock <= lock || lock == -1) && !classRes.template.nil?)
-          if(classRes.subClassHierarchyValue > hier)
-            lock = classRes.lock
-            tmpl = classRes.template
-            hier = classRes.subClassHierarchyValue
-            duplicate_level_templ.clear.push(tmpl)
-            if(classRes.multiple_templates?)
-              duplicate_level_templ.concat(classRes.alternativeTemplates)
-            end
-          elsif(classRes.subClassHierarchyValue == hier)
-            duplicate_level_templ.push(classRes.template)
-          end
-        end unless classRes.nil?
-      end if(tmpl.nil?)
-      add_warning(duplicate_level_templ.uniq, resource.iri) if (duplicate_level_templ.length > 1) && (Jekyll.env.eql? "development")
+      request_class_template(resource.direct_classes)  #TODO: check empty?
+      #resource.direct_classes.each do |classUri|
+      #  classRes = @classResources[classUri]
+      #  if((classRes.lock <= lock || lock == -1) && !classRes.template.nil? && (classRes.subClassHierarchyValue > hier))
+      #    lock = classRes.lock
+      #    tmpl = classRes.template
+      #    hier = classRes.subClassHierarchyValue
+      #  end unless classRes.nil?
+      #end if(tmpl.nil?)
       return tmpl unless tmpl.nil?
       return @default_template
     end
 
-    ##
-    # Add a warning for a resource having multiple possible templates
-    # The warnings are then later displayed with print_warnings
-    #
-    def add_warning(keys, iri)
-      keys.sort!
-      key = keys.join(', ')
-      @warnings[key] = [] if @warnings[key].nil?  # using a hash ensures that a warning is printed only once for each combination of templates
-                                                  # and for each resource at most once
-      @warnings[key].push(iri) unless @warnings[key].include? iri
-    end
-
     def print_warnings
-      @warnings.delete_if{ |key, iris|
-        Jekyll.logger.warn("Warning: multiple possible templates for resources #{iris.join(", ")}\nPossible Templates: #{key}")
+      @consistence.each{ |key, template_class_store|
+        Jekyll.logger.warn("Warning: multiple possible templates for resources #{template_class_store[1].join(", ")}\nPossible Templates: #{key}")
         true
       }
     end

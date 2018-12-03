@@ -32,21 +32,36 @@ module Jekyll #:nodoc:
       #
       class RdfResourceClass < RdfResource
         attr_reader :lock
-        attr_reader :template
+        attr_reader :dist #distance to next class with template
+        attr_accessor :template
+        attr_accessor :path
         attr_reader :alternativeTemplates
         attr_reader :subClasses
         attr_reader :subClassHierarchyValue
+        attr_accessor :base       # important for template mapping
+                                  # true if _config.yml assigned this class a template
 
-        def initialize(term)
+        def initialize(term, base = false)
           super(term)
+          @base = base
           @subClasses = []
           @lock = -1
           @subClassHierarchyValue = 0
           @alternativeTemplates = []
+          @stop_object = StopObject.new
         end
 
         def multiple_templates?
           !@alternativeTemplates.empty?
+        end
+
+        def find_direct_superclasses
+          return @superclasses unless @superclasses.nil?
+          query = "SELECT ?s WHERE{ #{@term.to_ntriples} <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?s }"
+          selection = Jekyll::JekyllRdf::Helper::RdfHelper::sparql.
+            query(query).map{ |solution| solution.s.to_s}
+          @superclasses = selection
+          return selection
         end
 
         def find_direct_subclasses
@@ -60,16 +75,23 @@ module Jekyll #:nodoc:
           @subClasses << resource
         end
 
-        def propagate_template(template, lock)
-          if(@lock>lock||@lock==-1)
-            @lock=lock
-            @template=template
-            @alternativeTemplates.clear()
-            @subClasses.each{|sub| sub.propagate_template(template ,lock+1)}
-          elsif(@lock==lock)
-            @alternativeTemplates.push(template)
-            @subClasses.each{|sub| sub.propagate_template(template ,lock+1)}
-          end
+        #def propagate_template(template, lock)
+        #  if(@lock>lock||@lock==-1)
+        #    @lock=lock
+        #    @template=template
+        #    @alternativeTemplates.clear()
+        #    @subClasses.each{|sub| sub.propagate_template(template ,lock+1)}
+        #  elsif(@lock==lock)
+        #    @alternativeTemplates.push(template)
+        #    @subClasses.each{|sub| sub.propagate_template(template ,lock+1)}
+        #  end
+        #end
+
+        def propagate_template(dist)
+          return if @path.nil?
+          @dist = dist
+          @path.template = @template
+          @path.propagate_template(dist +1)
         end
 
         def traverse_hierarchy_value(predecessorHierarchyValue)
