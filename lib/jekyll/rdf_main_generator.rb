@@ -55,13 +55,17 @@ module Jekyll
         else
           graph = @config['remote']['endpoint'].strip
         end
+        if @config['remote']['default_graph'].nil?
+          sparql = SPARQL::Client.new(graph)
+        else
+          sparql = SPARQL::Client.new(graph, { :graph => @config['remote']['default_graph'] })
+        end
       elsif(!@config['path'].nil?)
-        graph = RDF::Graph.load( File.join( site.config['source'], @config['path']))
+        sparql = SPARQL::Client.new(RDF::Graph.load( File.join( site.config['source'], @config['path'])))
       else
         Jekyll.logger.error("No sparql endpoint defined. Jumping out of jekyll-rdf processing.")
         return false
       end
-      sparql = SPARQL::Client.new(graph)
 
       Jekyll::JekyllRdf::Helper::RdfHelper::sparql = sparql
       Jekyll::JekyllRdf::Helper::RdfHelper::site = site
