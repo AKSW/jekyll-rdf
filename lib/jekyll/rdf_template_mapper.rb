@@ -42,6 +42,7 @@ module Jekyll
       @default_template = default_template
       @classes_to_templates = classes_to_templates
       @classResources = {}
+      @class_template_cache = {}
       @consistence = {}    #ensures that the same template is chosen for each combination of templates
       create_class_map
       assign_class_templates(classes_to_templates)
@@ -56,14 +57,19 @@ module Jekyll
       tmpl = @resources_to_templates ? @resources_to_templates[resource.term.to_s] : nil
       lock = -1
       hier = -1
-      resource.direct_classes.each do |classUri|
-        classRes = @classResources[classUri]
-        if((classRes.lock <= lock || lock == -1) && !classRes.template.nil? && (classRes.subClassHierarchyValue > hier))
-          lock = classRes.lock
-          tmpl = classRes.template
-          hier = classRes.subClassHierarchyValue
-        end unless classRes.nil?
-      end if(tmpl.nil?)
+      key = resource.direct_classes.sort.join(", ")
+      tmpl = @class_template_cache[key] if tmpl.nil?
+      if(tmpl.nil?)
+        resource.direct_classes.each do |classUri|
+          classRes = @classResources[classUri]
+          if((classRes.lock <= lock || lock == -1) && !classRes.template.nil? && (classRes.subClassHierarchyValue > hier))
+            lock = classRes.lock
+            tmpl = classRes.template
+            hier = classRes.subClassHierarchyValue
+          end unless classRes.nil?
+        end
+        @class_template_cache[key] = tmpl
+      end
       return tmpl unless tmpl.nil?
       return @default_template
     end
