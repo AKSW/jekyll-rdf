@@ -91,6 +91,7 @@ module Jekyll #:nodoc:
         def propagate_template(distance)
           return if @path.nil?
           @distance = distance
+          return unless @path.template.nil?
           @path.template = @template
           @path.propagate_template(distance +1)
         end

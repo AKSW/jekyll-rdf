@@ -44,7 +44,7 @@ module Jekyll
         # TODO -hashing
         #      +reset lock for each call
         #      +make sure each class is added only once to class_list
-        def request_class_template direct_classes
+        def request_class_template direct_classes, test
           #hash template and determine if we used these classes before
           #start searching
           lock = -1
@@ -55,6 +55,8 @@ module Jekyll
           min_class = nil
           class_list = direct_classes.map{|uri|
             @classResources[uri] ||= Jekyll::JekyllRdf::Drops::RdfResourceClass.new(RDF::URI(uri))
+            @classResources[uri].path = nil
+            @classResources[uri]
           }
           class_list.each{|class_resource|
             if(next_increase <= count)     # the next level of the breadth-first search
@@ -66,14 +68,16 @@ module Jekyll
               next_increase = class_list.length
             end
 
-            unless class_resource.template.nil?
-              return class_resource.template
+            Jekyll.logger.info "checking #{class_resource}" if test
+            if !class_resource.template.nil? && min_template_lock > lock - 1 + class_resource.distance
+              min_template_lock = lock - 1
+              min_class = class_resource
             end
 
             class_resource.find_direct_superclasses.each{ |uri|
               @classResources[uri] ||= Jekyll::JekyllRdf::Drops::RdfResourceClass.new(RDF::URI(uri))
+              @classResources[uri].path = class_resource
               if(!@classResources[uri].template.nil?) # do not search in paths you previously found
-                @classResources[uri].path = class_resource
                 if @classResources[uri].base
                   min_template_lock = lock
                   min_class = @classResources[uri]
@@ -83,7 +87,7 @@ module Jekyll
                 end
               elsif(!@classResources[uri].added?(lock_number) && @classResources[uri].lock > class_resource.lock) # not a previously searched resource without a template
                 class_list.push(@classResources[uri])
-                @classResources[uri].path = class_resource
+                Jekyll.logger.info "found #{@classResources[uri]}" if test
                 @classResources[uri].lock = lock
               end
             }

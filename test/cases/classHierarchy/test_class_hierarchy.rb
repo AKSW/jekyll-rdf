@@ -12,7 +12,7 @@ class TestClassHierarchy < Test::Unit::TestCase
         entry.strip
       end
       assert_equal "http://example.org/instance/baseRes", content[0]
-      assert_equal "Master", content[1]
+      assert_equal "LowerMaster", content[1]
 
       content = []
       file = File.read(File.join(@source, "_site/advaRes.html"))

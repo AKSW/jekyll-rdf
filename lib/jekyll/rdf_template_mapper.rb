@@ -57,7 +57,7 @@ module Jekyll
       tmpl = @resources_to_templates ? @resources_to_templates[resource.term.to_s] : nil
       lock = -1
       hier = -1
-      tmpl = request_class_template(resource.direct_classes) if tmpl.nil?  #TODO: check empty?
+      tmpl = request_class_template(resource.direct_classes, (resource.to_s.eql? "http://example.org/instance/baseRes")) if tmpl.nil?  #TODO: check empty?
       #resource.direct_classes.each do |classUri|
       #  classRes = @classResources[classUri]
       #  if((classRes.lock <= lock || lock == -1) && !classRes.template.nil? && (classRes.subClassHierarchyValue > hier))
