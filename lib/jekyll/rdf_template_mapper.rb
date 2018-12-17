@@ -40,12 +40,13 @@ module Jekyll
     def initialize(resources_to_templates, classes_to_templates, default_template)
       @resources_to_templates = resources_to_templates
       @default_template = default_template
-      @classes_to_templates = classes_to_templates
       @classResources = {}
       @consistence = {}    #ensures that the same template is chosen for each combination of templates
+      @stop_object = StopObject.new
+
       #create_class_map
-      assign_class_templates(classes_to_templates)
-      clean_alternative_tmpl
+      create_resource_class(classes_to_templates)
+      #clean_alternative_tmpl
     end
 
     ##
@@ -56,7 +57,7 @@ module Jekyll
       tmpl = @resources_to_templates ? @resources_to_templates[resource.term.to_s] : nil
       lock = -1
       hier = -1
-      request_class_template(resource.direct_classes)  #TODO: check empty?
+      tmpl = request_class_template(resource.direct_classes) if tmpl.nil?  #TODO: check empty?
       #resource.direct_classes.each do |classUri|
       #  classRes = @classResources[classUri]
       #  if((classRes.lock <= lock || lock == -1) && !classRes.template.nil? && (classRes.subClassHierarchyValue > hier))

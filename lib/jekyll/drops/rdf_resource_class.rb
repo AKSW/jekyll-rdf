@@ -31,8 +31,8 @@ module Jekyll #:nodoc:
       # Represents an RDF resource class to the Liquid template engine
       #
       class RdfResourceClass < RdfResource
-        attr_reader :lock
-        attr_reader :dist #distance to next class with template
+        attr_writer :lock
+        attr_reader :distance #distance to next class with template
         attr_accessor :template
         attr_accessor :path
         attr_reader :alternativeTemplates
@@ -46,9 +46,10 @@ module Jekyll #:nodoc:
           @base = base
           @subClasses = []
           @lock = -1
+          @lockNumber = 0
           @subClassHierarchyValue = 0
           @alternativeTemplates = []
-          @stop_object = StopObject.new
+          @distance = 0
         end
 
         def multiple_templates?
@@ -87,11 +88,16 @@ module Jekyll #:nodoc:
         #  end
         #end
 
-        def propagate_template(dist)
+        def propagate_template(distance)
           return if @path.nil?
-          @dist = dist
+          @distance = distance
           @path.template = @template
-          @path.propagate_template(dist +1)
+          @path.propagate_template(distance +1)
+        end
+
+        def get_path_root
+          return self if @path.nil?
+          @path.get_path_root
         end
 
         def traverse_hierarchy_value(predecessorHierarchyValue)
@@ -99,6 +105,20 @@ module Jekyll #:nodoc:
             @subClassHierarchyValue += 1
             @subClasses.each{|sub| sub.traverse_hierarchy_value(@subClassHierarchyValue)}
           end
+        end
+
+        def added? lock_number
+          if @lock_number != lock_number
+            @lock_number = lock_number      # used to recognize different searchpasses of request_class_template
+            @lock = -1
+            false
+          else
+            true
+          end
+        end
+
+        def lock
+          @lock
         end
       end
     end
