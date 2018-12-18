@@ -42,11 +42,10 @@ module Jekyll
       @default_template = default_template
       @classResources = {}
       @consistence = {}    #ensures that the same template is chosen for each combination of templates
+      @template_cache = {}
       @stop_object = StopObject.new
 
-      #create_class_map
       create_resource_class(classes_to_templates)
-      #clean_alternative_tmpl
     end
 
     ##
@@ -55,17 +54,7 @@ module Jekyll
     # Returns the template name of one of the +resource+'s types, if available. Returns the default template name otherwise.
     def map(resource)
       tmpl = @resources_to_templates ? @resources_to_templates[resource.term.to_s] : nil
-      lock = -1
-      hier = -1
-      tmpl = request_class_template(resource.direct_classes, (resource.to_s.eql? "http://example.org/instance/baseRes")) if tmpl.nil?  #TODO: check empty?
-      #resource.direct_classes.each do |classUri|
-      #  classRes = @classResources[classUri]
-      #  if((classRes.lock <= lock || lock == -1) && !classRes.template.nil? && (classRes.subClassHierarchyValue > hier))
-      #    lock = classRes.lock
-      #    tmpl = classRes.template
-      #    hier = classRes.subClassHierarchyValue
-      #  end unless classRes.nil?
-      #end if(tmpl.nil?)
+      tmpl = request_class_template(resource.direct_classes) if tmpl.nil? && !resource.direct_classes.empty?
       return tmpl unless tmpl.nil?
       return @default_template
     end

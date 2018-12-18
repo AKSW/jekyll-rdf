@@ -31,7 +31,7 @@ module Jekyll #:nodoc:
       # Represents an RDF resource class to the Liquid template engine
       #
       class RdfResourceClass < RdfResource
-        attr_writer :lock
+        attr_accessor :lock
         attr_reader :distance #distance to next class with template
         attr_accessor :template
         attr_accessor :path
@@ -65,29 +65,6 @@ module Jekyll #:nodoc:
           return selection
         end
 
-        def find_direct_subclasses
-          query = "SELECT ?s WHERE{ ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> #{@term.to_ntriples}}"
-          selection = Jekyll::JekyllRdf::Helper::RdfHelper::sparql.
-            query(query).map{ |solution| solution.s.to_s}
-          return selection
-        end
-
-        def add_subclass(resource)
-          @subClasses << resource
-        end
-
-        #def propagate_template(template, lock)
-        #  if(@lock>lock||@lock==-1)
-        #    @lock=lock
-        #    @template=template
-        #    @alternativeTemplates.clear()
-        #    @subClasses.each{|sub| sub.propagate_template(template ,lock+1)}
-        #  elsif(@lock==lock)
-        #    @alternativeTemplates.push(template)
-        #    @subClasses.each{|sub| sub.propagate_template(template ,lock+1)}
-        #  end
-        #end
-
         def propagate_template(distance)
           return if @path.nil?
           @distance = distance
@@ -108,20 +85,16 @@ module Jekyll #:nodoc:
           end
         end
 
-        def added? lock_number
+        def add? lock_number
           if @lock_number != lock_number
             @lock_number = lock_number      # used to recognize different searchpasses of request_class_template
             @lock = -1
-            false
-          else
             true
+          else
+            false
           end
         end
-
-        def lock
-          @lock
-        end
-      end
+      end #RdfResourceClass
     end
   end
 end

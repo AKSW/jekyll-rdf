@@ -31,21 +31,12 @@ module Jekyll
           end
         end
 
-        def assign_class_templates(classes_to_templates)
-          if(classes_to_templates.is_a?(Hash))
-            classes_to_templates.each{|key, value|
-              @classResources[key].propagate_template(value, 0)
-              @classResources[key].traverse_hierarchy_value(0)
-            }
-          end
-        end
-
         ##
-        # TODO -hashing
-        #      +reset lock for each call
-        #      +make sure each class is added only once to class_list
-        def request_class_template direct_classes, test
+        # TODO -make sure each class is added only once to class_list
+        def request_class_template direct_classes
           #hash template and determine if we used these classes before
+          hash_str = direct_classes.sort!.join(", ")
+          return @template_cache[hash_str] unless @template_cache[hash_str].nil?
           #start searching
           lock = -1
           count = 0
@@ -58,17 +49,18 @@ module Jekyll
             @classResources[uri].path = nil
             @classResources[uri]
           }
+          alternatives = []
+
           class_list.each{|class_resource|
             if(next_increase <= count)     # the next level of the breadth-first search
               if ((min_template_lock <= lock) && (lock >= 1))  # if (distance to next template is smaller than current search radius) && (we checked all immediate classes)
-                min_class.propagate_template(min_class.distance)
-                return extract_template(min_class)
+                return extract_template(find_highlevel_inheritance(min_class, alternatives), hash_str)
               end
+              alternatives.clear()
               lock += 1
               next_increase = class_list.length
             end
 
-            Jekyll.logger.info "checking #{class_resource}" if test
             if !class_resource.template.nil? && min_template_lock > lock - 1 + class_resource.distance
               min_template_lock = lock - 1
               min_class = class_resource
@@ -76,18 +68,26 @@ module Jekyll
 
             class_resource.find_direct_superclasses.each{ |uri|
               @classResources[uri] ||= Jekyll::JekyllRdf::Drops::RdfResourceClass.new(RDF::URI(uri))
-              @classResources[uri].path = class_resource
               if(!@classResources[uri].template.nil?) # do not search in paths you previously found
                 if @classResources[uri].base
-                  min_template_lock = lock
-                  min_class = @classResources[uri]
+                  if(min_class.nil?)
+                    min_template_lock = lock
+                    min_class = @classResources[uri]
+                  else
+                    alternatives.push @classResources[uri]
+                  end
+                  @classResources[uri].path = class_resource  # <- this might be valnuable to cyclic inheritance in the graph
                 elsif min_template_lock > (lock + @classResources[uri].distance) # you found a branch that was used earlier
+                                                            @classResources[uri].base                     # note template but search further unitl (min_template_lock <= lock) && (lock >= 1) is satisfied
+                  @classResources[uri].path = class_resource  # <- this might be valnuable to cyclic inheritance in the graph
                   min_template_lock = lock + @classResources[uri].distance
                   min_class = @classResources[uri]
+                elsif min_template_lock == (lock + @classResources[uri].distance)
+                  alternatives.push @classResources[uri]
                 end
-              elsif(!@classResources[uri].added?(lock_number) && @classResources[uri].lock > class_resource.lock) # not a previously searched resource without a template
+              elsif(@classResources[uri].add?(lock_number) && @classResources[uri].lock > class_resource.lock) # not a previously searched resource without a template
+                @classResources[uri].path = class_resource  # <- this might be valnuable to cyclic inheritance in the graph
                 class_list.push(@classResources[uri])
-                Jekyll.logger.info "found #{@classResources[uri]}" if test
                 @classResources[uri].lock = lock
               end
             }
@@ -95,20 +95,27 @@ module Jekyll
           }
 
           unless min_class.nil?
-            return extract_template(min_class)
+            return extract_template(find_highlevel_inheritance(min_class, alternatives), hash_str)
           end
           return nil
         end
 
-        def extract_template class_resource
+        def extract_template class_resource, hash_str
           class_resource.propagate_template(class_resource.distance)
-          return class_resource.get_path_root.template
+          return (@template_cache[hash_str] = class_resource.get_path_root.template)
         end
 
-        def clean_alternative_tmpl
-          @classResources.each{|key, value|
-            consistence_templates(value) if value.multiple_templates?
+        def find_highlevel_inheritance current_best, class_list   #check at the end of the search for direct inheritance on highest level
+          class_list.each{|resource|
+            resource.find_direct_superclasses.each{|uri|
+              @classResources[uri] ||= Jekyll::JekyllRdf::Drops::RdfResourceClass.new(RDF::URI(uri))
+              @classResources[uri].path = resource
+            } if resource.base
           }
+          while(class_list.include?(current_best.path))   # this is valnuable to cyclic inheritance
+            current_best = current_best.path
+          end
+          current_best
         end
 
         ##
