@@ -33,7 +33,9 @@ module Jekyll
 
         ##
         # TODO -make sure each class is added only once to class_list
-        def request_class_template direct_classes
+        def request_class_template resource
+          return nil if resource.direct_classes.empty?
+          direct_classes = resource.direct_classes
           #hash template and determine if we used these classes before
           hash_str = direct_classes.sort!.join(", ")
           return @template_cache[hash_str] unless @template_cache[hash_str].nil?
@@ -54,7 +56,7 @@ module Jekyll
           class_list.each{|class_resource|
             if(next_increase <= count)     # the next level of the breadth-first search
               if ((min_template_lock <= lock) && (lock >= 1))  # if (distance to next template is smaller than current search radius) && (we checked all immediate classes)
-                return extract_template(find_highlevel_inheritance(min_class, alternatives), hash_str)
+                return extract_template(find_highlevel_inheritance(min_class, alternatives, resource), hash_str)
               end
               alternatives.clear()
               lock += 1
@@ -95,7 +97,7 @@ module Jekyll
           }
 
           unless min_class.nil?
-            return extract_template(find_highlevel_inheritance(min_class, alternatives), hash_str)
+            return extract_template(find_highlevel_inheritance(min_class, alternatives, resource), hash_str)
           end
           return nil
         end
@@ -105,7 +107,7 @@ module Jekyll
           return (@template_cache[hash_str] = class_resource.get_path_root.template)
         end
 
-        def find_highlevel_inheritance current_best, class_list   #check at the end of the search for direct inheritance on highest level
+        def find_highlevel_inheritance current_best, class_list, resource   #check at the end of the search for direct inheritance on highest level
           class_list.each{|resource|
             resource.find_direct_superclasses.each{|uri|
               @classResources[uri] ||= Jekyll::JekyllRdf::Drops::RdfResourceClass.new(RDF::URI(uri))
@@ -113,26 +115,32 @@ module Jekyll
             } if resource.base
           }
           while(class_list.include?(current_best.path))   # this is valnuable to cyclic inheritance
+            slice = class_list.index(current_best)
+            class_list.slice!(slice) unless slice.nil?     # parent alternatives are no real alternatives
             current_best = current_best.path
           end
-          current_best
+          return consistence_templates(current_best, class_list, resource) unless class_list.empty?
+          return current_best
         end
 
         ##
         # Add a warning for a class having multiple possible templates
         # The warnings are then later displayed with print_warnings
         #
-        def consistence_templates(classRes)
-          hash_str = classRes.alternativeTemplates.push(classRes.template).
+        def consistence_templates(classRes, alternatives, resource)
+          hash_str = alternatives.push(classRes).
+            map {|x|
+              x.template
+            }.
             sort!.join(", ")
           begin
             @consistence[hash_str] = []
-            @consistence[hash_str].push(classRes.template)
+            @consistence[hash_str].push(classRes)
             @consistence[hash_str].push([])
           end if @consistence[hash_str].nil?
-          classRes.template = @consistence[hash_str][0]
-          @consistence[hash_str][1].push(classRes)  # using a hash ensures that a warning is printed only once for each combination of templates
+          @consistence[hash_str][1].push(resource)  # using a hash ensures that a warning is printed only once for each combination of templates
                                                     # and for each resource at most once
+          @consistence[hash_str][0]
         end
 
         class StopObject #unfortunately next does not work in this setup, it avoids to have "if" in every iteration
