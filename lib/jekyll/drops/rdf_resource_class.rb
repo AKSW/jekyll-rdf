@@ -35,25 +35,15 @@ module Jekyll #:nodoc:
         attr_reader :distance #distance to next class with template
         attr_accessor :template
         attr_accessor :path
-        attr_reader :alternativeTemplates
-        attr_reader :subClasses
-        attr_reader :subClassHierarchyValue
         attr_accessor :base       # important for template mapping
                                   # true if _config.yml assigned this class a template
 
         def initialize(term, base = false)
           super(term)
           @base = base
-          @subClasses = []
           @lock = -1
           @lockNumber = 0
-          @subClassHierarchyValue = 0
-          @alternativeTemplates = []
           @distance = 0
-        end
-
-        def multiple_templates?
-          !@alternativeTemplates.empty?
         end
 
         def find_direct_superclasses
@@ -76,13 +66,6 @@ module Jekyll #:nodoc:
         def get_path_root
           return self if @path.nil?
           @path.get_path_root
-        end
-
-        def traverse_hierarchy_value(predecessorHierarchyValue)
-          if(@subClassHierarchyValue + 1 >= predecessorHierarchyValue)  #avoid loops
-            @subClassHierarchyValue += 1
-            @subClasses.each{|sub| sub.traverse_hierarchy_value(@subClassHierarchyValue)}
-          end
         end
 
         def add? lock_number

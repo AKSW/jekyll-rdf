@@ -4,23 +4,6 @@ module Jekyll
       module RdfClassExtraction
 
         private
-        def create_class_map
-          create_resource_class(search_for_classes)
-        end
-
-        def search_for_classes
-          class_recognition_query = "SELECT DISTINCT ?resourceUri WHERE{ " <<
-            "{?resourceUri <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?o}" <<
-            " UNION{ ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?resourceUri}" <<
-            " UNION{ ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?resourceUri}}"
-          class_search_results = Jekyll::JekyllRdf::Helper::RdfHelper::sparql.
-            query(class_recognition_query).
-            map{ |sol| sol[:resourceUri] }.reject do |s|  # Reject literals
-              s.class <= RDF::Literal
-            end
-          return class_search_results
-        end
-
         def create_resource_class(classes_to_templates)
           if(classes_to_templates.is_a?(Hash))
             classes_to_templates.each{|uri, template|
@@ -32,7 +15,7 @@ module Jekyll
         end
 
         ##
-        # TODO -make sure each class is added only once to class_list
+        # returns to a RdfResource a template through its rdf:type
         def request_class_template resource
           return nil if resource.direct_classes.empty?
           direct_classes = resource.direct_classes
@@ -149,10 +132,6 @@ module Jekyll
           end
 
           def <= object
-            false
-          end
-
-          def < object
             false
           end
         end
