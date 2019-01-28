@@ -1,4 +1,4 @@
-# jekyll-rdf
+# Jekyll RDF
 
 A [Jekyll plugin](https://jekyllrb.com/docs/plugins/) for including RDF data in your static site.
 
