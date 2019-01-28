@@ -72,15 +72,15 @@ module Jekyll
               @classResources[uri] ||= Jekyll::JekyllRdf::Drops::RdfResourceClass.new(RDF::URI(uri))
               if(!@classResources[uri].template.nil?) # do not search in paths you previously found
                 if @classResources[uri].base
-                  if(min_class.nil?)
+                  if(!min_class.nil? && min_template_lock == lock)    #min_class could contain a previously found class with equal distance
+                    alternatives.push @classResources[uri]
+                  else
                     min_template_lock = lock
                     min_class = @classResources[uri]
-                  else
-                    alternatives.push @classResources[uri]
                   end
                   @classResources[uri].path = class_resource  # <- this might be valnuable to cyclic inheritance in the graph
                 elsif min_template_lock > (lock + @classResources[uri].distance) # you found a branch that was used earlier
-                                                            @classResources[uri].base                     # note template but search further unitl (min_template_lock <= lock) && (lock >= 1) is satisfied
+                                                                                 # note template but search further unitl (min_template_lock <= lock) && (lock >= 1) is satisfied
                   @classResources[uri].path = class_resource  # <- this might be valnuable to cyclic inheritance in the graph
                   min_template_lock = lock + @classResources[uri].distance
                   min_class = @classResources[uri]
