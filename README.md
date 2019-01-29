@@ -3,8 +3,8 @@
 A [Jekyll plugin](https://jekyllrb.com/docs/plugins/) for including RDF data in your static site.
 
 [![Gem Version](https://badge.fury.io/rb/jekyll-rdf.svg)](https://badge.fury.io/rb/jekyll-rdf)
-[![Build Status](https://travis-ci.org/white-gecko/jekyll-rdf.svg?branch=develop)](https://travis-ci.org/white-gecko/jekyll-rdf)
-[![Coverage Status](https://coveralls.io/repos/github/white-gecko/jekyll-rdf/badge.svg?branch=develop)](https://coveralls.io/github/white-gecko/jekyll-rdf?branch=develop)
+[![Build Status](https://travis-ci.org/AKSW/jekyll-rdf.svg?branch=develop)](https://travis-ci.org/AKSW/jekyll-rdf)
+[![Coverage Status](https://coveralls.io/repos/github/AKSW/jekyll-rdf/badge.svg?branch=develop)](https://coveralls.io/github/AKSW/jekyll-rdf?branch=develop)
 
 The API Documentation is available at [RubyDoc.info](http://www.rubydoc.info/gems/jekyll-rdf/).
 
@@ -664,7 +664,7 @@ http://www.ifi.uio.no/INF3580/simpsons#Maggie
 ## Installation from source
 To install the project with the git-repository you will need `git` on your system. The first step is just cloning the repository:
 ```
-git clone git@github.com:white-gecko/jekyll-rdf.git
+git clone git@github.com:AKSW/jekyll-rdf.git
 ```
 A folder named `jekyll-rdf` will be automatically generated. You need to switch into this folder and compile the ruby gem to finish the installation:
 ```
