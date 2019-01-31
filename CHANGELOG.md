@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [3.1.1] - ???
+### changed
+- Repository moved from https://github.com/white-gecko/jekyll-rdf/ to https://github.com/AKSW/jekyll-rdf/
 
 ## [3.1.0] - 2018-11-27
 ### Added

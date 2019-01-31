@@ -13,9 +13,9 @@ Gem::Specification.new do |s|
   s.authors     = ['Elias Saalmann', 'Christian Frommert', 'Simon Jakobi', 'Arne Jonas Präger', 'Maxi Bornmann', 'Georg Hackel', 'Eric Füg', 'Sebastian Zänker', 'Natanael Arndt', 'Simon Bin', 'Jan Beckert']
   s.email       = 'arndt@informatik.uni-leipzig.de'
   s.files       = Dir['lib/**/*.rb']
-  s.homepage    = 'https://github.com/white-gecko/jekyll-rdf'
+  s.homepage    = 'https://github.com/AKSW/jekyll-rdf'
   s.license     = 'MIT'
-  s.add_runtime_dependency 'net-http-persistent',  '~> 2.9'        # https://github.com/white-gecko/jekyll-rdf/issues/197
+  s.add_runtime_dependency 'net-http-persistent',  '~> 2.9'        # https://github.com/AKSW/jekyll-rdf/issues/197
   s.add_runtime_dependency 'linkeddata',           '~> 2.0'
   s.add_runtime_dependency 'sparql-client',        '~> 3.0', '>= 3.0.1'
   s.add_runtime_dependency 'jekyll',               '~> 3.1'
