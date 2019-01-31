@@ -33,7 +33,7 @@ Add Jekyll-RDF to the plugins section:
 
 ```
 group :jekyll_plugins do
-    gem "jekyll-rdf", '~> 3.0.0.pre.a'
+    gem "jekyll-rdf", '~> 3.1.0'
     …
 end
 ```
