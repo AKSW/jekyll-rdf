@@ -1,0 +1,69 @@
+---
+---
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>
+            {%- assign resource1 = "<http://example.org/instance/resource1>" | rdf_get -%}
+            {%- assign resource2 = "<http://example.org/instance/resource2>" | rdf_get -%}
+            {%- assign resource3 = "<http://example.org/instance/resource3>" | rdf_get -%}
+            {%- assign resource4 = "<http://example.org/instance/resource4>" | rdf_get -%}
+            {%- assign resource5 = "<http://example.org/instance/resource5>" | rdf_get -%}
+            {%- assign resource6 = "<http://example.org/instance/resource6>" | rdf_get -%}
+            {%- assign resource7 = "<http://example.org/instance/super/resource7>" | rdf_get -%}
+            {%- assign resource8 = "<http://example.org/instance/super/resource8>" | rdf_get -%}
+            {%- if resource1.rendered? -%}
+                true
+            {%- else -%}
+                false
+            {%- endif -%}
+            <br/>
+            {%- if resource2.rendered? -%}
+                true
+            {%- else -%}
+                false
+            {%- endif -%}
+            <br/>
+            {%- if resource3.rendered? -%}
+                true
+            {%- else -%}
+                false
+            {%- endif -%}
+            <br/>
+            {%- if resource4.rendered? -%}
+                true
+            {%- else -%}
+                false
+            {%- endif -%}
+            <br/>
+            {%- if resource5.rendered? -%}
+                true
+            {%- else -%}
+                false
+            {%- endif -%}
+            <br/>
+            {%- if resource6.rendered? -%}
+                true
+            {%- else -%}
+                false
+            {%- endif -%}
+            <br/>
+            {%- if resource7.rendered? -%}
+                true
+            {%- else -%}
+                false
+            {%- endif -%}
+            <br/>
+            {%- if resource8.rendered? -%}
+                true
+            {%- else -%}
+                false
+            {%- endif -%}
+        </div>
+    </body>
+</html>
