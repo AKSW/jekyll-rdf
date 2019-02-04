@@ -51,15 +51,14 @@ require 'jekyll/helper/rdf_general_helper'
 require 'jekyll/helper/rdf_class_extraction'
 require 'jekyll/helper/rdf_page_helper'
 require 'jekyll/helper/rdf_generator_helper'
+require 'jekyll/helper/rdf_filter_helper'
 require 'jekyll/hooks/rdf_page_pointer'
-require 'jekyll/filters/rdf_resolve_prefix'
 require 'jekyll/filters/rdf_sparql_query'
 require 'jekyll/filters/rdf_property'
 require 'jekyll/filters/rdf_collection'
 require 'jekyll/filters/rdf_container'
 require 'jekyll/filters/rdf_get'
 require 'jekyll/filters/rdf_debug_message'
-require 'jekyll/filters/rdf_page_to_resource'
 
 
 Liquid::Template.register_filter(Jekyll::JekyllRdf::Filter)

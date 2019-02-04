@@ -33,7 +33,7 @@ module Jekyll
     safe true
     priority :highest
     include Jekyll::JekyllRdf::Helper::RdfGeneratorHelper
-    include Jekyll::JekyllRdf::ResolvePrefixes
+    include Jekyll::JekyllRdf::Helper::PrefixSolver
 
     ##
     # #generate performs the enrichment of a Jekyll::Site with rdf triples
