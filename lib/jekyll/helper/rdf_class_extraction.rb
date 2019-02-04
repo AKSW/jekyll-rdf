@@ -90,7 +90,13 @@ module Jekyll
           return (@template_cache[hash_str] = class_resource.get_path_root.template)
         end
 
-        def find_highlevel_inheritance current_best, class_list, resource   #check at the end of the search for direct inheritance on highest level
+        ##
+        # Check at the end of the search for direct inheritance on highest level.
+        #
+        # +current_best+ ?
+        # +class_list+ is the list of clases that the +resource+ is assigned to.
+        # +resource+ is the resource.
+        def find_highlevel_inheritance current_best, class_list, resource
           class_list.each{|resource|
             resource.find_direct_superclasses.each{|uri|
               @classResources[uri] ||= Jekyll::JekyllRdf::Drops::RdfResourceClass.new(RDF::URI(uri))
@@ -121,8 +127,8 @@ module Jekyll
             @consistence[hash_str].push(classRes)
             @consistence[hash_str].push([])
           end if @consistence[hash_str].nil?
-          @consistence[hash_str][1].push(resource)  # using a hash ensures that a warning is printed only once for each combination of templates
-                                                    # and for each resource at most once
+          # using a hash ensures that a warning is printed only once for each combination of templates and for each resource at most once
+          @consistence[hash_str][1].push(resource)
           @consistence[hash_str][0]
         end
 
