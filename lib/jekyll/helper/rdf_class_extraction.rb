@@ -4,6 +4,12 @@ module Jekyll
       module RdfClassExtraction
 
         private
+
+        ##
+        # Instantiate all rdf:class'es with an template mapped in +classes_to_templates+.
+        # +classes_to_templates+ A hash that contains string representations of class resources
+        #  as keys and maps these to a template.
+        #
         def create_resource_class(classes_to_templates)
           if(classes_to_templates.is_a?(Hash))
             classes_to_templates.each{|uri, template|
@@ -15,7 +21,9 @@ module Jekyll
         end
 
         ##
-        # returns to a RdfResource a template through its rdf:type
+        # Returns to a RdfResource a template through its rdf:type
+        # +resource+ the resource a template is searched for.
+        #
         def request_class_template resource
           return nil if resource.direct_classes.empty?
           direct_classes = resource.direct_classes
@@ -85,11 +93,20 @@ module Jekyll
           return nil
         end
 
+        ##
+        # Returns the template stored in the input resource +class_resource+
+        #  and caches it with +hash_str+ as key.
+        #
         def extract_template class_resource, hash_str
           class_resource.propagate_template(class_resource.distance)
           return (@template_cache[hash_str] = class_resource.get_path_root.template)
         end
 
+        ##
+        # Returns the most specific class resource from +class_list+ based on
+        # +current_best+.
+        # +resource+ is the original input of request_class_template.
+        #
         def find_highlevel_inheritance current_best, class_list, resource   #check at the end of the search for direct inheritance on highest level
           class_list.each{|resource|
             resource.find_direct_superclasses.each{|uri|
@@ -97,9 +114,11 @@ module Jekyll
               @classResources[uri].path = resource
             } if resource.base
           }
-          while(class_list.include?(current_best.path))   # this is valnuable to cyclic inheritance
+          # this is valnuable to cyclic inheritance
+          while(class_list.include?(current_best.path))
             slice = class_list.index(current_best)
-            class_list.slice!(slice) unless slice.nil?     # parent alternatives are no real alternatives
+            # parent alternatives are no real alternatives
+            class_list.slice!(slice) unless slice.nil?
             current_best = current_best.path
           end
           return consistence_templates(current_best, class_list, resource) unless class_list.empty?
@@ -109,6 +128,9 @@ module Jekyll
         ##
         # Add a warning for a class having multiple possible templates
         # The warnings are then later displayed with print_warnings
+        # +classRes+ and +alternatives+ make up a list of class resources which
+        #     are all equally valid choices for request_class_template
+        # +resource+ is the original input of request_class_template.
         #
         def consistence_templates(classRes, alternatives, resource)
           hash_str = alternatives.push(classRes).
@@ -126,7 +148,10 @@ module Jekyll
           @consistence[hash_str][0]
         end
 
-        class StopObject #unfortunately next does not work in this setup, it avoids to have "if" in every iteration
+        ##
+        # used to escape loops without an if-statement
+        #
+        class StopObject
           def > object
             true
           end

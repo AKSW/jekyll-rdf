@@ -59,6 +59,9 @@ module Jekyll
       return @default_template
     end
 
+    ##
+    # outputs all warnings prepared by RdfClassExtraction.consistence_templates
+    #
     def print_warnings
       @consistence.each{ |key, template_class_store|
         Jekyll.logger.warn("Warning: multiple possible templates for resources #{template_class_store[1].join(", ")}\nPossible Templates: #{key}")

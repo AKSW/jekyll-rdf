@@ -46,6 +46,9 @@ module Jekyll #:nodoc:
           @distance = 0
         end
 
+        ##
+        # Returns all classes from which +term+ directly inherited
+        #
         def find_direct_superclasses
           return @superclasses unless @superclasses.nil?
           query = "SELECT ?s WHERE{ #{@term.to_ntriples} <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?s }"
@@ -55,6 +58,10 @@ module Jekyll #:nodoc:
           return selection
         end
 
+        ##
+        # Propagate the current template to the parent of the breadth-first search
+        # in RdfClassExtraction.request_class_template.
+        #
         def propagate_template(distance)
           return if @path.nil?
           @distance = distance
@@ -63,14 +70,22 @@ module Jekyll #:nodoc:
           @path.propagate_template(distance +1)
         end
 
+        ##
+        # Returns the beginning of the path leading to the found template
+        #
         def get_path_root
           return self if @path.nil?
           @path.get_path_root
         end
 
+        ##
+        # Checks if this instance was already added to the breadth-first search
+        # in RdfClassExtraction.request_class_template.
+        #
         def add? lock_number
           if @lock_number != lock_number
-            @lock_number = lock_number      # used to recognize different searchpasses of request_class_template
+            # used to recognize different searchpasses of request_class_template
+            @lock_number = lock_number
             @lock = -1
             true
           else
