@@ -38,22 +38,8 @@ module Jekyll
       # * +query+ - the SPARQL query
       #
       def construct_query(resource = nil, query)
-        query = query.clone #sometimes liquid wont reinit static strings in for loops
-        if(rdf_substitude_nil?(resource))
-          query.gsub!('?resourceUri', "<#{Jekyll::JekyllRdf::Helper::RdfHelper::page.data['rdf'].term}>")
-        elsif(resource.class <= Array)
-          resource.each_with_index do |uri, index|
-            return unless valid_resource?(uri)
-            if(uri.class <= Jekyll::JekyllRdf::Drops::RdfResource)
-              query.gsub!("?resourceUri_#{index}", uri.term.to_ntriples)
-            else
-              query.gsub!("?resourceUri_#{index}", "#{rdf_resolve_prefix(uri.to_s)}")
-            end
-          end
-        else
-          return unless valid_resource?(resource)
-          query.gsub!('?resourceUri', to_string_wrap(resource))
-        end if query.include? '?resourceUri'  #the only purpose of the if statement is to substitute ?resourceUri
+        query = prepare_query(resource, query)
+        return if query.nil?
         new_graph = Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(query)
         Jekyll::JekyllRdf::Helper::RdfHelper::sparql.insert_data(new_graph)
         return nil
