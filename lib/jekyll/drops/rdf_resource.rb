@@ -216,6 +216,17 @@ module Jekyll #:nodoc:
           return "#<RdfResource:0x#{"0"*(14 - obj_id.length)}#{obj_id} @iri=#{iri} @subResources=[#{subResources.map { |x| x.inspect}.join(", ")}]>"
         end
 
+        ##
+        # Returns a true if this resource has a Jekyll::Page representation.
+        #
+        def rendered?
+          return @rendered unless @rendered.nil?
+          @rendered = Jekyll::JekyllRdf::Helper::RdfHelper.site.pages.any?{|page|
+            (filedir.eql? page.dir) && (filename.eql? page.name)
+          }
+          return @rendered
+        end
+
         #checks if a query solution contains a language or type tag and returns those in a hash
         private
         def check_solution(solution)
