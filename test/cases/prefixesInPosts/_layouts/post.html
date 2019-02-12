@@ -1,0 +1,9 @@
+<html>
+<body>
+  {% assign root = "<http://example.org/blog>" | rdf_get %}
+  <h1>{{ root | rdf_property: "dc:title" }}</h1>
+  <div>
+    {{ content }}
+  </div>
+</body>
+</html>
