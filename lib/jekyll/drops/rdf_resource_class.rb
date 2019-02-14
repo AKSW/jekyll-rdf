@@ -63,8 +63,8 @@ module Jekyll #:nodoc:
         # in RdfClassExtraction.request_class_template.
         #
         def propagate_template(distance)
-          return if @path.nil?
           @distance = distance
+          return if @path.nil?
           return unless @path.template.nil?
           @path.template = @template
           @path.propagate_template(distance +1)

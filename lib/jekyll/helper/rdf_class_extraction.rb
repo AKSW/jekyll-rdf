@@ -43,10 +43,9 @@ module Jekyll
             @classResources[uri]
           }
           alternatives = []
-
           class_list.each{|class_resource|
             if(next_increase <= count)     # the next level of the breadth-first search
-              if ((min_template_lock <= lock) && (lock >= 1))  # if (distance to next template is smaller than current search radius) && (we checked all immediate classes)
+              if ((min_template_lock <= lock) && (lock >= 0))  # if (distance to next template is smaller than current search radius) && (we checked all immediate classes)
                 return extract_template(find_highlevel_inheritance(min_class, alternatives, resource), hash_str)
               end
               alternatives.clear()
@@ -78,7 +77,7 @@ module Jekyll
                 elsif min_template_lock == (lock + @classResources[uri].distance)
                   alternatives.push @classResources[uri]
                 end
-              elsif(@classResources[uri].add?(lock_number) && @classResources[uri].lock > class_resource.lock) # not a previously searched resource without a template
+              elsif(@classResources[uri].add?(lock_number)) # not a previously searched resource without a template
                 @classResources[uri].path = class_resource  # <- this might be valnuable to cyclic inheritance in the graph
                 class_list.push(@classResources[uri])
                 @classResources[uri].lock = lock
