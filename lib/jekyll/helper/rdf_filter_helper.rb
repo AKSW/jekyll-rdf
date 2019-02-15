@@ -103,6 +103,24 @@ module Jekyll
           end
         end
       end
+
+      module GraphSerializer
+        def to_liquid
+          return to_nquads
+        end
+
+        def to_nquads
+          return statements.map{|state|
+            state.to_nquads
+          }.join("\n")
+        end
+
+        def to_ntriples
+          return statements.map{|state|
+            state.to_ntriples
+          }.join("\n")
+        end
+      end
     end
   end
 end
