@@ -6,4 +6,6 @@ plugins:
 jekyll_rdf:
   path: "_data/knowledge-base.ttl"
   restriction: "SELECT ?resourceUri WHERE {?resourceUri ?p ?o}"
+  instance_template_mappings:
+      "http://example.org/blog" : "post"
 

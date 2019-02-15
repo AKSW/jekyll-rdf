@@ -38,5 +38,17 @@ Jekyll::Hooks.register :documents, :pre_render do |page, payload|
 end
 
 Jekyll::Hooks.register :posts, :pre_render do |page, payload|
+  prefix_path = page.data["rdf_prefix_path"]
+  # posts frontmatter does not contain values from layout frontmatters
+  prefix_path ||= payload.layout["rdf_prefix_path"]
+  if(page.data["rdf_prefixes"].nil? && !prefix_path.nil?)
+    Jekyll::JekyllRdf::Helper::RdfHelper.load_prefixes(
+      File.join(
+        page.path[0..-(page.relative_path.length + 1)],
+        prefix_path
+      ),
+      page.data
+    )
+  end
   Jekyll::JekyllRdf::Helper::RdfHelper::page = page
 end
