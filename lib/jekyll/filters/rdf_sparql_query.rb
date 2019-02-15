@@ -41,7 +41,12 @@ module Jekyll
         query = prepare_query(resource, query)
         return if query.nil?
         begin
-          result = Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(query).map do |solution|
+          result = Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(query)
+          if (result.class == RDF::Graph)
+            Jekyll::JekyllRdf::Helper::RdfHelper::sparql.insert_data(result)
+            return nil
+          end
+          result.map! do |solution|
             hsh = solution.to_h
             hsh.update(hsh){ |k,v| Jekyll::JekyllRdf::Drops::RdfTerm.build_term_drop(v, Jekyll::JekyllRdf::Helper::RdfHelper::site, true).add_necessities(Jekyll::JekyllRdf::Helper::RdfHelper::site, Jekyll::JekyllRdf::Helper::RdfHelper::page)}
             hsh.collect{|k,v| [k.to_s, v]}.to_h

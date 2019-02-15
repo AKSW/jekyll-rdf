@@ -58,7 +58,6 @@ require 'jekyll/filters/rdf_property'
 require 'jekyll/filters/rdf_collection'
 require 'jekyll/filters/rdf_container'
 require 'jekyll/filters/rdf_get'
-require 'jekyll/filters/rdf_construct_query'
 require 'jekyll/filters/rdf_debug_message'
 
 
