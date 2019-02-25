@@ -45,6 +45,11 @@ class TestClassHierarchy < Test::Unit::TestCase
       end
       assert_equal "http://animals.org/instance/ape", content[0]
       assert_equal "landBorn", content[1]
+
+      #Jekyll.logger.error "methods: #{Jekyll.logger.methods.sort.join("\n")}"
+      #Jekyll.logger.error Jekyll.logger.inspect
+      #Jekyll.logger.error "any1?: #{Jekyll.logger.messages.any? {|message| !!(message =~ /.*Warning: multiple possible templates for resources.*Penguins.*/)}}"
+      #Jekyll.logger.error "any2?: #{Jekyll.logger.messages.any? {|message| !!(message =~ /.*Warning: multiple possible templates for resources.*fish.*/)}}"
     end
   end
 end

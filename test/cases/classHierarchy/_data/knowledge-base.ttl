@@ -27,6 +27,6 @@ ani:Lizard a an:landWaterLiving .
 ani:Penguins a an:keratinousScalyFeets .
 ani:Penguins a an:landWaterLiving .
 ani:Fish a an:waterHunting .
-ani:Fish a an:foodFromWater .
+ani:Fish a an:waterFiltering .
 ani:Whale a an:breathingAir .
 ani:Whale a an:foodFromWater .
