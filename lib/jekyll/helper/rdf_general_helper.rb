@@ -105,8 +105,7 @@ module Jekyll
         def self.pathiri
           @@baseiri
         end
-      end
-
-    end
-  end
-end
+      end #RdfHelper
+    end #Helper
+  end #JekyllRdf
+end #Jekyll
