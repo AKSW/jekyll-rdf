@@ -43,7 +43,7 @@ module Jekyll
         else
           exists = false || exists   #take care of compatibility with virtuoso
         end
-        Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI(request_uri[1..-2]), Jekyll::JekyllRdf::Helper::RdfHelper::site, Jekyll::JekyllRdf::Helper::RdfHelper::page, exists)
+        Jekyll::JekyllRdf::Helper::RdfHelper.resources(request_uri[1..-2], exists)
       end
     end
   end

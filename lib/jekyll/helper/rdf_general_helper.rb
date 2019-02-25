@@ -32,6 +32,9 @@ module Jekyll
       module RdfHelper
         @@prefixes = {}
         @@usePage = false
+        @@resources = {}
+        @@site = nil
+        @@page = nil
 
         def self.sparql= sparql
           @@sparql = sparql
@@ -104,6 +107,23 @@ module Jekyll
 
         def self.pathiri
           @@baseiri
+        end
+
+        def self.resources uri, exists = false
+          resource = @@resources[uri.to_s]
+          if resource.nil?
+            resource = Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI(uri.to_s), @@site, @@page, exists)
+            @@resources[uri.to_s] = resource
+          end
+          return resource
+        end
+
+        def self.reinitialize
+          @@prefixes.clear
+          @@usePage = false
+          @@resources.clear
+          @@site = nil
+          @@page = nil
         end
       end #RdfHelper
     end #Helper
