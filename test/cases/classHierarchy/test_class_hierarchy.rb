@@ -4,7 +4,12 @@ class TestClassHierarchy < Test::Unit::TestCase
   include RdfTestUtility
   context "the class-template-mapping system" do
     should "map the right template to the right class in consideration to its super classes" do
+      error_holder = $stderr
+      Jekyll.logger.log_level = :warn
+      $stderr = StringIO.new
       setup_jekyll File.dirname(__FILE__)
+      Jekyll.logger.log_level = :error
+      $stderr = error_holder
 
       content = []
       file = File.read(File.join(@source, "_site/Fish.html"))
@@ -46,10 +51,8 @@ class TestClassHierarchy < Test::Unit::TestCase
       assert_equal "http://animals.org/instance/ape", content[0]
       assert_equal "landBorn", content[1]
 
-      #Jekyll.logger.error "methods: #{Jekyll.logger.methods.sort.join("\n")}"
-      #Jekyll.logger.error Jekyll.logger.inspect
-      #Jekyll.logger.error "any1?: #{Jekyll.logger.messages.any? {|message| !!(message =~ /.*Warning: multiple possible templates for resources.*Penguins.*/)}}"
-      #Jekyll.logger.error "any2?: #{Jekyll.logger.messages.any? {|message| !!(message =~ /.*Warning: multiple possible templates for resources.*fish.*/)}}"
+      assert Jekyll.logger.messages.any? {|message| !!(message =~ /.*Warning: multiple possible templates for resources.*Penguins.*/)}, "This warning should have been thrown >>>Warning: multiple possible templates for resources http://animals.org/instance/Penguins Possible Templates: foodFromWater, layingEggs<<<"
+      assert !Jekyll.logger.messages.any? {|message| !!(message =~ /.*Warning: multiple possible templates for resources.*Fish.*/)}, "This warning should not have been thrown >>>Warning: multiple possible templates for resources http://animals.org/instance/Fish Possible Templates: ***<<<"
     end
   end
 end

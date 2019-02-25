@@ -63,7 +63,7 @@ module Jekyll
               if(!@classResources[uri].template.nil?) # do not search in paths you previously found
                 if @classResources[uri].base
                   if(!min_class.nil? && min_template_lock == lock)    #min_class could contain a previously found class with equal distance
-                    alternatives.push @classResources[uri]
+                    alternatives.push @classResources[uri] unless min_class.eql? @classResources[uri]
                   else
                     min_template_lock = lock
                     min_class = @classResources[uri]
@@ -75,7 +75,7 @@ module Jekyll
                   min_template_lock = lock + @classResources[uri].distance
                   min_class = @classResources[uri]
                 elsif min_template_lock == (lock + @classResources[uri].distance)
-                  alternatives.push @classResources[uri]
+                  alternatives.push @classResources[uri] unless min_class.eql? @classResources[uri]
                 end
               elsif(@classResources[uri].add?(lock_number)) # not a previously searched resource without a template
                 @classResources[uri].path = class_resource  # <- this might be valnuable to cyclic inheritance in the graph
