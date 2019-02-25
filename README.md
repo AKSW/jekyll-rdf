@@ -66,7 +66,7 @@ jekyll new my_page
 cd my_page
 ```
 
-Further there are some parameters required in your `_config.yml` for `jekyll-rdf`. I.e. the `url` and `baseurl` parameters are used for including the resource pages into the root of the site, the plug-in has to be configured, and the path to the RDF file has to be present.
+Further, there are some parameters required in your `_config.yml` for `jekyll-rdf`. I.e. the `url` and `baseurl` parameters are used for including the resource pages into the root of the site, the plug-in has to be configured, and the path to the RDF file has to be present.
 
 ```yaml
 baseurl: "/simpsons"
@@ -83,6 +83,20 @@ jekyll_rdf:
         "http://xmlns.com/foaf/0.1/Person": "person.html"
     instance_template_mappings:
         "http://example.org/simpsons/Abraham": "abraham.html"
+```
+
+### Base Path Specification
+The `url` + `baseurl` are used by Jekyll RDF to identify relative to which URL it should build the RDF resource pages.
+In the example above this means that a resource with the IRI `<http://example.org/simpsons/Bart>` is rendered to the path `/Bart.html`.
+Also other features and plugins for Jekyll depend on these two parameters.
+If for any case the two parameters differ from the base path that Jekyll RDF should assume, it is possible to set the parameter `baseiri` in the `jekyll_rdf` section.
+
+```yaml
+baseurl: "/simpsons"
+url: "https://beispiel.com"
+
+jekyll_rdf:
+    baseiri: "http://example.org/"
 ```
 
 ### Map resources to templates
@@ -146,7 +160,7 @@ jekyll_rdf:
 ## Building the Jekyll Site
 
 Running `jekyll build` will render the RDF resources to the `_site/…` directory. Running `jekyll serve` will render the RDF resources and provide you with an instant HTTP-Server usually accessible at `http://localhost:4000/`.
-RDF resources whose IRIs don't start with the configured jekyll `url` and `baseurl` are rendered to the `_site/rdfsites/…` sub directory.
+RDF resources whose IRIs don't start with the configured jekyll `url` and `baseurl` (resp. `baseiri`) are rendered to the `_site/rdfsites/…` sub directory.
 
 ## Defining Templates
 To make use of the RDF data, create one or more files (e.g `rdf_index.html` or `person.html`) in the `_layouts`-directory. For each resource a page will be rendered. See example below:
