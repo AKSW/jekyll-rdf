@@ -27,7 +27,7 @@ The API Documentation is available at [RubyDoc.info](http://www.rubydoc.info/gem
 As a prerequisite for *Jekyll RDF* you of course need to install [*Jekyll*](https://jekyllrb.com/).
 Please take a look at the installations instructions at https://jekyllrb.com/docs/installation/.
 
-If you already have a working Jekyll installation you can add the the Jekyll-RDF plugin.
+If you already have a working Jekyll installation you can add the Jekyll-RDF plugin.
 Probably you already using [Bundler](https://bundler.io/) and there is a [`Gemfile`](https://bundler.io/gemfile.html) in your Jekyll directory.
 Add Jekyll-RDF to the plugins section:
 
@@ -141,7 +141,7 @@ A file `_data/restriction.txt` cool have the following content:
 ```
 
 In the `_config.yml` you specify the file with the key `restriction_file`.
-If both, a `restriction_file` and a `restriction`, are specified JekyllRDF will build pages for the union of the both.
+If both, a `restriction_file` and a `restriction`, are specified Jekyll RDF will build pages for the union of the both.
 
 ### Blank Nodes
 Furthermore you can decide if you want to render blank nodes or not. You just need to add `include_blank`to `_config.yml`:
@@ -160,7 +160,7 @@ jekyll_rdf:
 ## Building the Jekyll Site
 
 Running `jekyll build` will render the RDF resources to the `_site/…` directory. Running `jekyll serve` will render the RDF resources and provide you with an instant HTTP-Server usually accessible at `http://localhost:4000/`.
-RDF resources whose IRIs don't start with the configured jekyll `url` and `baseurl` (resp. `baseiri`) are rendered to the `_site/rdfsites/…` sub directory.
+RDF resources whose IRIs don't start with the configured Jekyll `url` and `baseurl` (resp. `baseiri`) are rendered to the `_site/rdfsites/…` sub directory.
 
 ## Defining Templates
 To make use of the RDF data, create one or more files (e.g `rdf_index.html` or `person.html`) in the `_layouts`-directory. For each resource a page will be rendered. See example below:
@@ -285,8 +285,8 @@ The template for `ex:Resource`:
 ```
 
 ### Custom SPARQL Query
-We implemented a liquid filter `sparql_query` to run custom SPARQL queries. Each occurence of `?resourceUri` gets replaced with the current URI.
-*Caution:* You have to separate query and resultset variables because of Liquids concepts. Example:
+We implemented a liquid filter `sparql_query` to run custom SPARQL queries. Each occurrence of `?resourceUri` gets replaced with the current URI.
+*Caution:* You have to separate query and result set variables because of Liquids concepts. Example:
 ```html
 {% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}
 {% assign resultset = page.rdf | sparql_query: query %}
@@ -357,7 +357,7 @@ Return the path to the page representing this RdfResource. Use it with care.
 
 ### Resource.covered
 This attribute is relevant for rendering pages for IRIs containing a fragment identifier (`http://superresource#anchor`).
-This attribute is true for the super-resource (`http://superresource`) if it is actually described in the given knowledgebase.
+This attribute is true for the super-resource (`http://superresource`) if it is actually described in the given knowledge base.
 
 ### Resource.rendered
 This attribute tells if the respective instance of a resource is rendered within the context of the current site generation.
@@ -397,7 +397,7 @@ http://www.ifi.uio.no/INF3580/simpsons
 - `<list>` is a boolean value (`true`, `false`).
 
 **Description:** Returns the object, of the triple `<rdf_resource> <predicate> ?object`.
-The returned object can by any of the kind, resource, literal, or blanknode.
+The returned object can by any of the kind, resource, literal, or blank node.
 
 **Example (default):**
 ```
@@ -454,7 +454,7 @@ The returned object can by any of the kind, resource, literal, or blanknode.
 
 **Description:** Same as rdf_property, but in inverse direction.
 It returns the subject, of the triple `?subject <predicate> <rdf_resource>`.
-The returned object can by any of the kind, resource, or blanknode.
+The returned object can by any of the kind, resource, or blank node.
 
 **Examples (default):**
 ```

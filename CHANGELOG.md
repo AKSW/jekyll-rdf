@@ -7,11 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [3.1.1] - ???
 ### changed
 - Repository moved from https://github.com/white-gecko/jekyll-rdf/ to https://github.com/AKSW/jekyll-rdf/
-- Add posibility to specify the default graph on a SPARQL endpoint
+- Add possibility to specify the default graph on a SPARQL endpoint
 - Some updates in the test/build system
 - Update some dependencies
 - Minor code cleanup
 - New `resource.rendered` attribute to check if a page is rendered in the present site for this resource.
+- Update class-template selection to be straightforward
 
 ## [3.1.0] - 2018-11-27
 ### Added
