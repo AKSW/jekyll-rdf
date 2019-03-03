@@ -27,7 +27,7 @@ The API Documentation is available at [RubyDoc.info](http://www.rubydoc.info/gem
 As a prerequisite for *Jekyll RDF* you of course need to install [*Jekyll*](https://jekyllrb.com/).
 Please take a look at the installations instructions at https://jekyllrb.com/docs/installation/.
 
-If you already have a working Jekyll installation you can add the the Jekyll-RDF plugin.
+If you already have a working Jekyll installation you can add the Jekyll-RDF plugin.
 Probably you already using [Bundler](https://bundler.io/) and there is a [`Gemfile`](https://bundler.io/gemfile.html) in your Jekyll directory.
 Add Jekyll-RDF to the plugins section:
 
@@ -66,7 +66,7 @@ jekyll new my_page
 cd my_page
 ```
 
-Further there are some parameters required in your `_config.yml` for `jekyll-rdf`. I.e. the `url` and `baseurl` parameters are used for including the resource pages into the root of the site, the plug-in has to be configured, and the path to the RDF file has to be present.
+Further, there are some parameters required in your `_config.yml` for `jekyll-rdf`. I.e. the `url` and `baseurl` parameters are used for including the resource pages into the root of the site, the plug-in has to be configured, and the path to the RDF file has to be present.
 
 ```yaml
 baseurl: "/simpsons"
@@ -83,6 +83,20 @@ jekyll_rdf:
         "http://xmlns.com/foaf/0.1/Person": "person.html"
     instance_template_mappings:
         "http://example.org/simpsons/Abraham": "abraham.html"
+```
+
+### Base Path Specification
+The `url` + `baseurl` are used by Jekyll RDF to identify relative to which URL it should build the RDF resource pages.
+In the example above this means that a resource with the IRI `<http://example.org/simpsons/Bart>` is rendered to the path `/Bart.html`.
+Also other features and plugins for Jekyll depend on these two parameters.
+If for any case the two parameters differ from the base path that Jekyll RDF should assume, it is possible to set the parameter `baseiri` in the `jekyll_rdf` section.
+
+```yaml
+baseurl: "/simpsons"
+url: "https://beispiel.com"
+
+jekyll_rdf:
+    baseiri: "http://example.org/"
 ```
 
 ### Map resources to templates
@@ -110,7 +124,7 @@ You can restrict the resources selected to be built by adding a SPARQL query as 
   restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"
 ```
 
-There are 3 pre-defined keywords for restrictions implemented:
+There are 3 predefined keywords for restrictions implemented:
 * `subjects` will load all subject URIs
 * `predicates` will load all predicate URIs
 * `objects` will load all object URIs
@@ -127,7 +141,7 @@ A file `_data/restriction.txt` cool have the following content:
 ```
 
 In the `_config.yml` you specify the file with the key `restriction_file`.
-If both, a `restriction_file` and a `restriction`, are specified JekyllRDF will build pages for the union of the both.
+If both, a `restriction_file` and a `restriction`, are specified Jekyll RDF will build pages for the union of the both.
 
 ### Blank Nodes
 Furthermore you can decide if you want to render blank nodes or not. You just need to add `include_blank`to `_config.yml`:
@@ -146,7 +160,7 @@ jekyll_rdf:
 ## Building the Jekyll Site
 
 Running `jekyll build` will render the RDF resources to the `_site/…` directory. Running `jekyll serve` will render the RDF resources and provide you with an instant HTTP-Server usually accessible at `http://localhost:4000/`.
-RDF resources whose IRIs don't start with the configured jekyll `url` and `baseurl` are rendered to the `_site/rdfsites/…` subdirectory.
+RDF resources whose IRIs don't start with the configured Jekyll `url` and `baseurl` (resp. `baseiri`) are rendered to the `_site/rdfsites/…` sub directory.
 
 ## Defining Templates
 To make use of the RDF data, create one or more files (e.g `rdf_index.html` or `person.html`) in the `_layouts`-directory. For each resource a page will be rendered. See example below:
@@ -271,8 +285,8 @@ The template for `ex:Resource`:
 ```
 
 ### Custom SPARQL Query
-We implemented a liquid filter `sparql_query` to run custom SPARQL queries. Each occurence of `?resourceUri` gets replaced with the current URI.
-*Caution:* You have to separate query and resultset variables because of Liquids concepts. Example:
+We implemented a liquid filter `sparql_query` to run custom SPARQL queries. Each occurrence of `?resourceUri` gets replaced with the current URI.
+*Caution:* You have to separate query and result set variables because of Liquids concepts. Example:
 ```html
 {% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}
 {% assign resultset = page.rdf | sparql_query: query %}
@@ -342,8 +356,12 @@ Return the URL of the page representing this RdfResource.
 Return the path to the page representing this RdfResource. Use it with care.
 
 ### Resource.covered
-This method is relevant for rendering pages for IRIs containing a fragment identifier (`http://superresource#anchor`).
-This method returns true for the super-resource (`http://superresource`) if it is actually described in the given knowledgebase.
+This attribute is relevant for rendering pages for IRIs containing a fragment identifier (`http://superresource#anchor`).
+This attribute is true for the super-resource (`http://superresource`) if it is actually described in the given knowledge base.
+
+### Resource.rendered
+This attribute tells if the respective instance of a resource is rendered within the context of the current site generation.
+Usage: `{% if resource.rendered? %}…{% endif %}`.
 
 ### Resource.inspect
 Returns a verbose String representing this resource.
@@ -379,7 +397,7 @@ http://www.ifi.uio.no/INF3580/simpsons
 - `<list>` is a boolean value (`true`, `false`).
 
 **Description:** Returns the object, of the triple `<rdf_resource> <predicate> ?object`.
-The returned object can by any of the kind, resource, literal, or blanknode.
+The returned object can by any of the kind, resource, literal, or blank node.
 
 **Example (default):**
 ```
@@ -436,7 +454,7 @@ The returned object can by any of the kind, resource, literal, or blanknode.
 
 **Description:** Same as rdf_property, but in inverse direction.
 It returns the subject, of the triple `?subject <predicate> <rdf_resource>`.
-The returned object can by any of the kind, resource, or blanknode.
+The returned object can by any of the kind, resource, or blank node.
 
 **Examples (default):**
 ```
@@ -649,8 +667,9 @@ http://www.ifi.uio.no/INF3580/simpsons#Maggie
 |Name|Parameter|Default|Description|Example|
 |---	|---	|---	|---	|---	|
 |path|Relative path to the RDF-File|no default|Specifies the path to the RDF file from where you want to render the website|```path: "rdf-data/simpsons.ttl"```|
-|remote|Section to specify a remote data source|no default|Has to contain the `endpoint` key. The `remote` paramter overrides the `path` parameter.||
+|remote|Section to specify a remote data source|no default|Has to contain the `endpoint` key. The `remote` parameter overrides the `path` parameter.||
 |remote > endpoint|SPARQL endpoint to get the data from|no default|Specifies the URL to the SPARQL endpoint from where you want to render the website|```remote: endpoint: "http://localhost:5000/sparql/"```|
+|remote > default_graph|Select a default graph on the endpoint|no default|Specifies the IRI to the named graph to select from the SPARQL endpoint|```remote: endpoint: "http://localhost:5000/sparql/" default_graph: "http://example.org/"```|
 |language|Language-Tag as String|no default|Specifies the preferred language when you select objects using our Liquid filters|```language: "en"```|
 |include_blank|Boolean-Expression|false|Specifies whether blank nodes should also be rendered or not|```include_blank: true```|
 |restriction|SPARQL-Query as String or subjects/objects/predicates|no default|Restricts the resource-selection with a given SPARQL-Query to the results bound to the special variable `?resourceUri` or the three keywords `subjects` (only subject URIs), `objects`, `predicates`|```restriction: "SELECT ?resourceUri WHERE { ?resourceUri <http://www.ifi.uio.no/INF3580/family#hasFather> <http://www.ifi.uio.no/INF3580/simpsons#Homer> }"```|
@@ -679,7 +698,7 @@ bundle exec rake test
 ```
 
 ## Test page
-Everytime the tests are executed, the Jekyll page inside of `test/source` gets processed. Start a slim web server to watch the results in web browser, e.g. Pythons `SimpleHTTPServer` (Python 2, for Python 3 it's `http.server`):
+Every time the tests are executed, the Jekyll page inside of `test/source` gets processed. Start a slim web server to watch the results in web browser, e.g. Pythons `SimpleHTTPServer` (Python 2, for Python 3 it's `http.server`):
 ```
 cd test/source/_site
 python -m SimpleHTTPServer 8000
