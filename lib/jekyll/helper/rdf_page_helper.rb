@@ -36,7 +36,6 @@ module Jekyll
           load_data(@site)
           self.data['permalink'] = File.join(@dir, @name)    #overwrite permalinks to stop them from interfering with JekyllRdfs rendersystem
           return unless @complete
-          load_prefixes_yaml()
           resource.page = self
           resource.site = @site
           @site.data['resources'] << resource
@@ -109,15 +108,6 @@ module Jekyll
           self.data['rdf'] = @resource
           self.data['template'] = @template
         end
-
-        ##
-        # loads the prefix data passed in the layout yaml-frontmatter into page.data["rdf_prefixes"] and page.data["rdf_prefix_map"]
-        def load_prefixes_yaml
-          unless self.data["rdf_prefix_path"].nil?
-            load_prefixes(File.join(@site.layouts[@template].instance_variable_get(:@base_dir), self.data["rdf_prefix_path"].strip), self.data)
-          end
-        end
-
       end
 
     end
