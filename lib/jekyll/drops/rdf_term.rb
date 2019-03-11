@@ -90,7 +90,7 @@ module Jekyll
         def self.build_term_drop(term, site, covered)
           case term
           when RDF::URI, RDF::Node
-            return RdfResource.new(term, site, nil, covered)
+            return Jekyll::JekyllRdf::Helper::RdfHelper.resources(term)
           when RDF::Literal
             return RdfLiteral.new(term)
           else

@@ -109,15 +109,23 @@ module Jekyll
           @@baseiri
         end
 
-        def self.resources uri, exists = false
+        ##
+        # Constructs and returns a Jekyll::JekyllRdf::Drops::RdfResource. If the
+        # uri refers to an already created resource, this method wont create a
+        # new resource.
+        #
+        def self.resources uri
           resource = @@resources[uri.to_s]
           if resource.nil?
-            resource = Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI(uri.to_s), @@site, @@page, exists)
+            resource = Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI(uri.to_s), @@site, @@page)
             @@resources[uri.to_s] = resource
           end
           return resource
         end
 
+        ##
+        # resets RdfHelper to its initialization values
+        #
         def self.reinitialize
           @@prefixes.clear
           @@usePage = false

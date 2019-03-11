@@ -335,7 +335,7 @@ class TestRdfFilter < Test::Unit::TestCase
     end
 
     should "return the input if the input is a resource" do
-      resource = Jekyll::JekyllRdf::Drops::RdfResource.new("http://example.org/instance/resource", nil, nil, true)
+      resource = Jekyll::JekyllRdf::Drops::RdfResource.new("http://example.org/instance/resource")
       assert_equal resource, rdf_get(resource)
     end
 

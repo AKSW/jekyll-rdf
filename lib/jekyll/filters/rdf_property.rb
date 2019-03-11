@@ -74,7 +74,7 @@ module Jekyll
           query = "SELECT ?s WHERE{ ?s #{predicate} #{n_triples} }"
           result = client.query(query).map do |solution|
             subject = RDF::URI(solution.s)
-            Jekyll::JekyllRdf::Helper::RdfHelper.resources(subject, true)
+            Jekyll::JekyllRdf::Helper::RdfHelper.resources(subject)
           end
         else
           query = "SELECT ?o ?dt ?lit ?lang WHERE{ #{n_triples} #{predicate} ?o BIND(datatype(?o) AS ?dt) BIND(isLiteral(?o) AS ?lit) BIND(lang(?o) AS ?lang) #{lang_query} }"
@@ -95,7 +95,7 @@ module Jekyll
           result = Jekyll::JekyllRdf::Drops::RdfLiteral.new(object)
         else
           object = RDF::URI(solution.o)
-          result = Jekyll::JekyllRdf::Helper::RdfHelper.resources(object, true)
+          result = Jekyll::JekyllRdf::Helper::RdfHelper.resources(object)
         end
         return result
       end

@@ -17,7 +17,7 @@ class TestRenderedAttribute < Test::Unit::TestCase
       assert_equal "http://example.org/instance/resource", content[1]
       assert_equal "http://example.org/instance/resource", content[2]
       resources = Jekyll::JekyllRdf::Helper::RdfHelper.class_variable_get(:@@resources)
-      assert resources.length.eql? 1
+      assert_equal 3, resources.length  # 3 because the template mapping creates additional resources
     end
   end
 end
