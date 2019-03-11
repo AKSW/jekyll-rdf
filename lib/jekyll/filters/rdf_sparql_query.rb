@@ -43,7 +43,6 @@ module Jekyll
         begin
           result = Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(query)
           if (result.class == RDF::Graph)
-            Jekyll::JekyllRdf::Helper::RdfHelper::sparql.insert_data(result)
             return Jekyll::JekyllRdf::Drops::RdfGraph.new(result)
           end
           result.map! do |solution|
