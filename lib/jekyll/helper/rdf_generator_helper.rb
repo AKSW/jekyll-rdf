@@ -20,7 +20,7 @@ module Jekyll
           @pageResources={};
           @blanknodes=[]
           resources.each do |uri|
-            resource = Jekyll::JekyllRdf::Drops::RdfResource.new(uri, nil, nil, true)
+            resource = Jekyll::JekyllRdf::Helper::RdfHelper.resources(uri)
             if(uri.instance_of? RDF::URI)
               uriString = uri.to_s
               if((uriString.include? "#") && (uriString.index("#") < (uriString.length - 1)))   #sorting in uris with a #
@@ -41,7 +41,7 @@ module Jekyll
           end
           # give parents to orphaned resources
           @pageResources.each_key{|key|
-            @pageResources[key]['./'] = Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI(key)) if @pageResources[key]['./'].nil?
+            @pageResources[key]['./'] = Jekyll::JekyllRdf::Helper::RdfHelper.resources(key) if @pageResources[key]['./'].nil?
           }
         end
 

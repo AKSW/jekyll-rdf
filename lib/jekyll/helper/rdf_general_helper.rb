@@ -32,6 +32,9 @@ module Jekyll
       module RdfHelper
         @@prefixes = {}
         @@usePage = false
+        @@resources = {}
+        @@site = nil
+        @@page = nil
 
         def self.sparql= sparql
           @@sparql = sparql
@@ -105,8 +108,32 @@ module Jekyll
         def self.pathiri
           @@baseiri
         end
-      end
 
-    end
-  end
-end
+        ##
+        # Constructs and returns a Jekyll::JekyllRdf::Drops::RdfResource. If the
+        # uri refers to an already created resource, this method wont create a
+        # new resource.
+        #
+        def self.resources uri
+          resource = @@resources[uri.to_s]
+          if resource.nil?
+            resource = Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI(uri.to_s), @@site, @@page)
+            @@resources[uri.to_s] = resource
+          end
+          return resource
+        end
+
+        ##
+        # resets RdfHelper to its initialization values
+        #
+        def self.reinitialize
+          @@prefixes.clear
+          @@usePage = false
+          @@resources.clear
+          @@site = nil
+          @@page = nil
+        end
+      end #RdfHelper
+    end #Helper
+  end #JekyllRdf
+end #Jekyll

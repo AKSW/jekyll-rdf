@@ -45,17 +45,12 @@ module Jekyll #:nodoc:
         ##
         #
         #
-        attr_reader :covered
-
-        ##
-        #
-        #
         attr_accessor :subResources
 
         ##
         #
         #
-        def initialize(term, site = nil, page = nil, covered = false)
+        def initialize(term, site = nil, page = nil)
           super(term)
           if(site.is_a?(Jekyll::Site))
             @site = site
@@ -64,7 +59,6 @@ module Jekyll #:nodoc:
             @page = page
           end
           @subResources = {}
-          @covered = covered
           @iri = term.to_s
           @blank = false
           begin
@@ -85,6 +79,20 @@ module Jekyll #:nodoc:
 
         def ready?
           return (@site.is_a?(Jekyll::Site)||@page.is_a?(Jekyll::Page))
+        end
+
+        ##
+        # Returns true if the resource base containes this resource
+        #
+        def covered
+          return @covered unless @covered.nil?
+          ask_exist = "ASK WHERE {{#{term.to_ntriples} ?p ?o}UNION{?s #{term.to_ntriples} ?o}UNION{?s ?p #{term.to_ntriples}}} "
+          @covered = Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(ask_exist)
+          if(@covered.instance_of? RDF::Literal::Boolean)
+            @covered = @covered.true?
+          else
+            @covered = false || @covered   #take care of compatibility with virtuoso
+          end
         end
 
         ##
