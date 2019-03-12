@@ -22,13 +22,37 @@
 # SOFTWARE.
 #
 
+Jekyll::Hooks.register :documents, :post_init do |page|
+  if(page.data["rdf_prefix_path"].nil?)
+    page.data["rdf_prefix_set?"] = false
+  else
+    page.data["rdf_prefix_set?"] = true
+  end
+end
+
+Jekyll::Hooks.register :pages, :post_init do |page|
+  if(page.data["rdf_prefix_path"].nil?)
+    page.data["rdf_prefix_set?"] = false
+  else
+    page.data["rdf_prefix_set?"] = true
+  end
+end
+
+Jekyll::Hooks.register :posts, :post_init do |page|
+  if(page.data["rdf_prefix_path"].nil?)
+    page.data["rdf_prefix_set?"] = false
+  else
+    page.data["rdf_prefix_set?"] = true
+  end
+end
+
 
 Jekyll::Hooks.register :pages, :pre_render do |page, payload|
   unless(page.data['rdf'].nil?)
     payload["content"] = ""
   end
   include Jekyll::JekyllRdf::Helper::RdfHookHelper
-  backload_prefixes page, payload
+  backload_prefixes page, payload if page.data["rdf_prefixes"].nil?
   Jekyll::JekyllRdf::Helper::RdfHelper::page = page
 end
 

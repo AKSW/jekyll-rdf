@@ -28,14 +28,19 @@ module Jekyll
       module RdfHookHelper
         def backload_prefixes page, payload
           prefix_path = page.data["rdf_prefix_path"]
-          # posts frontmatter does not contain values from layout frontmatters
-          if(prefix_path.nil?)
-            unless(payload.layout.nil? || page.data["layout"].nil?)
-              prefix_path = payload.layout["rdf_prefix_path"]
-              base_path = search_prefix_definition page.site.layouts[page.data["layout"]], prefix_path
-            end
-          else
-            base_path = payload.site["source"]#page.path[0..-(page.relative_path.length + 1)]
+          if(!prefix_path.nil? && !page.data["rdf_prefix_set?"] && !page.data["layout"].nil?)
+            # rdf_prefix_path is set but not defined through the page
+            base_path = search_prefix_definition page.site.layouts[page.data["layout"]], prefix_path
+          elsif (prefix_path.nil? && !page.data["layout"].nil?)
+            # page might be a post (does not contain values from layout frontmatter)
+            # |->rdf_prefix_path can still be set in a layout
+            locations = check_prefix_definition page.site.layouts[page.data["layout"]]
+            base_path = locations[0]
+            prefix_path = locations[1]
+          elsif(!prefix_path.nil? && page.data["rdf_prefix_set?"])
+            # rdf_prefix_path is set directly in the fronmatter of the page
+            base_path = page.instance_variable_get(:@base_dir)
+            base_path ||= payload.site["source"]
           end
 
           if(page.data["rdf_prefixes"].nil? && !(prefix_path.nil? || base_path.nil?))
@@ -55,6 +60,23 @@ module Jekyll
           end
           return search_prefix_definition layout.site.layouts[layout.data["layout"]], rdf_prefix_path
         end
+
+        def check_prefix_definition layout
+          unless(layout.data["rdf_prefix_path"].nil?)
+            return [layout.instance_variable_get(:@base_dir), layout.data["rdf_prefix_path"]]
+          end
+          return check_prefix_definition layout.site.layouts[layout.data["layout"]] unless layout.data["layout"].nil?
+          return [nil, nil]
+        end
+
+        private
+        class EqualObject
+          def eql? object
+            true
+          end
+        end
+
+        @@equal_object = EqualObject.new
       end
     end
   end
