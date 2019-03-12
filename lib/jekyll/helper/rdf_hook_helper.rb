@@ -28,21 +28,29 @@ module Jekyll
       module RdfHookHelper
         def backload_prefixes page, payload
           prefix_path = page.data["rdf_prefix_path"]
-          if(!prefix_path.nil? && !page.data["rdf_prefix_set?"] && !page.data["layout"].nil?)
-            # rdf_prefix_path is set but not defined through the page
-            base_path = search_prefix_definition page.site.layouts[page.data["layout"]], prefix_path
-          elsif (prefix_path.nil? && !page.data["layout"].nil?)
-            # page might be a post (does not contain values from layout frontmatter)
-            # |->rdf_prefix_path can still be set in a layout
-            locations = check_prefix_definition page.site.layouts[page.data["layout"]]
-            base_path = locations[0]
-            prefix_path = locations[1]
-          elsif(!prefix_path.nil? && page.data["rdf_prefix_set?"])
-            # rdf_prefix_path is set directly in the fronmatter of the page
-            base_path = page.instance_variable_get(:@base_dir)
-            base_path ||= payload.site["source"]
+          begin
+            if(!prefix_path.nil? && !page.data["rdf_prefix_set?"] && !page.data["layout"].nil?)
+              # rdf_prefix_path is set but not defined through the page
+              base_path = search_prefix_definition page.site.layouts[page.data["layout"]], prefix_path
+            elsif (prefix_path.nil? && !page.data["layout"].nil?)
+              # page might be a post (does not contain values from layout frontmatter)
+              # |->rdf_prefix_path can still be set in a layout
+              locations = check_prefix_definition page.site.layouts[page.data["layout"]]
+              base_path = locations[0]
+              prefix_path = locations[1]
+            elsif(!prefix_path.nil? && page.data["rdf_prefix_set?"])
+              # rdf_prefix_path is set directly in the fronmatter of the page
+              base_path = page.instance_variable_get(:@base_dir)
+              base_path ||= payload.site["source"]
+            end
+          rescue NoMethodError => ne
+            #just in case the error was caused by something different then a missing template
+            if(ne.message.eql? "undefined method `data' for nil:NilClass")
+              return
+            else
+              raise
+            end
           end
-
           if(page.data["rdf_prefixes"].nil? && !(prefix_path.nil? || base_path.nil?))
             Jekyll::JekyllRdf::Helper::RdfHelper.load_prefixes(
               File.join(
