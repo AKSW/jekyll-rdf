@@ -58,7 +58,8 @@ module Jekyll
           if(rdf_prefix_path.eql? layout.data["rdf_prefix_path"])
             return layout.instance_variable_get(:@base_dir)
           end
-          return search_prefix_definition layout.site.layouts[layout.data["layout"]], rdf_prefix_path
+          return search_prefix_definition layout.site.layouts[layout.data["layout"]], rdf_prefix_path unless layout.data["layout"].nil?
+          return nil
         end
 
         def check_prefix_definition layout
