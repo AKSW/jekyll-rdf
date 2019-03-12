@@ -38,27 +38,14 @@ module Jekyll
       # * +query+ - the SPARQL query
       #
       def sparql_query(resource = nil, query)
-        query = query.clone #sometimes liquid wont reinit static strings in for loops
-        if(rdf_substitude_nil?(resource))
-          query.gsub!('?resourceUri', "<#{Jekyll::JekyllRdf::Helper::RdfHelper::page.data['rdf'].term}>")
-        elsif(resource.class <= Array)
-          resource.each_with_index do |uri, index|
-            return unless valid_resource?(uri)
-            if(uri.class <= Jekyll::JekyllRdf::Drops::RdfResource)
-              query.gsub!("?resourceUri_#{index}", uri.term.to_ntriples)
-            else
-              query.gsub!("?resourceUri_#{index}", "#{rdf_resolve_prefix(uri.to_s)}")
-            end
-          end
-        else
-          return unless valid_resource?(resource)
-          query.gsub!('?resourceUri', to_string_wrap(resource))
-        end if query.include? '?resourceUri'  #the only purpose of the if statement is to substitute ?resourceUri
-        unless Jekyll::JekyllRdf::Helper::RdfHelper::prefixes["rdf_prefixes"].nil?
-          query = query.prepend(" ").prepend(Jekyll::JekyllRdf::Helper::RdfHelper::prefixes["rdf_prefixes"])
-        end
+        query = prepare_query(resource, query)
+        return if query.nil?
         begin
-          result = Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(query).map do |solution|
+          result = Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(query)
+          if (result.class == RDF::Graph)
+            return Jekyll::JekyllRdf::Drops::RdfGraph.new(result)
+          end
+          result.map! do |solution|
             hsh = solution.to_h
             hsh.update(hsh){ |k,v| Jekyll::JekyllRdf::Drops::RdfTerm.build_term_drop(v, Jekyll::JekyllRdf::Helper::RdfHelper::site, true).add_necessities(Jekyll::JekyllRdf::Helper::RdfHelper::site, Jekyll::JekyllRdf::Helper::RdfHelper::page)}
             hsh.collect{|k,v| [k.to_s, v]}.to_h

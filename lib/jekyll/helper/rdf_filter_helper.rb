@@ -55,6 +55,29 @@ module Jekyll
             return false
           end
         end
+
+        def prepare_query(resource = nil, query)
+          query = query.clone #sometimes liquid wont reinit static strings in for loops
+          if(rdf_substitude_nil?(resource))
+            query.gsub!('?resourceUri', "<#{Jekyll::JekyllRdf::Helper::RdfHelper::page.data['rdf'].term}>")
+          elsif(resource.class <= Array)
+            resource.each_with_index do |uri, index|
+              return nil unless valid_resource?(uri)
+              if(uri.class <= Jekyll::JekyllRdf::Drops::RdfResource)
+                query.gsub!("?resourceUri_#{index}", uri.term.to_ntriples)
+              else
+                query.gsub!("?resourceUri_#{index}", "#{rdf_resolve_prefix(uri.to_s)}")
+              end
+            end
+          else
+            return nil unless valid_resource?(resource)
+            query.gsub!('?resourceUri', to_string_wrap(resource))
+          end if query.include? '?resourceUri'  #the only purpose of the if statement is to substitute ?resourceUri
+          unless Jekyll::JekyllRdf::Helper::RdfHelper::prefixes["rdf_prefixes"].nil?
+            query = query.prepend(" ").prepend(Jekyll::JekyllRdf::Helper::RdfHelper::prefixes["rdf_prefixes"])
+          end
+          return query
+        end
       end
 
       module PrefixSolver
