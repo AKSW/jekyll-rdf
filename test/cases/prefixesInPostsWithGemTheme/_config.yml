@@ -1,0 +1,10 @@
+baseurl: ""
+url: "http://example.org/"
+
+theme: jekyll-theme-jod
+plugins:
+- jekyll-rdf
+jekyll_rdf:
+  path: "_data/knowledge-base.ttl"
+  restriction: "SELECT ?resourceUri WHERE {?resourceUri ?p ?o}"
+  default_template: "ontology"
