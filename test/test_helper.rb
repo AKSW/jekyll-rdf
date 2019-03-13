@@ -6,8 +6,9 @@ require 'pry'
 require 'coveralls'
 require 'ResourceHelper'
 require 'RdfTestUtility'
-require_relative '../lib/jekyll-rdf'
+
 Coveralls.wear!
+require_relative '../lib/jekyll-rdf'
 
 Jekyll.logger.log_level = :error
 class TestHelper
