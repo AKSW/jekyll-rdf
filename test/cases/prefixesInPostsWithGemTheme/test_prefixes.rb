@@ -15,7 +15,7 @@ class TestPrefixes < Test::Unit::TestCase
       #TODO This test case has to be completed once jekyll runs successfull
 
       assert_equal "<h1>My Jekyll RDF Blog</h1>", content[0]
-      assert_equal "<p>This is a Blogpost</p>", content[2]
+      assert_equal "<p>This is a Blogpost</p>", content[1]
     end
   end
 end

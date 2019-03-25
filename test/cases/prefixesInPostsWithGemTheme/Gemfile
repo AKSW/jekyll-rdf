@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
 group :jekyll_plugins do
-  gem "jekyll-theme-jod", "= 0.1.9"
+  gem "theme-gem", :path => '../../theme-gem'
   gem 'jekyll-rdf', :path => '../../../'
 end

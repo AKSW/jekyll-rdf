@@ -11,6 +11,9 @@ matrix:
   - rvm: ruby-head
 before_install:
 - docker run -p 3030:3030 -d stain/jena-fuseki:latest ./fuseki-server --mem /remote
+- cd test/theme-gem
+- bundle install
+- cd ../..
 script:
 - bundle exec rake test
 deploy:

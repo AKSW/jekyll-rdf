@@ -1,7 +1,7 @@
 baseurl: ""
 url: "http://example.org/"
 
-theme: jekyll-theme-jod
+theme: theme-gem
 plugins:
 - jekyll-rdf
 jekyll_rdf:
