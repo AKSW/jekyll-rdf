@@ -3,3 +3,6 @@
 
 <http://example.org/blog> a owl:Ontology ;
   rdfs:label "My Jekyll RDF Blog" .
+
+<http://example.org/2019/02/12/Blogpost> a owl:Ontology ;
+  rdfs:label "My Jekyll RDF Blogpost" .

@@ -8,14 +8,26 @@ class TestPrefixes < Test::Unit::TestCase
 
       content = []
       file = File.read(File.join(@source, "_site/2019/02/12/Blogpost.html"))
-      content = file[/\<body\>(.|\s)*\<\/body\>/][6..-6].strip.split("\n").map do |entry|
+      content = file[/\<body\>(.|\s)*\<\/body\>/][6..-6].strip.split("<br/>").map do |entry|
         entry.strip
       end
 
-      #TODO This test case has to be completed once jekyll runs successfull
-
       assert_equal "<h1>My Jekyll RDF Blog</h1>", content[0]
       assert_equal "<p>This is a Blogpost</p>", content[1]
+      # this line has to be uncommented once page.rdf is set in posts
+      #assert_equal "My Jekyll RDF Blogpost", content[2]
+      assert_equal "My Jekyll RDF Blog", content[3]
+
+      content = []
+      file = File.read(File.join(@source, "_site/blog.html"))
+      content = file[/\<body\>(.|\s)*\<\/body\>/][6..-6].strip.split("<br/>").map do |entry|
+        entry.strip
+      end
+
+      assert_equal "<h1>My Jekyll RDF Blog</h1>", content[0]
+      assert_equal "A page", content[1]
+      assert_equal "My Jekyll RDF Blog", content[2]
+      assert_equal "My Jekyll RDF Blog", content[3]
     end
   end
 end
