@@ -1,0 +1,18 @@
+---
+---
+<html>
+    <head>
+        <title>Debug Messages</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>
+            {%- assign message = "Info message" | rdf_debug_message: "info" -%}
+            {%- assign message = "Warn message" | rdf_debug_message: "warn" -%}
+            {%- assign message = "Error message" | rdf_debug_message: "error" -%}
+            {%- assign message = "Debug message" | rdf_debug_message: "debug" -%}
+            {%- assign message = "message" | rdf_debug_message: "none" -%}
+        </div>
+    </body>
+</html>

@@ -12,12 +12,24 @@
             {%- assign replace = page.rdf | rdf_property: "<http://example.org/instance/value1>" -%}
             {%- assign revert = page.rdf | rdf_property: "<http://example.org/instance/value2>" -%}
             {%- assign upperCase = page.rdf | rdf_property: "<http://example.org/instance/value3>" -%}
+            {%- assign bool = page.rdf | rdf_property: "<http://example.org/instance/value4>" -%}
+            {%- assign decimal = page.rdf | rdf_property: "<http://example.org/instance/value5>" -%}
+            {%- assign integer = page.rdf | rdf_property: "<http://example.org/instance/value6>" -%}
+            {%- assign double = page.rdf | rdf_property: "<http://example.org/instance/value7>" -%}
             <h6>Replace</h6> <br/>
             {{replace}} <br/>
             <h6>Revert</h6> <br/>
             {{revert}} <br/>
             <h6>Upper Case</h6> <br/>
-            {{upperCase}}
+            {{upperCase}} <br/>
+            <h6>Boolean</h6> <br/>
+            {{bool}} <br/>
+            <h6>Decimal</h6> <br/>
+            {{decimal}} <br/>
+            <h6>Integer</h6> <br/>
+            {{integer}} <br/>
+            <h6>Double</h6> <br/>
+            {{double}} <br/>
         </div>
     </body>
 </html>

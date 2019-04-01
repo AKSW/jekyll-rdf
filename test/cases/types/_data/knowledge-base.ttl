@@ -1,5 +1,10 @@
 @prefix eg: <http://example.org/instance/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 eg:types eg:value1 "28.07.2018"^^eg:replace .
 eg:types eg:value2 "detrever"^^eg:revert .
 eg:types eg:value3 "this was all lower case"^^eg:uppercase .
+eg:types eg:value4 "1"^^xsd:boolean .
+eg:types eg:value5 "1.0"^^xsd:decimal .
+eg:types eg:value6 "12"^^xsd:integer .
+eg:types eg:value7 "1.0E5"^^xsd:double .
