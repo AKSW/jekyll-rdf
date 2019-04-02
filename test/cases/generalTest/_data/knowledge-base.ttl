@@ -4,6 +4,8 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
 eg:resource eg:predicate eg:object .
+eg:subject eg:resource "label"@en .
+eg:subject eg:predicate eg:resource .
 eg:person a foaf:Person .
 eg:person foaf:age "28"^^xsd:int .
 eg:person foaf:name "Jeanne Doe" .
