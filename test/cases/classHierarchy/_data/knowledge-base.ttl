@@ -53,3 +53,10 @@ ani:PseudoInstance2 a an:PseudoClass12 .
 ani:PseudoTestInstance a an:PseudoMergeClass .
 ani:PseudoTestDirectInstance a an:PseudoDirectClass .
 
+an:priorSplit rdfs:subClassOf an:Split1 .
+an:priorSplit rdfs:subClassOf an:Split2 .
+an:Split1 rdfs:subClassOf an:afterSplit .
+an:Split2 rdfs:subClassOf an:afterSplit .
+an:afterSplit rdfs:subClassOf an:TestClass .
+
+ani:PseudoInstance3 a an:priorSplit .

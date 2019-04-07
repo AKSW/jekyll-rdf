@@ -12,3 +12,4 @@ jekyll_rdf:
     "http://animals.org/classification/breathingAir": "breathingAir"
     "http://animals.org/classification/PseudoClass31": "PseudoClass03"
     "http://animals.org/classification/PseudoClass32": "PseudoClass30"
+    "http://animals.org/classification/TestClass" : "PseudoClass03"

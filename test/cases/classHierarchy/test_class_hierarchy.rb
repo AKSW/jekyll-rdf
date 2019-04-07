@@ -62,6 +62,7 @@ class TestClassHierarchy < Test::Unit::TestCase
       mapper.map(Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://animals.org/instance/PseudoInstance2")))
       test = mapper.map(Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://animals.org/instance/PseudoTestInstance")))
       assert (("PseudoClass30".eql? test) || ("PseudoClass03".eql? test)), "The mapper should have returned PseudoClass03 or PseudoClass30, but returned: #{test}"
+      assert_equal "PseudoClass03", mapper.map(Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://animals.org/instance/PseudoInstance3")))
     end
   end
 end
