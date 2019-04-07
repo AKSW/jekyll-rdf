@@ -53,6 +53,15 @@ class TestClassHierarchy < Test::Unit::TestCase
 
       assert Jekyll.logger.messages.any? {|message| !!(message =~ /.*Warning: multiple possible templates for resources.*Penguins.*/)}, "This warning should have been thrown >>>Warning: multiple possible templates for resources http://animals.org/instance/Penguins Possible Templates: foodFromWater, layingEggs<<<"
       assert !Jekyll.logger.messages.any? {|message| !!(message =~ /.*Warning: multiple possible templates for resources.*Fish.*/)}, "This warning should not have been thrown >>>Warning: multiple possible templates for resources http://animals.org/instance/Fish Possible Templates: ***<<<"
+
+      config = Jekyll.configuration(YAML.load_file(File.join(@source, '_config.yml')).merge!({'source' => @source, 'destination' => File.join(@source, "_site")}))
+      mapper = Jekyll::RdfTemplateMapper.new(config["jekyll_rdf"]['instance_template_mappings'], config["jekyll_rdf"]['class_template_mappings'], config["jekyll_rdf"]['default_template'])
+
+      assert_equal "PseudoClass30", mapper.map(Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://animals.org/instance/PseudoTestDirectInstance")))
+      mapper.map(Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://animals.org/instance/PseudoInstance1")))
+      mapper.map(Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://animals.org/instance/PseudoInstance2")))
+      test = mapper.map(Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI("http://animals.org/instance/PseudoTestInstance")))
+      assert (("PseudoClass30".eql? test) || ("PseudoClass03".eql? test)), "The mapper should have returned PseudoClass03 or PseudoClass30, but returned: #{test}"
     end
   end
 end

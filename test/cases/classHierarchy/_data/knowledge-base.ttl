@@ -1,6 +1,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix an: <http://animals.org/classification/> .
 @prefix ani: <http://animals.org/instance/> .
+@prefix jrdf: <http://jekyll.com/jekyll-rdf/> .
 
 an:landBorn rdfs:subClassOf an:animal .
 an:birds rdfs:subClassOf an:animal .
@@ -30,3 +31,25 @@ ani:Fish a an:waterHunting .
 ani:Fish a an:waterFiltering .
 ani:Whale a an:breathingAir .
 ani:Whale a an:foodFromWater .
+
+ani:ape a jrdf:render .
+ani:Lizard a jrdf:render .
+ani:Penguins a jrdf:render .
+ani:Fish a jrdf:render .
+ani:Whale a jrdf:render .
+
+an:PseudoClass11 rdfs:subClassOf an:PseudoClass21 .
+an:PseudoClass21 rdfs:subClassOf an:PseudoClass31 .
+an:PseudoClass12 rdfs:subClassOf an:PseudoClass22 .
+an:PseudoClass22 rdfs:subClassOf an:PseudoClass32 .
+an:PseudoMergeClass rdfs:subClassOf an:PseudoClass11 .
+an:PseudoMergeClass rdfs:subClassOf an:PseudoClass12 .
+an:PseudoClass32 rdfs:subClassOf an:PseudoClass31 .
+an:PseudoDirectClass rdfs:subClassOf an:PseudoClass31 .
+an:PseudoDirectClass rdfs:subClassOf an:PseudoClass32 .
+
+ani:PseudoInstance1 a an:PseudoClass11 .
+ani:PseudoInstance2 a an:PseudoClass12 .
+ani:PseudoTestInstance a an:PseudoMergeClass .
+ani:PseudoTestDirectInstance a an:PseudoDirectClass .
+
