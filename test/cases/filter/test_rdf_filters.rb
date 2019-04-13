@@ -320,6 +320,8 @@ class TestRdfFilter < Test::Unit::TestCase
 
     should "return the resource eg:resource" do
       Jekyll::JekyllRdf::Helper::RdfHelper::site = Jekyll::Site.new(Jekyll.configuration({}))
+      Jekyll::JekyllRdf::Helper::RdfHelper::page = PseudoPage.new() # setting site resets these values
+      Jekyll::JekyllRdf::Helper::RdfHelper::prefixes = prefix_path # setting site resets these values
       test_resource =  rdf_get("eg:resource")
       assert_equal "http://example.org/instance/resource", test_resource.iri
       assert (test_resource.site.eql? Jekyll::JekyllRdf::Helper::RdfHelper::site), "The resource should contain the same site as Jekyll::JekyllRdf::Helper::RdfHelper"
