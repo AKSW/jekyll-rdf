@@ -507,7 +507,7 @@ You can use `?resourceUri` inside the query to reference the resource which is g
 ```
 <!--Rendering the page of resource Lisa -->
 {% assign query = 'SELECT ?sub ?pre WHERE { ?sub ?pre ?resourceUri }' %}
-{% assign resultset = page | sparql_query: query %}
+{% assign resultset = page.rdf | sparql_query: query %}
 <table>
 {% for result in resultset %}
   <tr><td>{{ result.sub }}</td><td>{{ result.pre }}</td></tr>
