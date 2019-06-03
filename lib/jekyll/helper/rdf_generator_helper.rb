@@ -132,21 +132,26 @@ module Jekyll
           result
         end
 
+        def assimilate_pages(page, pages)
+          pages.map!{|old_page|
+            if (old_page.url.chomp('.html') == page.url.chomp('.html'))
+              changes||=true
+              page.assimilate_page(old_page)
+              page
+            else
+              old_page
+            end
+          }
+        end
+
         def create_page(site, resource, mapper)
           Jekyll::JekyllRdf::Helper::RdfPageHelper.prepare_resource resource, mapper
           page = Jekyll::Page.new(site, site.source, resource.filedir, resource.filename)
           page.re_init_as_rdf(resource, mapper)
           if(page.complete)
             changes = false
-            site.pages.map!{|old_page|
-              if (old_page.url.chomp('.html') == page.url.chomp('.html'))
-                changes||=true
-                page.assimilate_page(old_page)
-                page
-              else
-                old_page
-              end
-            }
+            assimilate_pages(page, site.pages)
+            assimilate_pages(page, site.posts.docs)
             unless changes
               site.pages << page
             end
