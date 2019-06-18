@@ -22,6 +22,10 @@
 # SOFTWARE.
 #
 
+Jekyll::Hooks.register :site, :after_reset do |site|
+  Jekyll::JekyllRdf::Helper::RdfHelper::reinitialize
+end
+
 Jekyll::Hooks.register :documents, :post_init do |page|
   if(page.data["rdf_prefix_path"].nil?)
     page.data["rdf_prefix_set?"] = false
