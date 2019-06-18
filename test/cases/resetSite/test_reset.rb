@@ -30,12 +30,13 @@ class TestGeneral < Test::Unit::TestCase
       assert_equal "<h4>This is made with jekyll-rdf</h4>", content[0]
       assert_equal "<h6>This is a resource</h6>", content[1]
       assert_equal "http://example.org/instance/resource2", content[2]
-      Jekyll::JekyllRdf::Helper::RdfHelper.reinitialize
+      # Jekyll::JekyllRdf::Helper::RdfHelper.reinitialize
       @site.process
       file = File.read(File.join(@source, "_site/reset-page.html"))
       content = file[/\<div\>(.|\s)*\<\/div>/][5..-7].strip.split("<br/>").map do |entry|
         entry.strip
       end
+      assert File.exist?(File.join(@source, "_site/resource1.html")), "resource1.html was in the render list but wasn't rendered after reset"
       assert_equal "<h4>This is made with jekyll-rdf</h4>", content[0]
       assert_equal "<h6>This is a page</h6>", content[1]
       assert_equal "Test-Page", content[2]
