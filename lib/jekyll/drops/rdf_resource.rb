@@ -154,18 +154,19 @@ module Jekyll #:nodoc:
         # Return the URL of the page representing this RdfResource
         #
         def page_url
-          return @page_url unless @page_url.nil?
+          return @page_url.dup unless @page_url.nil?
           generate_file_name()
-          @page_url
+          #duplicate so outside sources do not edit this property
+          @page_url.dup
         end
 
         ##
         # Return the path to the page representing this RdfResource
         #
         def render_path
-          return @render_path unless @page_url.nil?
+          return @render_path.dup unless @page_url.nil?
           generate_file_name()
-          @render_path
+          @render_path.dup
         end
 
         def iri
