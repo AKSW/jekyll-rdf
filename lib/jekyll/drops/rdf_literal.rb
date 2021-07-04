@@ -44,7 +44,7 @@ module Jekyll
         # rdf literals as well
         # source: https://github.com/eccenca/jekyll-rdf/commit/704dd98c5e457a81e97fcd011562f1f39fc3f813
         #
-        def to_liquid
+        def to_s
           # Convert scientific notation
 
           term_str = term.to_s
@@ -55,6 +55,17 @@ module Jekyll
           return term.to_s
         end
 
+        # allows filters like plus/subtract to work
+        def to_number
+          obj = to_s
+          #ripped from https://github.com/Shopify/liquid/blob/8dcc3191281478c4ba544d3c507fdb99aa512f75/lib/liquid/utils.rb
+          (obj.strip =~ /\A-?\d+\.\d+\z/) ? BigDecimal(obj) : obj.to_i
+        end
+
+        # allows filters like date to work
+        def strftime format
+          Time.parse(to_s).strftime(format)
+        end
       end
     end
   end

@@ -84,6 +84,15 @@ class TestRdfTypes < Test::Unit::TestCase
       assert_equal "28--07--2018", content[1]
       assert_equal "reverted", content[3]
       assert_equal "THIS WAS ALL LOWER CASE", content[5]
+      assert_equal "false", content[7]
+      assert_equal "1.0", content[9]
+      assert_equal "12", content[11]
+      assert_equal "100000", content[13]
+
+      assert_equal "http://www.w3.org/2001/XMLSchema#boolean", Jekyll::JekyllRdf::Types::XsdBoolean.to_s
+      assert_equal "http://www.w3.org/2001/XMLSchema#decimal", Jekyll::JekyllRdf::Types::XsdDecimal.to_s
+      assert_equal "http://www.w3.org/2001/XMLSchema#integer", Jekyll::JekyllRdf::Types::XsdInteger.to_s
+      assert_equal "http://www.w3.org/2001/XMLSchema#double", Jekyll::JekyllRdf::Types::XsdDouble.to_s
     end
   end
 end

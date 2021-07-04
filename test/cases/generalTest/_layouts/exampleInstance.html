@@ -1,8 +1,21 @@
 ---
-layout: default
 rdf_prefix_path: _data/Prefixes.pref
 ---
-<div class="instance">
-  <h6> This page is mapped to: </h6>
-  {{page.rdf}}
-</div>
+<!DOCTYPE html>
+  <html>
+    <head></head>
+    <body>
+      <div>
+        <h6> This page is mapped to: </h6> <br/>
+        {{ page.rdf }} <br/>
+        <h6> Statements </h6> <br/>
+        {%- for statement in page.rdf.statements -%}
+        {{ statement.subject }}--{{ statement.predicate }}--{{ statement.object }} <br/>
+        {%- endfor -%}
+        {%- assign lit = "eg:subject" | rdf_property: "eg:resource" -%}
+        {{ lit }}<br/>
+        {%- assign liter = lit.literal -%}
+        {{ liter }}<br/>
+      </div>
+    </body>
+  </html>

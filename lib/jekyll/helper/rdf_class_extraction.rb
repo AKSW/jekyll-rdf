@@ -57,12 +57,11 @@ module Jekyll
               min_template_lock = lock - 1
               min_class = class_resource
             end
-
             class_resource.find_direct_superclasses.each{ |uri|
               @classResources[uri] ||= Jekyll::JekyllRdf::Drops::RdfResourceClass.new(RDF::URI(uri))
               if(!@classResources[uri].template.nil?) # do not search in paths you previously found
                 if @classResources[uri].base
-                  if(!min_class.nil? && min_template_lock == lock)    #min_class could contain a previously found class with equal distance
+                  if(!min_class.nil? &&( min_template_lock == lock || (min_template_lock == -1 && lock == 0)))    #min_class could contain a previously found class with equal distance
                     alternatives.push @classResources[uri] unless min_class.eql? @classResources[uri]
                   else
                     min_template_lock = lock
@@ -98,7 +97,8 @@ module Jekyll
         #
         def extract_template class_resource, hash_str
           class_resource.propagate_template(class_resource.distance)
-          return (@template_cache[hash_str] = class_resource.get_path_root.template)
+          return (@template_cache[hash_str] = class_resource.get_path_root.template) unless(class_resource.get_path_root.template.nil?) #toDo: remove the unless-part + the default under it in another pr
+          return class_resource.template                          #toDo find_highlevel_inheritance: "@classResources[uri].path = resource" causes get_path_root to go to far or propagate_template does not work correctly?
         end
 
         ##
@@ -107,17 +107,18 @@ module Jekyll
         # +resource+ is the original input of request_class_template.
         #
         def find_highlevel_inheritance current_best, class_list, resource   #check at the end of the search for direct inheritance on highest level
-          class_list.each{|resource|
+          all_solutions = class_list.dup.push(current_best)
+          all_solutions.each{|resource|
             resource.find_direct_superclasses.each{|uri|
               @classResources[uri] ||= Jekyll::JekyllRdf::Drops::RdfResourceClass.new(RDF::URI(uri))
               @classResources[uri].path = resource
             } if resource.base
           }
           # this is valnuable to cyclic inheritance
-          while(class_list.include?(current_best.path))
-            slice = class_list.index(current_best)
+          while(all_solutions.include?(current_best.path))
+            slice = all_solutions.index(current_best)
             # parent alternatives are no real alternatives
-            class_list.slice!(slice) unless slice.nil?
+            all_solutions.slice!(slice) unless slice.nil?
             current_best = current_best.path
           end
           return consistence_templates(current_best, class_list, resource) unless class_list.empty?

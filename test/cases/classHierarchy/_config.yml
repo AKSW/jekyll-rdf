@@ -4,9 +4,12 @@ plugins:
 - jekyll-rdf
 jekyll_rdf:
   path: "_data/knowledge-base.ttl"
-  restriction: "SELECT ?resourceUri WHERE {?resourceUri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?o}"
+  restriction: "SELECT ?resourceUri WHERE {?resourceUri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://jekyll.com/jekyll-rdf/render>}"
   class_template_mappings:
     "http://animals.org/classification/landBorn": "landBorn"
     "http://animals.org/classification/layingEggs": "layingEggs"
     "http://animals.org/classification/foodFromWater": "foodFromWater"
     "http://animals.org/classification/breathingAir": "breathingAir"
+    "http://animals.org/classification/PseudoClass31": "PseudoClass03"
+    "http://animals.org/classification/PseudoClass32": "PseudoClass30"
+    "http://animals.org/classification/TestClass" : "PseudoClass03"

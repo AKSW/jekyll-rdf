@@ -49,5 +49,15 @@ class TestGeneral < Test::Unit::TestCase
       assert "<h6>Prefix rdfs:Container</h6>".eql?(content[4]), "Headline should be <h6>Prefix rdf:type</h6>\nIt was: #{content[4]}"
       assert "http://www.w3.org/2000/01/rdf-schema#Container".eql?(content[5]), "This line should be >>>http://www.w3.org/2000/01/rdf-schema#Container<<< \nIt was :#{content[5]}"
     end
+
+    should "render statements" do
+      file = File.read(File.join(@source, "_site/resource.html"))
+      content = file[/\<div\>(.|\s)*\<\/div>/][5..-7].strip.split("<br/>").map do |entry|
+        entry.strip
+      end
+      assert (content.include? "http://example.org/instance/resource--http://example.org/instance/predicate--http://example.org/instance/object"), "statement http://example.org/instance/resource--http://example.org/instance/predicate--http://example.org/instance/object was not rendered"
+      assert (content.include? "http://example.org/instance/subject--http://example.org/instance/resource--label"), "statement http://example.org/instance/subject--http://example.org/instance/resource--label was not rendered"
+      assert (content.include? "http://example.org/instance/subject--http://example.org/instance/predicate--http://example.org/instance/resource"), "statement http://example.org/instance/subject--http://example.org/instance/predicate--http://example.org/instance/resource was not rendered"
+    end
   end
 end
