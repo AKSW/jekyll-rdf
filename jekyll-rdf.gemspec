@@ -15,9 +15,8 @@ Gem::Specification.new do |s|
   s.files       = Dir['lib/**/*.rb']
   s.homepage    = 'https://github.com/AKSW/jekyll-rdf'
   s.license     = 'MIT'
-  s.add_runtime_dependency 'net-http-persistent',  '~> 2.9'        # https://github.com/AKSW/jekyll-rdf/issues/197
-  s.add_runtime_dependency 'linkeddata',           '~> 2.0'
-  s.add_runtime_dependency 'sparql-client',        '~> 3.0', '>= 3.0.1'
+  s.add_runtime_dependency 'linkeddata',           '~> 3.2', '>= 3.2.0'
+  s.add_runtime_dependency 'sparql-client',        '~> 3.2', '>= 3.2.0'
   s.add_runtime_dependency 'jekyll',               '>= 3.1'
   s.add_development_dependency 'rake',             '~> 10.4'
   s.add_development_dependency 'rest-client',      '~> 2.0', '>= 2.0.1'
