@@ -274,7 +274,7 @@ module Jekyll #:nodoc:
             @filename = path
           else
             @filedir = path[0..last_slash]
-            @filename = path[(last_slash +1)..-1]
+            @filename = path[(last_slash + 1)..-1]
           end
         end
 

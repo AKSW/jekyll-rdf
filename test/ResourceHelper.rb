@@ -33,7 +33,7 @@ class ResourceHelper
   end
 
   def primitve_site_bad_config
-    site = create_fake_site()
+    create_fake_site()
   end
 
   def resource_with_prefixes_config(uri, prefixHash)
@@ -99,7 +99,7 @@ class ResourceHelper
 
   def attach_site(resource, site)
     if(!resource.respond_to?(:site))
-      def resource.site= (obj)
+      def resource.site=(obj)
         @site = obj
       end
       def resource.site
@@ -111,7 +111,7 @@ class ResourceHelper
 
   def attach_page(resource, page)
     if(!resource.respond_to?(:page))
-      def resource.page= (obj)
+      def resource.page=(obj)
         @page = obj
       end
       def resource.page
@@ -142,7 +142,7 @@ class ResourceHelper
       return @data
     end
 
-    def fake_page.id= (id)
+    def fake_page.id=(id)
       @type = :page
       @id = id
     end
@@ -198,7 +198,7 @@ class ResourceHelper
       return @data
     end
 
-    def fake_site.id= (id)
+    def fake_site.id=(id)
       @type = :site
       @id = id
     end
@@ -222,7 +222,7 @@ class ResourceHelper
     return fake_site
   end
 
-  def create_config_language (lang)
+  def create_config_language(lang)
     config = {
       'jekyll_rdf' => {
         'language' => 'en'
@@ -266,7 +266,7 @@ class ResourceHelper
   end
 
   def obj_id
-    @obj_id = @obj_id*1 +1
+    @obj_id = @obj_id * 1 + 1
     return (@obj_id - 1)
   end
 end

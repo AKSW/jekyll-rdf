@@ -49,7 +49,7 @@ module Jekyll
         ##
         # Function stub with no functionality. Its purpose is to keep RdfResource compatible.
         #
-        def add_necessities (site, page)
+        def add_necessities(site, page)
           return self
         end
 

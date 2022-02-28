@@ -32,10 +32,7 @@ Probably you already using [Bundler](https://bundler.io/) and there is a [`Gemfi
 Add Jekyll-RDF to the plugins section:
 
 ```
-group :jekyll_plugins do
-    gem "jekyll-rdf", '~> 3.1.0'
-    …
-end
+gem "jekyll-rdf", "~> 3.1"
 ```
 
 Replace the version string with the currently available stable release as listed on [rubygems.org](https://rubygems.org/gems/jekyll-rdf).

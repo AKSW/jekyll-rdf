@@ -6,7 +6,6 @@ class TestPrefixes < Test::Unit::TestCase
     should "check that the prefix search doesnot fail of an undefined layout is specified" do
       setup_jekyll File.dirname(__FILE__)
 
-      content = []
       blogfile = File.read(File.join(@source, "_site/2019/02/12/Blogpost.html"))
       page = File.read(File.join(@source, "_site/blog.html"))
 
