@@ -2,6 +2,8 @@
 *.rbc
 *.swp
 .sass-cache/
+.jekyll-cache/
+.vendor/
 /.config
 /coverage/
 /InstalledFiles

@@ -67,7 +67,7 @@ module Jekyll #:nodoc:
           return if @path.nil?
           return unless @path.template.nil?
           @path.template = @template
-          @path.propagate_template(distance +1)
+          @path.propagate_template(distance + 1)
         end
 
         ##

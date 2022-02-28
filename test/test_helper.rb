@@ -1,4 +1,3 @@
-require 'jekyll'
 require 'test-unit'
 require 'shoulda-context'
 require 'rspec/expectations'
