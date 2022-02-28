@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.2.0] - 2022-02-28
+### Added
+- Support for Ruby 3
+- New `resource.rendered` attribute to check if a page is rendered in the present site for this resource.
+
+### Changed
+- Repository moved from https://github.com/white-gecko/jekyll-rdf/ to https://github.com/AKSW/jekyll-rdf/
+- Add possibility to specify the default graph on a SPARQL endpoint
+- Update class-template selection to be straightforward
+- Update dependencies
+- Minor code cleanup
+- Some updates in the test/build system
+- Remove some warnings
+
 ## [3.1.0] - 2018-11-27
 ### Added
 - Allow building sites from a (remote) SPARQL endpoint by setting `remote:\n endpoint: <endpointuri>` in the `_config.yml`. (Currently only querying the default default-graph ;-). Specifying the default graph, with `FROM` resp. `default-graph-uri` will come in the future, https://github.com/white-gecko/jekyll-rdf/pull/220.)

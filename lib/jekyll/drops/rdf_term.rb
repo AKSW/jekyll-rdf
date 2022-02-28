@@ -49,7 +49,7 @@ module Jekyll
         ##
         # Function stub with no functionality. Its purpose is to keep RdfResource compatible.
         #
-        def add_necessities (site, page)
+        def add_necessities(site, page)
           return self
         end
 
@@ -90,7 +90,7 @@ module Jekyll
         def self.build_term_drop(term, site, covered)
           case term
           when RDF::URI, RDF::Node
-            return RdfResource.new(term, site, nil, covered)
+            return Jekyll::JekyllRdf::Helper::RdfHelper.resources(term)
           when RDF::Literal
             return RdfLiteral.new(term)
           else

@@ -45,17 +45,12 @@ module Jekyll #:nodoc:
         ##
         #
         #
-        attr_reader :covered
-
-        ##
-        #
-        #
         attr_accessor :subResources
 
         ##
         #
         #
-        def initialize(term, site = nil, page = nil, covered = false)
+        def initialize(term, site = nil, page = nil)
           super(term)
           if(site.is_a?(Jekyll::Site))
             @site = site
@@ -64,7 +59,6 @@ module Jekyll #:nodoc:
             @page = page
           end
           @subResources = {}
-          @covered = covered
           @iri = term.to_s
           @blank = false
           begin
@@ -85,6 +79,20 @@ module Jekyll #:nodoc:
 
         def ready?
           return (@site.is_a?(Jekyll::Site)||@page.is_a?(Jekyll::Page))
+        end
+
+        ##
+        # Returns true if the resource base containes this resource
+        #
+        def covered
+          return @covered unless @covered.nil?
+          ask_exist = "ASK WHERE {{#{term.to_ntriples} ?p ?o}UNION{?s #{term.to_ntriples} ?o}UNION{?s ?p #{term.to_ntriples}}} "
+          @covered = Jekyll::JekyllRdf::Helper::RdfHelper::sparql.query(ask_exist)
+          if(@covered.instance_of? RDF::Literal::Boolean)
+            @covered = @covered.true?
+          else
+            @covered = false || @covered   #take care of compatibility with virtuoso
+          end
         end
 
         ##
@@ -146,18 +154,19 @@ module Jekyll #:nodoc:
         # Return the URL of the page representing this RdfResource
         #
         def page_url
-          return @page_url unless @page_url.nil?
+          return @page_url.dup unless @page_url.nil?
           generate_file_name()
-          @page_url
+          #duplicate so outside sources do not edit this property
+          @page_url.dup
         end
 
         ##
         # Return the path to the page representing this RdfResource
         #
         def render_path
-          return @render_path unless @page_url.nil?
+          return @render_path.dup unless @page_url.nil?
           generate_file_name()
-          @render_path
+          @render_path.dup
         end
 
         def iri
@@ -216,6 +225,17 @@ module Jekyll #:nodoc:
           return "#<RdfResource:0x#{"0"*(14 - obj_id.length)}#{obj_id} @iri=#{iri} @subResources=[#{subResources.map { |x| x.inspect}.join(", ")}]>"
         end
 
+        ##
+        # Returns a true if this resource has a Jekyll::Page representation.
+        #
+        def rendered?
+          return @rendered unless @rendered.nil?
+          @rendered = Jekyll::JekyllRdf::Helper::RdfHelper.site.pages.any?{|page|
+            (filedir.eql? page.dir) && (filename.eql? page.name)
+          }
+          return @rendered
+        end
+
         #checks if a query solution contains a language or type tag and returns those in a hash
         private
         def check_solution(solution)
@@ -254,7 +274,7 @@ module Jekyll #:nodoc:
             @filename = path
           else
             @filedir = path[0..last_slash]
-            @filename = path[(last_slash +1)..-1]
+            @filename = path[(last_slash + 1)..-1]
           end
         end
 

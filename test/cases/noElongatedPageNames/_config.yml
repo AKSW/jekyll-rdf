@@ -1,0 +1,10 @@
+baseurl: "/instance" # the subpath of your site, e.g. /blog
+url: "http://example.org/" # the base hostname & protocol for your site
+# Build settings
+markdown: kramdown
+plugins:
+- jekyll-rdf
+jekyll_rdf:
+  path: "_data/knowledge-base.ttl"
+  restriction: "SELECT ?resourceUri WHERE {?resourceUri ?p <http://example.org/rendered>}"
+

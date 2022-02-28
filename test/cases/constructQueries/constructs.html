@@ -1,0 +1,23 @@
+---
+---
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>A demonstration of Construct queries</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        {%- assign cquery = "CONSTRUCT {?x <http://contruction.orb/construct> <http://construction.org/constructed>} where {?x <http://example.org/instance/construct> <http://example.org/instance/goConstruct>}" -%}
+        {%- assign test = cquery | sparql_query -%}
+        <div>
+            {{ test }}
+            <br/>
+            {%- assign nquads = test.to_nquads -%}
+            {{ nquads }}
+            <br/>
+            {%- assign ntriples = test.to_ntriples -%}
+            {{ ntriples }}
+        </div>
+    </body>
+</html>

@@ -23,38 +23,34 @@
 # SOFTWARE.
 #
 
-module Jekyll
-  module JekyllRdf
-    module ResolvePrefixes
-      private
-      def rdf_resolve_prefix(predicate)
-        if(predicate[0] == "<" && predicate[-1] == ">")
-          # iri
-          return predicate
+module Jekyll #:nodoc:
+  module JekyllRdf #:nodoc:
+    module Drops #:nodoc:
+      class RdfGraph < Liquid::Drop
+        attr_reader :graph
+
+        def initialize(graph)
+          @graph = graph
         end
-        # qname
-        arr = predicate.split(":", 2)
-        if((arr[1].include? (":")) || (arr[1][0..1].eql?("//")))
-          raise UnMarkedUri.new(predicate, Jekyll::JekyllRdf::Helper::RdfHelper::page.data['template']) #TODO .data['template'] is only defined on RdfPages
+
+        def to_s
+          to_nquads
         end
-        if(!Jekyll::JekyllRdf::Helper::RdfHelper::prefixes["rdf_prefixes"].nil?)
-          if(!Jekyll::JekyllRdf::Helper::RdfHelper::prefixes["rdf_prefix_map"][arr[0]].nil?)
-            return "<#{arr[1].prepend(Jekyll::JekyllRdf::Helper::RdfHelper::prefixes["rdf_prefix_map"][arr[0]])}>"
-          else
-            raise NoPrefixMapped.new(predicate, Jekyll::JekyllRdf::Helper::RdfHelper::page.data['template'], arr[0]) #TODO .data['template'] is only defined on RdfPages
-          end
-        else
-          raise NoPrefixesDefined.new(predicate, Jekyll::JekyllRdf::Helper::RdfHelper::page.data['template']) #TODO .data['template'] is only defined on RdfPages
+
+        def to_nquads
+          result = @graph.statements.map{|state|
+            state.to_nquads
+          }.join("")
+          return result
+        end
+
+        def to_ntriples
+          result = @graph.statements.map{|state|
+            state.to_ntriples
+          }.join("")
+          return result
         end
       end
-    end
-  end
-end
-
-module Jekyll
-  module JekyllRdf
-    module Filter
-      include Jekyll::JekyllRdf::ResolvePrefixes
     end
   end
 end

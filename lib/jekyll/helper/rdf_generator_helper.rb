@@ -3,7 +3,7 @@ module Jekyll
     module Helper
       module RdfGeneratorHelper
         private
-        def prepare_pages (site, mapper)
+        def prepare_pages(site, mapper)
           Jekyll::Page.prepend Jekyll::JekyllRdf::Helper::RdfPageHelper
           @pageResources.each{|uri, entry|
             resource = entry.delete('./')
@@ -16,11 +16,11 @@ module Jekyll
           }
         end
 
-        def parse_resources (resources)
+        def parse_resources(resources)
           @pageResources={};
           @blanknodes=[]
           resources.each do |uri|
-            resource = Jekyll::JekyllRdf::Drops::RdfResource.new(uri, nil, nil, true)
+            resource = Jekyll::JekyllRdf::Helper::RdfHelper.resources(uri)
             if(uri.instance_of? RDF::URI)
               uriString = uri.to_s
               if((uriString.include? "#") && (uriString.index("#") < (uriString.length - 1)))   #sorting in uris with a #
@@ -41,14 +41,14 @@ module Jekyll
           end
           # give parents to orphaned resources
           @pageResources.each_key{|key|
-            @pageResources[key]['./'] = Jekyll::JekyllRdf::Drops::RdfResource.new(RDF::URI(key)) if @pageResources[key]['./'].nil?
+            @pageResources[key]['./'] = Jekyll::JekyllRdf::Helper::RdfHelper.resources(key) if @pageResources[key]['./'].nil?
           }
         end
 
-        def load_config (site)
+        def load_config(site)
           begin
             @config = site.config.fetch('jekyll_rdf')
-          rescue KeyError => e
+          rescue KeyError
             Jekyll.logger.error("You've included Jekyll-RDF, but it is not configured. Aborting the jekyll-rdf plugin.")
             return false
           end

@@ -31,58 +31,68 @@ module Jekyll #:nodoc:
       # Represents an RDF resource class to the Liquid template engine
       #
       class RdfResourceClass < RdfResource
-        @subClasses = []
-        @lock = -1
-        @subClassHierarchyValue = 0
         attr_accessor :lock
+        attr_reader :distance #distance to next class with template
         attr_accessor :template
-        attr_accessor :alternativeTemplates
-        attr_accessor :subClasses
-        attr_accessor :subClassHierarchyValue
-        attr_reader :sparql
+        attr_accessor :path
+        attr_accessor :base       # important for template mapping
+                                  # true if _config.yml assigned this class a template
 
-        def initialize(term, sparql)
+        def initialize(term, base = false)
           super(term)
-          @subClasses = []
+          @base = base
           @lock = -1
-          @subClassHierarchyValue = 0
-          @alternativeTemplates = []
-          @sparql = sparql
+          @lockNumber = 0
+          @distance = 0
         end
 
-        def multiple_templates?
-          !@alternativeTemplates.empty?
-        end
-
-        def find_direct_subclasses
-          query = "SELECT ?s WHERE{ ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> #{@term.to_ntriples}}"
-          selection = @sparql.query(query).map{ |solution| solution.s.to_s}
+        ##
+        # Returns all classes from which +term+ directly inherited
+        #
+        def find_direct_superclasses
+          return @superclasses unless @superclasses.nil?
+          query = "SELECT ?s WHERE{ #{@term.to_ntriples} <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?s }"
+          selection = Jekyll::JekyllRdf::Helper::RdfHelper::sparql.
+            query(query).map{ |solution| solution.s.to_s}
+          @superclasses = selection
           return selection
         end
 
-        def add_subclass(resource)
-          @subClasses << resource
+        ##
+        # Propagate the current template to the parent of the breadth-first search
+        # in RdfClassExtraction.request_class_template.
+        #
+        def propagate_template(distance)
+          @distance = distance
+          return if @path.nil?
+          return unless @path.template.nil?
+          @path.template = @template
+          @path.propagate_template(distance + 1)
         end
 
-        def propagate_template(template, lock)
-          if(@lock>lock||@lock==-1)
-            @lock=lock
-            @template=template
-            @alternativeTemplates.clear()
-            subClasses.each{|sub| sub.propagate_template(template ,lock+1)}
-          elsif(@lock==lock)
-            @alternativeTemplates.push(template)
-            subClasses.each{|sub| sub.propagate_template(template ,lock+1)}
-          end
+        ##
+        # Returns the beginning of the path leading to the found template
+        #
+        def get_path_root
+          return self if @path.nil?
+          @path.get_path_root
         end
 
-        def traverse_hierarchy_value(predecessorHierarchyValue)
-          if(@subClassHierarchyValue + 1 >= predecessorHierarchyValue)  #avoid loops
-            @subClassHierarchyValue += 1
-            subClasses.each{|sub| sub.traverse_hierarchy_value(@subClassHierarchyValue)}
+        ##
+        # Checks if this instance was already added to the breadth-first search
+        # in RdfClassExtraction.request_class_template.
+        #
+        def add? lock_number
+          if @lock_number != lock_number
+            # used to recognize different searchpasses of request_class_template
+            @lock_number = lock_number
+            @lock = -1
+            true
+          else
+            false
           end
         end
-      end
+      end #RdfResourceClass
     end
   end
 end
