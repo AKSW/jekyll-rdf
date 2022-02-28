@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [3.1.1] - ???
+## [3.1.2] - ???
 ### changed
 - Repository moved from https://github.com/white-gecko/jekyll-rdf/ to https://github.com/AKSW/jekyll-rdf/
 - Add possibility to specify the default graph on a SPARQL endpoint
@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Minor code cleanup
 - New `resource.rendered` attribute to check if a page is rendered in the present site for this resource.
 - Update class-template selection to be straightforward
+- Update dependencies
+- Remove some warnings
+- Works with ruby 3
 
 ## [3.1.0] - 2018-11-27
 ### Added
