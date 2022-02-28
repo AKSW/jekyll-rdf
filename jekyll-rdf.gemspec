@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
   s.add_runtime_dependency 'linkeddata',           '~> 3.2', '>= 3.2.0'
   s.add_runtime_dependency 'sparql-client',        '~> 3.2', '>= 3.2.0'
-  s.add_runtime_dependency 'jekyll',               '>= 3.1'
+  s.add_runtime_dependency 'jekyll',               '>= 4.2', '>= 4.2.1'
   s.add_development_dependency 'rake',             '~> 13.0'
   s.add_development_dependency 'rest-client',      '~> 2.0', '>= 2.0.1'
   s.add_development_dependency 'coveralls',        '~> 0.8'
@@ -26,6 +26,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec',            '~> 3.0'
   s.add_development_dependency 'pry-byebug',       '~> 3.4'
   s.add_development_dependency 'rdoc',             '~> 6.2', '>= 6.2.1'
-  s.add_development_dependency 'jekyll-theme-jod', '~> 0.1.5'
+  #s.add_development_dependency 'jekyll-theme-jod', '~> 0.1.5'
   s.add_development_dependency 'kramdown-parser-gfm', '~> 1.1'
 end
