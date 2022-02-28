@@ -266,7 +266,7 @@ class ResourceHelper
   end
 
   def obj_id
-    @obj_id = @obj_id*1 +1
+    @obj_id = @obj_id * 1 + 1
     return (@obj_id - 1)
   end
 end
