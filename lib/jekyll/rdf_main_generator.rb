@@ -58,7 +58,7 @@ module Jekyll
         if @config['remote']['default_graph'].nil?
           sparql = SPARQL::Client.new(graph)
         else
-          sparql = SPARQL::Client.new(graph, { :graph => @config['remote']['default_graph'] })
+          sparql = SPARQL::Client.new(graph, graph: @config['remote']['default_graph'])
         end
       elsif(!@config['path'].nil?)
         sparql = SPARQL::Client.new(RDF::Graph.load( File.join( site.config['source'], @config['path'])))
