@@ -48,7 +48,7 @@ module Jekyll
         def load_config (site)
           begin
             @config = site.config.fetch('jekyll_rdf')
-          rescue KeyError => e
+          rescue KeyError
             Jekyll.logger.error("You've included Jekyll-RDF, but it is not configured. Aborting the jekyll-rdf plugin.")
             return false
           end

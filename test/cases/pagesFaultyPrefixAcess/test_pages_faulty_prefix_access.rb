@@ -8,7 +8,7 @@ class TestPagesFaultyPrefixAccess < Test::Unit::TestCase
       notFound = false
       begin
         setup_site_jekyll File.dirname(__FILE__)
-      rescue Errno::ENOENT => ex
+      rescue Errno::ENOENT
         notFound = true
       end
       assert notFound, "Faulty.pref should not have been found since it doesn't exist."
