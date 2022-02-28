@@ -3,7 +3,7 @@ module Jekyll
     module Helper
       module RdfGeneratorHelper
         private
-        def prepare_pages (site, mapper)
+        def prepare_pages(site, mapper)
           Jekyll::Page.prepend Jekyll::JekyllRdf::Helper::RdfPageHelper
           @pageResources.each{|uri, entry|
             resource = entry.delete('./')
@@ -16,7 +16,7 @@ module Jekyll
           }
         end
 
-        def parse_resources (resources)
+        def parse_resources(resources)
           @pageResources={};
           @blanknodes=[]
           resources.each do |uri|
@@ -45,7 +45,7 @@ module Jekyll
           }
         end
 
-        def load_config (site)
+        def load_config(site)
           begin
             @config = site.config.fetch('jekyll_rdf')
           rescue KeyError
