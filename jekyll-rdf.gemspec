@@ -27,6 +27,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec',            '~> 3.0'
   s.add_development_dependency 'pry-byebug',       '~> 3.4'
   s.add_development_dependency 'rdoc',             '~> 6.2', '>= 6.2.1'
-  #s.add_development_dependency 'jekyll-theme-jod', '~> 0.1.5'
+  s.add_development_dependency 'jekyll-theme-jod', '~> 0.2'
   s.add_development_dependency 'kramdown-parser-gfm', '~> 1.1'
 end
