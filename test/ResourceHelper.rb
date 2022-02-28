@@ -33,7 +33,7 @@ class ResourceHelper
   end
 
   def primitve_site_bad_config
-    site = create_fake_site()
+    create_fake_site()
   end
 
   def resource_with_prefixes_config(uri, prefixHash)
