@@ -1,0 +1,13 @@
+@prefix eg: <http://example.org/instance/> .
+@prefix egs: <http://example.org/instance/super/> .
+
+eg:resource1 eg:predicate eg:rendered .
+eg:resource2 eg:predicate eg:rendered .
+eg:resource3 eg:predicate eg:rendered .
+
+eg:resource4 eg:predicate eg:notRendered .
+eg:resource5 eg:predicate eg:notRendered .
+eg:resource6 eg:predicate eg:notRendered .
+
+egs:resource7 eg:predicate eg:rendered .
+egs:resource8 eg:predicate eg:notRendered .

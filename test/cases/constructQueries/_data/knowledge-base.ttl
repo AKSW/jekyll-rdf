@@ -1,0 +1,9 @@
+@prefix eg: <http://example.org/instance/> .
+
+eg:resource1 eg:construct eg:goConstruct .
+eg:resource2 eg:construct eg:goConstruct .
+eg:resource3 eg:construct eg:goConstruct .
+
+eg:resource4 eg:construct eg:noConstruct .
+eg:resource5 eg:construct eg:noConstruct .
+eg:resource6 eg:construct eg:noConstruct .

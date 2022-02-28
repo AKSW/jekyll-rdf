@@ -22,14 +22,41 @@
 # SOFTWARE.
 #
 
+Jekyll::Hooks.register :site, :after_reset do |site|
+  Jekyll::JekyllRdf::Helper::RdfHelper::reinitialize
+end
+
+Jekyll::Hooks.register :documents, :post_init do |page|
+  if(page.data["rdf_prefix_path"].nil?)
+    page.data["rdf_prefix_set?"] = false
+  else
+    page.data["rdf_prefix_set?"] = true
+  end
+end
+
+Jekyll::Hooks.register :pages, :post_init do |page|
+  if(page.data["rdf_prefix_path"].nil?)
+    page.data["rdf_prefix_set?"] = false
+  else
+    page.data["rdf_prefix_set?"] = true
+  end
+end
+
+Jekyll::Hooks.register :posts, :post_init do |page|
+  if(page.data["rdf_prefix_path"].nil?)
+    page.data["rdf_prefix_set?"] = false
+  else
+    page.data["rdf_prefix_set?"] = true
+  end
+end
+
 
 Jekyll::Hooks.register :pages, :pre_render do |page, payload|
   unless(page.data['rdf'].nil?)
     payload["content"] = ""
   end
-  if(page.data["rdf_prefixes"].nil? && !page.data["rdf_prefix_path"].nil?)
-    Jekyll::JekyllRdf::Helper::RdfHelper.load_prefixes(File.join(page.instance_variable_get(:@base), page.data["rdf_prefix_path"]), page.data)
-  end
+  include Jekyll::JekyllRdf::Helper::RdfHookHelper
+  backload_prefixes page, payload if page.data["rdf_prefixes"].nil?
   Jekyll::JekyllRdf::Helper::RdfHelper::page = page
 end
 
@@ -38,5 +65,7 @@ Jekyll::Hooks.register :documents, :pre_render do |page, payload|
 end
 
 Jekyll::Hooks.register :posts, :pre_render do |page, payload|
+  include Jekyll::JekyllRdf::Helper::RdfHookHelper
+  backload_prefixes page, payload
   Jekyll::JekyllRdf::Helper::RdfHelper::page = page
 end

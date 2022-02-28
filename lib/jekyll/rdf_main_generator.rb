@@ -33,7 +33,7 @@ module Jekyll
     safe true
     priority :highest
     include Jekyll::JekyllRdf::Helper::RdfGeneratorHelper
-    include Jekyll::JekyllRdf::ResolvePrefixes
+    include Jekyll::JekyllRdf::Helper::PrefixSolver
 
     ##
     # #generate performs the enrichment of a Jekyll::Site with rdf triples
@@ -58,7 +58,7 @@ module Jekyll
         if @config['remote']['default_graph'].nil?
           sparql = SPARQL::Client.new(graph)
         else
-          sparql = SPARQL::Client.new(graph, { :graph => @config['remote']['default_graph'] })
+          sparql = SPARQL::Client.new(graph, graph: @config['remote']['default_graph'])
         end
       elsif(!@config['path'].nil?)
         sparql = SPARQL::Client.new(RDF::Graph.load( File.join( site.config['source'], @config['path'])))
@@ -75,7 +75,7 @@ module Jekyll
       resources = []
       resources = resources + extract_resources(@config['restriction'], @config['include_blank'], sparql) unless @config['restriction'].nil?
       resources = resources + extract_list_resources(File.join(site.config['source'], @config['restriction_file'])) unless @config['restriction_file'].nil?
-      resources = resources + extract_resources(nil, @config['include_blank'], sparql) if resources.length == 0  # subject + predicate + object should only be extracted if there is neither a restriction or restriction_file
+      resources = resources + extract_resources(nil, @config['include_blank'], sparql) if @config['restriction'].nil? && @config['restriction_file'].nil?  # subject + predicate + object should only be extracted if there is neither a restriction or restriction_file
       resources.uniq! unless @config['restriction'].nil? || @config['restriction_file'].nil?
       site.data['sparql'] = sparql
       site.data['resources'] = []

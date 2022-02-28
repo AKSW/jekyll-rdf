@@ -1,0 +1,22 @@
+---
+---
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>This Resource should be instantiated only once!</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        {%- assign resource1 = "<http://example.org/instance/resource>" | rdf_get -%}
+        {%- assign resource2 = "<http://example.org/instance/resource>" | rdf_get -%}
+        {%- assign resource3 = "<http://example.org/instance/resource>" | rdf_get -%}
+        <div>
+            {{resource1}}
+            <br/>
+            {{resource2}}
+            <br/>
+            {{resource3}}
+        </div>
+    </body>
+</html>

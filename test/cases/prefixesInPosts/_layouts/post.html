@@ -1,0 +1,12 @@
+---
+rdf_prefix_path: _data/Prefixes.pref
+---
+<html>
+<body>
+  {% assign root = "<http://example.org/blog>" | rdf_get %}
+  <h1>{{ root | rdf_property: "dc:title" }}</h1>
+  <div>
+    {{ content }}
+  </div>
+</body>
+</html>

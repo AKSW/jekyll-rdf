@@ -35,27 +35,20 @@ module Jekyll #:nodoc:
         attr_reader :distance #distance to next class with template
         attr_accessor :template
         attr_accessor :path
-        attr_reader :alternativeTemplates
-        attr_reader :subClasses
-        attr_reader :subClassHierarchyValue
         attr_accessor :base       # important for template mapping
                                   # true if _config.yml assigned this class a template
 
         def initialize(term, base = false)
           super(term)
           @base = base
-          @subClasses = []
           @lock = -1
           @lockNumber = 0
-          @subClassHierarchyValue = 0
-          @alternativeTemplates = []
           @distance = 0
         end
 
-        def multiple_templates?
-          !@alternativeTemplates.empty?
-        end
-
+        ##
+        # Returns all classes from which +term+ directly inherited
+        #
         def find_direct_superclasses
           return @superclasses unless @superclasses.nil?
           query = "SELECT ?s WHERE{ #{@term.to_ntriples} <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?s }"
@@ -65,29 +58,34 @@ module Jekyll #:nodoc:
           return selection
         end
 
+        ##
+        # Propagate the current template to the parent of the breadth-first search
+        # in RdfClassExtraction.request_class_template.
+        #
         def propagate_template(distance)
-          return if @path.nil?
           @distance = distance
+          return if @path.nil?
           return unless @path.template.nil?
           @path.template = @template
-          @path.propagate_template(distance +1)
+          @path.propagate_template(distance + 1)
         end
 
+        ##
+        # Returns the beginning of the path leading to the found template
+        #
         def get_path_root
           return self if @path.nil?
           @path.get_path_root
         end
 
-        def traverse_hierarchy_value(predecessorHierarchyValue)
-          if(@subClassHierarchyValue + 1 >= predecessorHierarchyValue)  #avoid loops
-            @subClassHierarchyValue += 1
-            @subClasses.each{|sub| sub.traverse_hierarchy_value(@subClassHierarchyValue)}
-          end
-        end
-
+        ##
+        # Checks if this instance was already added to the breadth-first search
+        # in RdfClassExtraction.request_class_template.
+        #
         def add? lock_number
           if @lock_number != lock_number
-            @lock_number = lock_number      # used to recognize different searchpasses of request_class_template
+            # used to recognize different searchpasses of request_class_template
+            @lock_number = lock_number
             @lock = -1
             true
           else

@@ -33,7 +33,7 @@ module Jekyll
         # loads the prefix data passed in the layout yaml-frontmatter or in _config.yml into page.data["rdf_prefixes"] and page.data["rdf_prefix_map"]
         def load_prefixes(path, prefHolder)
           Jekyll::JekyllRdf::Helper::RdfHelper.load_prefixes(path, prefHolder)
-        rescue Errno::ENOENT => ex
+        rescue Errno::ENOENT
           Jekyll.logger.error("--> context resource: #{@resource}  template: #{@template}") unless self.data["rdf"].nil?
           raise if Jekyll.env.eql? "development"
         end
