@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Arndt"
+  given-names: "Natanael"
+  orcid: "https://orcid.org/0000-0002-8130-8677"
+- family-names: "Zänker"
+  given-names: "Sebastian"
+- family-names: "Sejdiu"
+  given-names: "Gezim"
+  orcid: "https://orcid.org/0000-0002-3441-1372"
+- family-names: "Tramp"
+  given-names: "Sebastian"
+  orcid: "https://orcid.org/0000-0003-4707-2864"
+title: "Jekyll RDF: Template-Based Linked Data Publication with Minimized Effort and Maximum Scalability"
+version: 3.1.0
+doi: 10.1007/978-3-030-19274-7_24
+date-released: 2019-04-26
+url: "https://github.com/AKSW/jekyll-rdf"
