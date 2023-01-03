@@ -398,7 +398,7 @@ The returned object can by any of the kind, resource, literal, or blank node.
 
 **Example (default):**
 ```
-{assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
+{% assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get %}
 {{ resource | rdf_property: '<http://xmlns.com/foaf/0.1/job>' }}
 ```
 **Result:**
@@ -416,7 +416,7 @@ The returned object can by any of the kind, resource, literal, or blank node.
 
 **Example (with language):**
 ```
-{assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
+{% assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get %}
 {{ resource | rdf_property: '<http://xmlns.com/foaf/0.1/job>', 'de' }}
 ```
 **Result:**
@@ -426,7 +426,7 @@ The returned object can by any of the kind, resource, literal, or blank node.
 
 **Example (return as list):**
 ```
-{assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
+{% assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get %}
 {% assign resultset = resource | rdf_property: '<http://xmlns.com/foaf/0.1/job>', nil, true %}
 {% for result in resultset %}
 <li>{{ result }}</li>
@@ -455,7 +455,7 @@ The returned object can by any of the kind, resource, or blank node.
 
 **Examples (default):**
 ```
-{assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
+{% assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get %}
 {{ page.rdf | rdf_inverse_property: '<http://www.ifi.uio.no/INF3580/family#hasFather>' }}
 ```
 **Result:**
@@ -475,7 +475,7 @@ http://www.ifi.uio.no/INF3580/simpsons#Bart
 
 **Example (as list):**
 ```
-{assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get }
+{% assign resource = '<http://www.ifi.uio.no/INF3580/simpsons#Homer>' | rdf_get %}
 {% assign resultset = resource | rdf_property: '<http://www.ifi.uio.no/INF3580/family#hasFather>', true %}
 {% for result in resultset %}
 <li>{{ result }}</li>
