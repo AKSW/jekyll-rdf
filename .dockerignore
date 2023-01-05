@@ -1,4 +1,5 @@
 *
+!docker-resources
 !lib
 !Gemfile
 !jekyll-rdf.gemspec
