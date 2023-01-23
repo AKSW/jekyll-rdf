@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Dockerfile to build docker/podman image
 - Taskfile to build docker image
 - GitHub Action workflow
+- Add GitHub issue templates
 
 ### Changed
 - Switch version handling to `git describe`
