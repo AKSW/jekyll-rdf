@@ -1,10 +1,6 @@
 # coding: utf-8
 VERSION = '3.2.0'
-RELEASE_VERSION = case
-    when ENV['TRAVIS'] && ENV['TRAVIS_BRANCH'].match(/^master$/i) then "#{VERSION}"
-    when ENV['TRAVIS'] && ENV['TRAVIS_BRANCH'].match(/^develop$/i) then "#{VERSION}-#{ENV['TRAVIS_BRANCH']}.#{ENV['TRAVIS_BUILD_NUMBER']}"
-    else "#{VERSION}-local"
-end
+RELEASE_VERSION = `git describe --tags --dirty --always`
 
 Gem::Specification.new do |s|
   s.name        = 'jekyll-rdf'

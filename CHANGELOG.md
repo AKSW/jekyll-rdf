@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unrelease]
+
+### Added
+-
+
+### Changed
+- Switch version handling to `git describe`
+- Depend on Jekyll min 4.2
+
+### Fixed
+- assign syntax in README
+
 ## [3.2.0] - 2022-02-28
 ### Added
 - Support for Ruby 3
