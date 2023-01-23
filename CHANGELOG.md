@@ -15,6 +15,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 -
 
+## [4.0.3] - 2023-01-23
+
+### Fixed
+- Adjust CHANGELOG
+
+## [4.0.2] - 2023-01-23
+
+### Fixed
+- Fix docker image build and push
+
+## [4.0.1] - 2023-01-23
+
+### Fixed
+- Fix docker image build and push
+
 ## [4.0.0] - 2023-01-23
 
 ### Added
