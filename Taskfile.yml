@@ -1,0 +1,17 @@
+version: '3'
+
+env:
+  VERSION:
+    sh: git describe --tags --dirty --always
+
+tasks:
+
+  default:
+    desc: The list of all defined tasks
+    cmds:
+      - task -a
+
+  docker:build:
+    desc: The list of all defined tasks
+    cmds:
+      - docker build --no-cache --build-arg VERSION={{.VERSION}} -t jekyll-rdf:{{.VERSION}} .
