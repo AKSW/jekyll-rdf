@@ -41,6 +41,9 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v3
         with:
+          # according to https://github.com/docker/build-push-action/issues/761#issuecomment-1383822381
+          driver-opts: |
+            image=moby/buildkit:v0.10.6
           push: true
           platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
           build-args: VERSION=${{ steps.ghd.outputs.describe }}
