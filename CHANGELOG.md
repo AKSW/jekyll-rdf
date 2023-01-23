@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unrelease]
 
 ### Added
+-
+
+### Changed
+-
+
+### Fixed
+-
+
+## [4.0.0] - 2023-01-23
+
+### Added
 - Dockerfile to build docker/podman image
 - Taskfile to build docker image
 - GitHub Action workflow
