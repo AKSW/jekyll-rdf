@@ -4,6 +4,7 @@ RUN apt-get update && apt-get -y install build-essential && rm -rf /var/lib/apt/
 WORKDIR jekyll-rdf
 
 ADD . .
+ARG VERSION
 RUN gem build jekyll-rdf.gemspec && \
     gem install jekyll-rdf-*.gem mustache
 

@@ -1,6 +1,8 @@
 # coding: utf-8
-VERSION = '3.2.0'
-RELEASE_VERSION = `git describe --tags --dirty --always`
+RELEASE_VERSION = case
+  when ENV['VERSION'] then ENV['VERSION']
+  else `git describe --tags --dirty --always`
+end
 
 Gem::Specification.new do |s|
   s.name        = 'jekyll-rdf'
