@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unrelease]
 
 ### Added
--
+- Dockerfile to build docker/podman image
 
 ### Changed
 - Switch version handling to `git describe`
