@@ -10,13 +10,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -
 
 ### Changed
+-
+
+### Fixed
+-
+
+## [4.0.4] - 2023-02-21
+
+### Changed
 - Execute `bundle install` in entrypoint
 - Run jekyll with `bundle exec`
 - Interpret the CMD provided in context of `bundle exec`
 - All bundler features can be disabled by setting `NO_BUNDLER` to a non-empty value
-
-### Fixed
--
 
 ## [4.0.3] - 2023-01-23
 
