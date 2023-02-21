@@ -1,9 +1,14 @@
 #!/bin/sh
 
-bundle install
-if [ $# -eq 0 ]
+if [ -z "$NO_BUNDLER" ]
+then
+  bundle install
+  if [ $# -eq 0 ]
   then
-    jekyll build
+    bundle exec jekyll build
   else
-    $@
+    bundle exec $@
+  fi
+else
+  $@
 fi

@@ -24,6 +24,8 @@ The API Documentation is available at [RubyDoc.info](http://www.rubydoc.info/gem
 
 # Installation
 
+**Docker** There is a docker image check out the section [Docker Usage](#docker-usage).
+
 As a prerequisite for *Jekyll RDF* you of course need to install [*Jekyll*](https://jekyllrb.com/).
 Please take a look at the installations instructions at https://jekyllrb.com/docs/installation/.
 
@@ -674,6 +676,38 @@ http://www.ifi.uio.no/INF3580/simpsons#Maggie
 |default_template|Filename of the default RDF-template in _layouts directory|no default|Specifies the template-file you want Jekyll to use to render all RDF resources|```default_template: "rdf_index.html"```|
 |instance_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files for rendering an individual instance|```instance_template_mappings: "http://www.ifi.uio.no/INF3580/simpsons#Abraham": "abraham.html"```|
 |class_template_mappings|Target URI as String : filename of the template as String|no default|Maps given URIs to template-files for rendering all instances of that class|```class_template_mappings: "http://xmlns.com/foaf/0.1/Person": "person.html"```|
+
+# Docker Usage
+
+There is also a [docker/podman image](https://github.com/AKSW/jekyll-rdf/pkgs/container/jekyll-rdf) that has jekyll and jekyll-rdf pre-installed.
+You can get it with:
+
+```
+docker pull ghcr.io/aksw/jekyll-rdf:latest
+```
+
+and run it e.g. with
+
+```
+docker run --rm --workdir /page -v $PWD:/page ghcr.io/aksw/jekyll-rdf:latest
+```
+
+or customize the jekyll execution with
+
+```
+docker run --rm --workdir /page -v $PWD/sources:/page -v $PWD/build/jekyll:/build ghcr.io/aksw/jekyll-rdf:latest jekyll build -d /build
+```
+
+The entrypoint of the image executes `bundle install` first an then runs `bundle exec jekyll build` or `bundle exec <your command>`.
+To keep the installed packages between runs specify the environment variable `BUNDLE_PATH` to a location that persists between runs, e.g. `-e BUNDLE_PATH=.vendor`.
+To disable the whole bundler stuff set `NO_BUNDLER` to a non-empty value, the entrypoint will run your command as it is.
+
+## Docker Variables
+
+| Name          | Default | Description |
+|-|-|-|
+| `BUNDLE_PATH` | *unset* | Set the path where bundler installs the packages. See also the [bundler docs](https://bundler.io/v2.4/man/bundle-config.1.html#LIST-OF-AVAILABLE-KEYS). |
+| `NO_BUNDLER`  | *unset* | Set to a non-empty value to disable all bundler parts in the entrypoint |
 
 # Development
 

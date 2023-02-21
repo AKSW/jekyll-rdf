@@ -22,4 +22,4 @@ RUN apt-get update && apt-get -y install build-essential && rm -rf /var/lib/apt/
 
 WORKDIR /data
 
-CMD /docker-resources/entrypoint.sh
+ENTRYPOINT ["/docker-resources/entrypoint.sh"]
