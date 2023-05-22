@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unrelease]
 
 ### Added
--
+- Install git in the docker iamges
 
 ### Changed
 -
