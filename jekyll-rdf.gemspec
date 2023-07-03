@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'jekyll',               '>= 4.2', '>= 4.2.1'
   s.add_development_dependency 'rake',             '~> 13.0', '>= 13.0.6'
   s.add_development_dependency 'rest-client',      '~> 2.0', '>= 2.0.1'
+  s.add_development_dependency 'simplecov',        '~> 0.22.0'
   s.add_development_dependency 'test-unit',        '~> 3.0'
   s.add_development_dependency 'shoulda-context',  '~> 1.1'
   s.add_development_dependency 'rspec',            '~> 3.0'
