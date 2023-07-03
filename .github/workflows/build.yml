@@ -41,6 +41,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
+            docker.io/aksw/jekyll-rdf
             ghcr.io/aksw/jekyll-rdf
       -
         name: Build and push
