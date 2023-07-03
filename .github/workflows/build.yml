@@ -9,8 +9,52 @@ on:
       - '*'
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ['3.0', '3.1', '3.2']
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - uses: arduino/setup-task@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Show repository information
+        run: task info
+      - name: Run tests
+        run: task test
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
+
+  release:
+    runs-on: ubuntu-latest
+    needs: test
+    env:
+      GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+      - uses: arduino/setup-task@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and release gem
+        run: task gem:build gem:push
+
   docker:
     runs-on: ubuntu-latest
+    needs: test
     steps:
       - name: Git describe
         id: ghd
@@ -18,14 +62,16 @@ jobs:
       - name: Check outputs
         run: |
           echo "describe: ${{ steps.ghd.outputs.describe }}"
-      -
-        name: Set up QEMU
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
-      -
-        name: Set up Docker Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      -
-        name: Login to GitHub Container Registry
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -36,14 +82,11 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
+            docker.io/aksw/jekyll-rdf
             ghcr.io/aksw/jekyll-rdf
-      -
-        name: Build and push
+      - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          # according to https://github.com/docker/build-push-action/issues/761#issuecomment-1383822381
-          driver-opts: |
-            image=moby/buildkit:v0.10.6
           push: true
           platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
           build-args: VERSION=${{ steps.ghd.outputs.describe }}

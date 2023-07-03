@@ -1,8 +1,15 @@
 version: '3'
 
 env:
-  VERSION:
+  BUNDLE_PATH: .vendor
+
+vars:
+  GIT_DESCRIBE:
     sh: git describe --tags --dirty --always
+  GEM_VERSION:
+    sh: ruby -e "if Gem::Version.new(ARGV[0]).prerelease? then puts Gem::Version.new(Gem::Version.new(ARGV[0].split('-')[0]).bump().to_s + '-' + ARGV[0].split('-')[1..].join('.')) else puts Gem::Version.new(ARGV[0]) end" {{.GIT_DESCRIBE}}
+  GEM_NAME: jekyll-rdf
+  DOCKER_IMAGE: aksw/jekyll-rdf
 
 tasks:
 
@@ -11,7 +18,54 @@ tasks:
     cmds:
       - task -a
 
+  info:
+    desc: Output some variables
+    cmds:
+      - |
+        echo "GIT_DESCRIBE: {{.GIT_DESCRIBE}}"
+        echo "GEM_VERSION: {{.GEM_VERSION}}"
+        echo "GEM_NAME: {{.GEM_NAME}}"
+        echo "DOCKER_IMAGE: {{.DOCKER_IMAGE}}"
+
+  install:
+    desc: Install jekyll rdf and its dependencies with bundle
+    cmds:
+      - bundle install
+
+  gem:build:
+    desc: Build the ruby gem
+    cmds:
+      - gem build {{.GEM_NAME}}.gemspec
+
+  gem:push:
+    desc: Push the gem to rubygems.org
+    cmds:
+      - gem push {{.GEM_NAME}}-{{.GEM_VERSION}}.gem
+
   docker:build:
     desc: The list of all defined tasks
     cmds:
-      - docker build --no-cache --build-arg VERSION={{.VERSION}} -t jekyll-rdf:{{.VERSION}} .
+      - docker build --no-cache --build-arg VERSION={{.GEM_VERSION}} -t {{.DOCKER_IMAGE}}:{{.GEM_VERSION}} .
+
+  test:
+    desc: Run the tests
+    deps:
+      - task: test:setup
+    cmds:
+      - bundle exec rake test
+
+  test:setup:
+    desc: Setup the test environment
+    cmds:
+      - task: test:setup:endpoint-container
+      - |
+        cd test/theme-gem
+        bundle install
+      - bundle install
+
+  test:setup:endpoint-container:
+    desc: Start a saprql endpoint for the tests
+    cmds:
+      - docker run --rm -d -p 3030:3030 --name jekyll_rdf_test_endpoint stain/jena-fuseki:4.8.0 ./fuseki-server --mem /remote
+    status:
+      - '[ "$( docker inspect --format "{{`{{.State.Running}}`}}" jekyll_rdf_test_endpoint )" = "true" ]'

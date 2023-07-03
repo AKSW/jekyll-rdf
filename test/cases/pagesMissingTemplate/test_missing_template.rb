@@ -2,7 +2,7 @@ require 'test_helper'
 
 class TestMissingTemplate < Test::Unit::TestCase
   include RdfTestUtility
-  context "load_data form RdfPageHelper" do
+  context "load_data from RdfPageHelper" do
     should "exit page generation if Jekyll did not load its mapped layout" do   #We can't recreate this case with MWE
       TestHelper::setErrOutput
       setup_jekyll File.dirname(__FILE__)
@@ -11,4 +11,3 @@ class TestMissingTemplate < Test::Unit::TestCase
     end
   end
 end
-

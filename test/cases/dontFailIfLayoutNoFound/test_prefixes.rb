@@ -1,9 +1,9 @@
 require 'test_helper'
 
 class TestPrefixes < Test::Unit::TestCase
-  context "load_prefixes form RdfPageHelper" do
+  context "load_prefixes from RdfPrefixHelper" do
     include RdfTestUtility
-    should "check that the prefix search doesnot fail of an undefined layout is specified" do
+    should "check that the prefix search doesnot fail if an undefined layout is specified" do
       setup_jekyll File.dirname(__FILE__)
 
       blogfile = File.read(File.join(@source, "_site/2019/02/12/Blogpost.html"))
