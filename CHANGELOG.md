@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 -
 
+## [4.1.0] - 2023-06-03
+
+### Fixed
+- Support for Ruby 3.1
+- Build system
+
 ## [4.0.4] - 2023-02-21
 
 ### Changed
