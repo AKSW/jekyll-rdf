@@ -44,17 +44,24 @@ tasks:
     cmds:
       - docker build --no-cache --build-arg VERSION={{.VERSION}} -t {{.DOCKER_IMAGE}}:{{.VERSION}} .
 
-  test:setup:
-    desc: Setup the test environment
-    cmds:
-      - docker run -p 3030:3030 -d stain/jena-fuseki:latest ./fuseki-server --mem /remote
-      - |
-        cd test/theme-gem
-        bundle install
-
   test:
     desc: Run the tests
     deps:
       - task: test:setup
     cmds:
       - bundle exec rake test
+
+  test:setup:
+    desc: Setup the test environment
+    cmds:
+      - task: test:setup:endpoint-container
+      - |
+        cd test/theme-gem
+        bundle install
+
+  test:setup:endpoint-container:
+    desc: Start a saprql endpoint for the tests
+    cmds:
+      - docker run --rm -d -p 3030:3030 --name jekyll_rdf_test_endpoint stain/jena-fuseki:latest ./fuseki-server --mem /remote
+    status:
+      - '[ "$( docker inspect --format "{{`{{.State.Running}}`}}" jekyll_rdf_test_endpoint )" = "true" ]'
