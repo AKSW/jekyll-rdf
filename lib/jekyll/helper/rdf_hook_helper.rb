@@ -43,13 +43,10 @@ module Jekyll
               base_path = page.instance_variable_get(:@base_dir)
               base_path ||= payload.site["source"]
             end
-          rescue NoMethodError => ne
-            #just in case the error was caused by something different then a missing template
-            if(ne.message.eql? "undefined method `data' for nil:NilClass")
-              return
-            else
-              raise
-            end
+          rescue MissingTemplate
+            # the case that a template is missing
+            # aka. undefined method `data' for nil:NilClass
+            return
           end
           if(page.data["rdf_prefixes"].nil? && !(prefix_path.nil? || base_path.nil?))
             Jekyll::JekyllRdf::Helper::RdfHelper.load_prefixes(
@@ -70,7 +67,13 @@ module Jekyll
           return nil
         end
 
+        class MissingTemplate < StandardError
+        end
+
         def check_prefix_definition layout
+          if layout.nil?
+            raise MissingTemplate.new "Missing template"
+          end
           unless(layout.data["rdf_prefix_path"].nil?)
             return [layout.instance_variable_get(:@base_dir), layout.data["rdf_prefix_path"]]
           end
