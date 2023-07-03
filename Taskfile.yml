@@ -1,8 +1,13 @@
 version: '3'
 
 env:
+  BUNDLE_PATH: .vendor
+
+vars:
   VERSION:
     sh: git describe --tags --dirty --always
+  GEM_NAME: jekyll-rdf
+  DOCKER_IMAGE: aksw/jekyll-rdf
 
 tasks:
 
@@ -11,7 +16,45 @@ tasks:
     cmds:
       - task -a
 
+  info:
+    desc: Output some variables
+    cmds:
+      - |
+        echo "VERSION: {{.VERSION}}"
+        echo "GEM_NAME: {{.GEM_NAME}}"
+        echo "DOCKER_IMAGE: {{.DOCKER_IMAGE}}"
+
+  install:
+    desc: Install jekyll rdf and its dependencies with bundle
+    cmds:
+      - bundle install
+
+  gem:build:
+    desc: Build the ruby gem
+    cmds:
+      - gem build {{.GEM_NAME}}.gemspec
+
+  gem:push:
+    desc: Push the gem to rubygems.org
+    cmds:
+      - gem push {{.GEM_NAME}}-{{.VERSION}}.gem
+
   docker:build:
     desc: The list of all defined tasks
     cmds:
-      - docker build --no-cache --build-arg VERSION={{.VERSION}} -t jekyll-rdf:{{.VERSION}} .
+      - docker build --no-cache --build-arg VERSION={{.VERSION}} -t {{.DOCKER_IMAGE}}:{{.VERSION}} .
+
+  test:setup:
+    desc: Setup the test environment
+    cmds:
+      - docker run -p 3030:3030 -d stain/jena-fuseki:latest ./fuseki-server --mem /remote
+      - |
+        cd test/theme-gem
+        bundle install
+
+  test:
+    desc: Run the tests
+    deps:
+      - task: test:setup
+    cmds:
+      - bundle exec rake test
