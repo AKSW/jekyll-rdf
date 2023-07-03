@@ -63,6 +63,6 @@ tasks:
   test:setup:endpoint-container:
     desc: Start a saprql endpoint for the tests
     cmds:
-      - docker run --rm -d -p 3030:3030 --name jekyll_rdf_test_endpoint stain/jena-fuseki:latest ./fuseki-server --mem /remote
+      - docker run --rm -d -p 3030:3030 --name jekyll_rdf_test_endpoint stain/jena-fuseki:4.8.0 ./fuseki-server --mem /remote
     status:
       - '[ "$( docker inspect --format "{{`{{.State.Running}}`}}" jekyll_rdf_test_endpoint )" = "true" ]'

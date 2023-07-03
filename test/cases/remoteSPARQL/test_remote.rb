@@ -1,10 +1,12 @@
 require 'test_helper'
 require 'rest_client'
+require 'uri'
 
 class TestGeneral < Test::Unit::TestCase
   include RSpec::Matchers
   include RdfTestUtility
-  RestClient.post('http://localhost:3030/remote/upload', :name_of_file_param => File.new(File.join(File.dirname(__FILE__), "_data/knowledge-base.ttl")))
+  graph_param = URI::encode_www_form("graph" => "http://localhost:3030/remote/data/graph1")
+  RestClient.put("http://localhost:3030/remote/?" + graph_param,  File.read(File.join(File.dirname(__FILE__), "_data/knowledge-base.ttl")), :content_type => "text/turtle;charset=utf-8")
   context "A remote sparql endpoint" do
     should "keep rdf_get and rdf_property usable" do
       setup_jekyll File.dirname(__FILE__)
