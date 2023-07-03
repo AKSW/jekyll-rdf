@@ -2,13 +2,11 @@ require 'test-unit'
 require 'shoulda-context'
 require 'rspec/expectations'
 require 'simplecov'
-require 'coveralls'
 require 'ResourceHelper'
 require 'RdfTestUtility'
 
 SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([
   SimpleCov::Formatter::HTMLFormatter,
-  Coveralls::SimpleCov::Formatter
 ])
 SimpleCov.start do
   add_filter ["/.vendor", "/vendor", "/test"]
