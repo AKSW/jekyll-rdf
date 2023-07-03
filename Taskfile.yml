@@ -58,6 +58,7 @@ tasks:
       - |
         cd test/theme-gem
         bundle install
+      - bundle install
 
   test:setup:endpoint-container:
     desc: Start a saprql endpoint for the tests
