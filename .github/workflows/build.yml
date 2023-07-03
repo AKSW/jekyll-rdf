@@ -29,7 +29,9 @@ jobs:
       - name: Show repository information
         run: task info
       - name: Run tests
-        run: task test
+        run: |
+          docker ps -a
+          task test
       - name: Coveralls
         uses: coverallsapp/github-action@v2
 
