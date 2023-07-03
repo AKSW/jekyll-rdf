@@ -6,6 +6,8 @@ env:
 vars:
   VERSION:
     sh: git describe --tags --dirty --always
+  GEM_VERSION:
+    sh: ruby -e "puts Gem::Version.new(ARGV[0].split('-')[0] + '-' + ARGV[0].split('-')[1..].join('.'))" {{.VERSION}}
   GEM_NAME: jekyll-rdf
   DOCKER_IMAGE: aksw/jekyll-rdf
 
@@ -21,6 +23,7 @@ tasks:
     cmds:
       - |
         echo "VERSION: {{.VERSION}}"
+        echo "GEM_VERSION: {{.GEM_VERSION}}"
         echo "GEM_NAME: {{.GEM_NAME}}"
         echo "DOCKER_IMAGE: {{.DOCKER_IMAGE}}"
 
@@ -37,7 +40,7 @@ tasks:
   gem:push:
     desc: Push the gem to rubygems.org
     cmds:
-      - gem push {{.GEM_NAME}}-{{.VERSION}}.gem
+      - gem push {{.GEM_NAME}}-{{.GEM_VERSION}}.gem
 
   docker:build:
     desc: The list of all defined tasks

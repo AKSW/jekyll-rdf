@@ -1,7 +1,9 @@
 # coding: utf-8
 RELEASE_VERSION = case
   when ENV['VERSION'] then ENV['VERSION']
-  else `git describe --tags --dirty --always`
+  else
+    version = `git describe --tags --dirty --always`
+    version.split('-')[0] + '-' + version.split('-')[1..].join('.')
 end
 
 Gem::Specification.new do |s|
