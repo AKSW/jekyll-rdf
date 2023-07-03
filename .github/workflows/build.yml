@@ -9,8 +9,44 @@ on:
       - '*'
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ['3.0', '3.1', 'head']
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@1
+        with:
+          ruby-version: ${{ matrix.python }}
+      - uses: arduino/setup-task@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run tests
+        run: task test
+
+  release:
+    runs-on: ubuntu-latest
+    needs: test
+    env:
+      GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@1
+        with:
+          ruby-version: '3.1'
+      - uses: arduino/setup-task@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and release gem
+        run: task gem:build gem:push
+
   docker:
     runs-on: ubuntu-latest
+    needs: test
     steps:
       - name: Git describe
         id: ghd
