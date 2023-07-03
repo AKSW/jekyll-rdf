@@ -17,6 +17,8 @@ jobs:
         ruby: ['3.0', '3.1', 'head']
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -24,6 +26,8 @@ jobs:
       - uses: arduino/setup-task@v1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Show repository information
+        run: task info
       - name: Run tests
         run: task test
 
@@ -34,6 +38,8 @@ jobs:
       GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
