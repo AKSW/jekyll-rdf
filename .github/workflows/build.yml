@@ -32,6 +32,8 @@ jobs:
         run: |
           task test:setup
           docker ps -a
+          curl http://localhost:3030
+          curl -F "graph=http://localhost:3030/remote/data/graph1" -F "file=@./test/cases/remoteGraphs/_data/knowledge-base.ttl"  http://localhost:3030/remote/upload
           task test
       - name: Coveralls
         uses: coverallsapp/github-action@v2
