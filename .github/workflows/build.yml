@@ -30,6 +30,7 @@ jobs:
         run: task info
       - name: Run tests
         run: |
+          task test:setup
           docker ps -a
           task test
       - name: Coveralls
