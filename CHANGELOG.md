@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -
 
 ### Fixed
--
+- Pin logger to < 1.4.3 due to incompatibility with Jekyll 4.3.2
 
 ## [4.1.0] - 2023-06-03
 
