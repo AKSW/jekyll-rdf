@@ -7,13 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unrelease]
 
 ### Added
-- Install git in the docker image
+-
 
 ### Changed
 -
 
 ### Fixed
 -
+
+## [4.1.1] - 2023-11-13
+
+### Added
+- Install git in the docker image
+
+### Fixed
+- Pin logger to < 1.4.3 due to incompatibility with Jekyll 4.3.2
 
 ## [4.1.0] - 2023-06-03
 
