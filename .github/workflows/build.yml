@@ -1,9 +1,9 @@
 name: ci
 
 on:
+  pull_request:
   push:
     branches:
-      - 'main'
       - 'develop'
     tags:
       - '*'
@@ -34,6 +34,7 @@ jobs:
         uses: coverallsapp/github-action@v2
 
   release:
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: test
     env:
@@ -53,6 +54,7 @@ jobs:
         run: task gem:build gem:push
 
   docker:
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: test
     steps:
