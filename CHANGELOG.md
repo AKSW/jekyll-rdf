@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 -
 
+## [4.1.2] - 2023-11-14
+
+### Fixed
+- Pin logger to ~> 1.5.0 < 1.4.3 was to restrictive
+
 ## [4.1.1] - 2023-11-13
 
 ### Added
