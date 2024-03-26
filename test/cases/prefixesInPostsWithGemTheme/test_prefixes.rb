@@ -13,7 +13,7 @@ class TestPrefixes < Test::Unit::TestCase
       end
 
       assert_equal "<h1>My Jekyll RDF Blog</h1>", content[0]
-      assert_equal "<p>This is a Blogpost</p>", content[1]
+      assert_equal "This is a Blogpost", content[1]
       # this line has to be uncommented once page.rdf is set in posts
       #assert_equal "My Jekyll RDF Blogpost", content[2]
       assert_equal "My Jekyll RDF Blog", content[3]
