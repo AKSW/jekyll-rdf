@@ -10,11 +10,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -
 
 ### Changed
-- Update container base image from ruby:3.1-slim to docker.io/library/ruby:3.3-slim
-- Adjust description and alias in Taskfile
+-
 
 ### Fixed
 -
+
+## [4.2.0] - 2024-06-12
+
+### Changed
+- Update container base image from `ruby:3.1-slim` to `docker.io/library/ruby:3.3-slim`
+- Adjust description and alias in Taskfile.yml
+
+### Fixed
+- Fixe the `jekyll-sass-converter` dependency requirement (which is a dependency of `jekyll`) by updating to ruby 3.3
 
 ## [4.1.2] - 2023-11-14
 
