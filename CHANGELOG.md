@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -
 
 ### Changed
--
+- Update container base image from ruby:3.1-slim to docker.io/library/ruby:3.3-slim
+- Adjust description and alias in Taskfile
 
 ### Fixed
 -
