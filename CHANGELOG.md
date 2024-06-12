@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - Increase action versions
+- Build release and docker on tags
 
 ## [4.2.1] - 2024-06-12
 
