@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 -
 
+## [4.2.1] - 2024-06-12
+
+### Fixed
+- Raise ruby versions and action versions in the github workflow
+- merge main back into develop to bump versions
+
 ## [4.2.0] - 2024-06-12
 
 ### Changed
