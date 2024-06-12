@@ -42,8 +42,9 @@ tasks:
     cmds:
       - gem push {{.GEM_NAME}}-{{.GEM_VERSION}}.gem
 
-  docker:build:
-    desc: The list of all defined tasks
+  image:build:
+    desc: Build the docker image for the current version
+    aliases: [podman:build, docker:build]
     cmds:
       - docker build --no-cache --build-arg VERSION={{.GEM_VERSION}} -t {{.DOCKER_IMAGE}}:{{.GEM_VERSION}} .
 
