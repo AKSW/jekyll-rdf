@@ -1,5 +1,12 @@
 # Jekyll RDF
 
+
+> [!NOTE]
+>
+> These is not a lot happening here.
+> Further development will happen at: [Jinja RDF](https://github.com/AKSW/jinja-rdf), [MkRdf](https://github.com/AKSW/mkrdf), and [kisumu](https://github.com/AKSW/kisumu).
+> MkRdf aims to cover the main use case of Jekyll RDF, just with [MkDocs](https://www.mkdocs.org/) and [Jinja](https://jinja.palletsprojects.com/).
+
 A [Jekyll plugin](https://jekyllrb.com/docs/plugins/) for including RDF data in your static site.
 
 [![Gem Version](https://badge.fury.io/rb/jekyll-rdf.svg)](https://badge.fury.io/rb/jekyll-rdf)
