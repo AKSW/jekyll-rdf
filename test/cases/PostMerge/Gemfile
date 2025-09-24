@@ -1,0 +1,5 @@
+source 'https://rubygems.org'
+group :jekyll_plugins do
+  gem "theme-gem", :path => '../../theme-gem'
+  gem 'jekyll-rdf', :path => '../../../'
+end

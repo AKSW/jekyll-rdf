@@ -1,0 +1,8 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+<http://example.org/blog> a owl:Ontology ;
+  rdfs:label "My Jekyll RDF Blog" .
+
+<http://example.org/2019/02/12/Blogpost> a owl:Ontology ;
+  rdfs:label "My Jekyll RDF Blogpost" .
